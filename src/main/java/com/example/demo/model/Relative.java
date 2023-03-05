@@ -21,6 +21,9 @@ public class Relative {
 
     @Column(name = "phone", nullable = false)
     private String phoneNumber;
+
+    @Column(name = "address", nullable = false)
+    private String address;
     @ManyToMany(mappedBy = "relatives", fetch = FetchType.LAZY)
     private Set<Child> kids;
 
