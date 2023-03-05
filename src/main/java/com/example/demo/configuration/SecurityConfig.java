@@ -2,6 +2,7 @@ package com.example.demo.configuration;
 
 import com.example.demo.configuration.filter.CustomAuthenticationFilter;
 import com.example.demo.configuration.filter.CustomAuthorizationFilter;
+import com.example.demo.service.TokensGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +31,11 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
+    private final TokensGenerator tokensGenerator;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild());
+        var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), tokensGenerator);
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http
                 .cors(withDefaults())
