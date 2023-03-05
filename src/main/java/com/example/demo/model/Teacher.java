@@ -18,6 +18,9 @@ public class Teacher {
     private String phone;
     @Column(name = "skype")
     private String skype;
+
+    @Column(name = "role", nullable = false)
+    private Role role;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Group group;
 
