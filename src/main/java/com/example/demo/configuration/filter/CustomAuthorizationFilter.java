@@ -36,33 +36,35 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         } else {
             var authorizationHeader = request.getHeader(AUTHORIZATION);
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
-                try {
-                    var token = authorizationHeader.substring("Bearer ".length());
-                    var algorithm = Algorithm.HMAC256("secret".getBytes());
-                    var verifier = JWT.require(algorithm).build();
-                    var decoderJWT = verifier.verify(token);
-                    var username = decoderJWT.getSubject();
-                    var roles = decoderJWT.getClaim("roles").asArray(String.class);
-                    var authorities = new ArrayList<SimpleGrantedAuthority>();
-                    stream(roles).forEach(role -> {
-                        authorities.add(new SimpleGrantedAuthority(role));
-                    });
-                    var authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    filterChain.doFilter(request, response);
-
-                } catch (Exception ex) {
-                    log.error("error logging in: {} ", ex.getMessage());
-                    response.setHeader("error", ex.getMessage());
-                    response.setStatus(FORBIDDEN.value());
-                    var error = new HashMap<String, String>();
-                    error.put("error_message", ex.getMessage());
-                    response.setContentType(APPLICATION_JSON_VALUE);
-                    new ObjectMapper().writeValue(response.getOutputStream(), error);
-                }
+                verifyTokens(request, response, filterChain, authorizationHeader);
             } else {
                 filterChain.doFilter(request, response);
             }
+        }
+    }
+
+    private void verifyTokens(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, String authorizationHeader) throws IOException {
+        try {
+            var token = authorizationHeader.substring("Bearer ".length());
+            var algorithm = Algorithm.HMAC256("secret".getBytes());
+            var verifier = JWT.require(algorithm).build();
+            var decoderJWT = verifier.verify(token);
+            var username = decoderJWT.getSubject();
+            var roles = decoderJWT.getClaim("roles").asArray(String.class);
+            var authorities = new ArrayList<SimpleGrantedAuthority>();
+            stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+            var authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            filterChain.doFilter(request, response);
+
+        } catch (Exception ex) {
+            log.error("error logging in: {} ", ex.getMessage());
+            response.setHeader("error", ex.getMessage());
+            response.setStatus(FORBIDDEN.value());
+            var error = new HashMap<String, String>();
+            error.put("error_message", ex.getMessage());
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), error);
         }
     }
 }

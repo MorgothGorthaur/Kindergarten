@@ -51,6 +51,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         var instant = Instant.now();
         var user = (UserDetailsImpl) authResult.getPrincipal();
         var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
+        var tokens = generateTokens(request, instant, user, algorithm);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+    }
+
+    private HashMap<String, String> generateTokens(HttpServletRequest request, Instant instant, UserDetailsImpl user, Algorithm algorithm) {
         var access = JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(ACCESS_TOKEN_TIME, ChronoUnit.MINUTES))
                 .withIssuer(request.getRequestURL().toString())
@@ -62,9 +68,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         var tokens = new HashMap<String, String>();
         tokens.put("access_token", access);
         tokens.put("refresh_token", refresh);
-        response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        return tokens;
     }
+
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setStatus(FORBIDDEN.value());
