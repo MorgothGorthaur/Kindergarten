@@ -21,6 +21,12 @@ public class Teacher {
 
     @Column(name = "role", nullable = false)
     private Role role;
+    @Column(name = "email", nullable = false)
+    private String email;
+    @Column(name = "password", nullable = false)
+    private String password;
+    @Column(name = "actuality", nullable = false)
+    private Actuality actuality;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Group group;
 
