@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,20 +24,17 @@ import java.util.HashMap;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
+@RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
-    private final String SECRET_KEY;
-    private final Integer ACCESS_TOKEN_TIME;
-    private final Integer REFRESH_TOKEN_TIME;
-    public CustomAuthenticationFilter(AuthenticationManagerBuilder builder,   @Value("${jwt.secret.key}") String SECRET_KEY,
-                                      @Value("${jwt.access_token.time}") Integer ACCESS_TOKEN_TIME,
-                                      @Value("${jwt.refresh_token.time}") Integer REFRESH_TOKEN_TIME) {
-        authenticationManager = builder.getOrBuild();
-        this.SECRET_KEY = SECRET_KEY;
-        this.ACCESS_TOKEN_TIME = ACCESS_TOKEN_TIME;
-        this.REFRESH_TOKEN_TIME = REFRESH_TOKEN_TIME;
-    }
+   private final AuthenticationManager authenticationManager;
+    @Value("${jwt.secret.key}")
+    private String SECRET_KEY;
+
+    @Value("${jwt.access_token.time}")
+    private Integer ACCESS_TOKEN_TIME;
+
+    @Value("${jwt.refresh_token.time}")
+    private Integer REFRESH_TOKEN_TIME;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

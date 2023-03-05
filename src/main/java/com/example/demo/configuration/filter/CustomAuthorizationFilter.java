@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +24,14 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
+
+    @Value("${project.login.url}")
+    private String LOGIN_URL;
+    @Value("${project.refresh.url")
+    private String REFRESH_URL;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/login") || request.getServletPath().equals("/library/refresh")){
+        if(request.getServletPath().equals(LOGIN_URL) || request.getServletPath().equals(REFRESH_URL)){
             filterChain.doFilter(request, response);
         } else {
             var authorizationHeader = request.getHeader(AUTHORIZATION);
