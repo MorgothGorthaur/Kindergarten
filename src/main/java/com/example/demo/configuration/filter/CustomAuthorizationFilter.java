@@ -2,6 +2,7 @@ package com.example.demo.configuration.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.exception.BadTokenException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,19 +24,20 @@ import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-@Slf4j
+
 @AllArgsConstructor
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private final String LOGIN_URL;
     private final String REFRESH_URL;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals(LOGIN_URL) || request.getServletPath().equals(REFRESH_URL)){
+        if (request.getServletPath().equals(LOGIN_URL) || request.getServletPath().equals(REFRESH_URL)) {
             filterChain.doFilter(request, response);
         } else {
             var authorizationHeader = request.getHeader(AUTHORIZATION);
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 verifyTokens(request, response, filterChain, authorizationHeader);
             } else {
                 filterChain.doFilter(request, response);
@@ -58,13 +60,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (Exception ex) {
-            log.error("error logging in: {} ", ex.getMessage());
-            response.setHeader("error", ex.getMessage());
-            response.setStatus(FORBIDDEN.value());
-            var error = new HashMap<String, String>();
-            error.put("error_message", ex.getMessage());
-            response.setContentType(APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(), error);
+            throw new BadTokenException(ex.getMessage());
         }
     }
 }

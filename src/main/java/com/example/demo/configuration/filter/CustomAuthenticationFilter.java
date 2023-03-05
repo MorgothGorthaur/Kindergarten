@@ -2,6 +2,7 @@ package com.example.demo.configuration.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.model.UserDetailsImpl;
 import com.example.demo.service.TokensGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,10 +51,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.setStatus(FORBIDDEN.value());
-        response.setContentType(APPLICATION_JSON_VALUE);
-        var errors = new HashMap<String, String>();
-        errors.put("debugMessage", "bad password and/or email");
-        new ObjectMapper().writeValue(response.getOutputStream(), errors);
+        throw new BadPasswordOrEmailException(request.getParameter("email"), request.getParameter("password"));
     }
 }
