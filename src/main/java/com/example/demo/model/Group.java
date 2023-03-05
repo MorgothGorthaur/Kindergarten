@@ -23,4 +23,7 @@ public class Group {
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Child> kids;
+
+    @OneToOne(mappedBy = "group", fetch = FetchType.LAZY)
+    private Teacher teacher;
 }
