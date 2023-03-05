@@ -2,34 +2,34 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "children")
-@Getter
-public class Child {
+@Table(name = "relatives")
+@Getter @Setter
+public class Relative {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Column(name = "name", nullable = false)
-    private String name;
-    @Column(name = "age", nullable = false)
-    private int age;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Relative> relatives;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @Column(name = "age", nullable = false)
+    private String name;
+
+    @Column(name = "phone", nullable = false)
+    private String phoneNumber;
+    @ManyToMany(mappedBy = "relatives", fetch = FetchType.LAZY)
+    private Set<Child> kids;
 
     @Override
     public boolean equals(Object o) {
         if(o == null) return false;
         if(o == this) return true;
-        if(!(o instanceof Child child)) return false;
-        return id.equals(child.id);
+        if(!(o instanceof Relative relative)) return false;
+        return id.equals(relative.id);
     }
 
     @Override
