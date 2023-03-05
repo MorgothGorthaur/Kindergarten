@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/kindergarden")
+@RequestMapping("/kindergarten")
 @RequiredArgsConstructor
 public class KinderGardenController {
     private final TokensGenerator tokensGenerator;

@@ -4,6 +4,7 @@ import com.example.demo.configuration.filter.CustomAuthenticationFilter;
 import com.example.demo.configuration.filter.CustomAuthorizationFilter;
 import com.example.demo.service.TokensGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,7 +33,10 @@ public class SecurityConfig {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     private final TokensGenerator tokensGenerator;
-
+    @Value("${project.login.url}")
+    private String LOGIN_URL;
+    @Value("${project.refresh.url}")
+    private String REFRESH_URL;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), tokensGenerator);
@@ -43,7 +47,7 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
                 .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomAuthorizationFilter(LOGIN_URL, REFRESH_URL), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
