@@ -17,4 +17,8 @@ public class Child {
     private int age;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Parent parent;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 }
