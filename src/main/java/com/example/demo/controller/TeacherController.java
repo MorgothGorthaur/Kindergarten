@@ -4,6 +4,7 @@ import com.example.demo.dto.Mapper;
 import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
+import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyExist;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.Actuality;
@@ -57,6 +58,7 @@ public class TeacherController {
         var teacher = repository.findTeacherByEmailAndActuality(principal.getName(), Actuality.ACTIVE)
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.setActuality(Actuality.REMOVED);
+        if(teacher.getGroup().getKids().size() != 0) throw new GroupContainsKidsException();
         teacher.removeGroup();
         repository.save(teacher);
     }
