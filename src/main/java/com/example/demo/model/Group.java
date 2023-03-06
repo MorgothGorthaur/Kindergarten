@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name = "groups")
 @Getter @Setter
+@NoArgsConstructor
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +31,9 @@ public class Group {
 
     @OneToOne(mappedBy = "group", fetch = FetchType.LAZY)
     private Teacher teacher;
+
+    public Group(String name, int maxSize) {
+        this.name = name;
+        this.maxSize = maxSize;
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.exception.TeacherAlreadyContainsGroup;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,5 +34,11 @@ public class Teacher {
     public void removeGroup() {
         if(group != null) group.setTeacher(null);
         group = null;
+    }
+
+    public void addGroup(Group group) {
+        if(this.group != null) throw new TeacherAlreadyContainsGroup(email);
+        this.group = group;
+        group.setTeacher(this);
     }
 }
