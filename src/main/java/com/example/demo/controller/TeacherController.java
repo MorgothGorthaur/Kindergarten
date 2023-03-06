@@ -4,6 +4,7 @@ import com.example.demo.dto.Mapper;
 import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
+import com.example.demo.exception.TeacherAlreadyExist;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.Actuality;
 import com.example.demo.repository.TeacherRepository;
@@ -27,7 +28,8 @@ public class TeacherController {
     public void addTeacher(@RequestBody TeacherFullDto dto) {
         var teacher = dto.toTeacher();
         teacher.setPassword(encoder.encode(teacher.getPassword()));
-        repository.save(teacher);
+        if(repository.findTeacherByEmailAndActuality(teacher.getEmail(), Actuality.ACTIVE).isEmpty()) repository.save(teacher);
+        else throw new TeacherAlreadyExist(teacher.getEmail());
     }
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {
@@ -39,12 +41,14 @@ public class TeacherController {
     public void updateTeacher(Principal principal, @RequestBody TeacherFullDto dto) {
         var teacher = repository.findTeacherByEmailAndActuality(principal.getName(), Actuality.ACTIVE)
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        teacher.setName(dto.name());
-        teacher.setSkype(dto.skype());
-        teacher.setEmail(dto.email());
-        teacher.setPassword(encoder.encode(dto.password()));
-        teacher.setPhone(dto.phone());
-        repository.save(teacher);
+        if(repository.findTeachersWithSameEmailAndAnotherId(teacher.getId(), dto.email()).isEmpty()) {
+            teacher.setName(dto.name());
+            teacher.setSkype(dto.skype());
+            teacher.setEmail(dto.email());
+            teacher.setPassword(encoder.encode(dto.password()));
+            teacher.setPhone(dto.phone());
+            repository.save(teacher);
+        } else throw new TeacherAlreadyExist(dto.email());
     }
 
     @DeleteMapping
