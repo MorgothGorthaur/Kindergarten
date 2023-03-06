@@ -31,9 +31,8 @@ public class GroupController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public List<GroupDto> getAll(Principal principal) {
-        return repository.getGroupsByTeacherEmailAndTeacherActuality(principal.getName(), Actuality.ACTIVE)
-                .stream().map(mapper::toGroupDto).toList();
+    public GroupDto getAll(Principal principal) {
+        return repository.getGroupByTeacherEmailAndTeacherActuality(principal.getName(), Actuality.ACTIVE).map(mapper::toGroupDto).orElse(null);
     }
 
     @PostMapping

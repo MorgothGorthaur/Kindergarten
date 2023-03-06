@@ -7,11 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @Query(value = "select g from Group g")
     List<Group> getGroupsWithTeacher();
 
-    List<Group> getGroupsByTeacherEmailAndTeacherActuality(String email, Actuality actuality);
+    Optional<Group> getGroupByTeacherEmailAndTeacherActuality(String email, Actuality actuality);
+
 }

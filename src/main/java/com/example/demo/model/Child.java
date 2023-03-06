@@ -2,12 +2,17 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "children")
-@Getter
+@Getter @Setter
+@NoArgsConstructor
 public class Child {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +20,8 @@ public class Child {
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "age", nullable = false)
-    private int age;
+    @Column(name = "birth_year", nullable = false)
+    private LocalDate birthYear;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Relative> relatives;
 
@@ -24,16 +29,21 @@ public class Child {
     @JoinColumn(name = "group_id")
     private Group group;
 
+    public Child(String name, LocalDate birthYear) {
+        this.name = name;
+        this.birthYear = birthYear;
+    }
+
     @Override
     public boolean equals(Object o) {
         if(o == null) return false;
         if(o == this) return true;
         if(!(o instanceof Child child)) return false;
-        return id.equals(child.id);
+        return Objects.equals(id, child.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hashCode(id);
     }
 }

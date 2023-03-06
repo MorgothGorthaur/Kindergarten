@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.Child;
 import com.example.demo.model.Group;
 import com.example.demo.model.Teacher;
 import org.springframework.stereotype.Component;
@@ -21,5 +22,9 @@ public class Mapper {
 
     public GroupDto toGroupDto(Group group) {
         return new GroupDto(group.getName(), group.getMaxSize(), group.getCurrentSize());
+    }
+
+    public ChildDto toChildDto(Child child) {
+        return new ChildDto(child.getName(), child.getBirthYear());
     }
 }

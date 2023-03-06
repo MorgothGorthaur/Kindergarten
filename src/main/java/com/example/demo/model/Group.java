@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -35,5 +36,11 @@ public class Group {
     public Group(String name, int maxSize) {
         this.name = name;
         this.maxSize = maxSize;
+    }
+
+    public void addChild(Child child) {
+        if(this.kids == null) kids = new HashSet<>();
+        kids.add(child);
+        child.setGroup(this);
     }
 }
