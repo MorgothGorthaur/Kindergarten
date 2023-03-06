@@ -35,19 +35,17 @@ public class SecurityConfig {
     private final TokensGenerator tokensGenerator;
     @Value("${project.login.url}")
     private String LOGIN_URL;
-    @Value("${project.refresh.url}")
-    private String REFRESH_URL;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), tokensGenerator);
-        customAuthenticationFilter.setFilterProcessesUrl("/login");
+        customAuthenticationFilter.setFilterProcessesUrl(LOGIN_URL);
         http
                 .cors(withDefaults())
                 .csrf().disable()
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
                 .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new CustomAuthorizationFilter(LOGIN_URL, REFRESH_URL), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
