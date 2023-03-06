@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -34,21 +35,8 @@ public class KinderGardenController {
     private final PasswordEncoder encoder;
     private final TeacherRepository teacherRepository;
 
-    @PostMapping
-    public void addTeacher(@RequestBody TeacherDto dto){
-        var teacher = dto.toTeacherDto();
-        teacher.setPassword(encoder.encode(teacher.getPassword()));
-        teacherRepository.save(teacher);
-    }
-
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public void getAll() {
-        System.out.println("Dddd");
-    }
-
     @GetMapping("/refresh")
-    public void refreshTokens(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void refreshTokens(HttpServletRequest request, HttpServletResponse response) {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
