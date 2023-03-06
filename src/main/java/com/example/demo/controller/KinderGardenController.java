@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.dto.TeacherDto;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.Actuality;
@@ -14,12 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.security.Principal;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -31,8 +26,6 @@ public class KinderGardenController {
     private final TokensGenerator tokensGenerator;
     @Value("${jwt.secret.key}")
     private String SECRET_KEY;
-
-    private final PasswordEncoder encoder;
     private final TeacherRepository teacherRepository;
 
     @GetMapping("/refresh")

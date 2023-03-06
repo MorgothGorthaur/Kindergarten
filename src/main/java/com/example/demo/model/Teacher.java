@@ -30,4 +30,8 @@ public class Teacher {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Group group;
 
+    public void removeGroup() {
+        if(group != null) group.setTeacher(null);
+        group = null;
+    }
 }
