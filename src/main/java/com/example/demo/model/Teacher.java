@@ -43,7 +43,7 @@ public class Teacher {
 
     public void removeGroup() {
         if(group != null) {
-            if(group.getKids() != null) throw new GroupContainsKidsException();
+            if(group.getKids() != null && group.getKids().size() != 0) throw new GroupContainsKidsException();
             group.setTeacher(null);
         }
         group = null;
