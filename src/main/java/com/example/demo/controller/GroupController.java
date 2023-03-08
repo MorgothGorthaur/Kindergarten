@@ -24,7 +24,7 @@ public class GroupController {
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<GroupWithTeacherDto> getAll() {
-        return repository.getGroupsWithTeacher().stream().map(mapper::toGroupWithTeacherDto).toList();
+        return repository.findAll().stream().map(mapper::toGroupWithTeacherDto).toList();
     }
 
     @GetMapping

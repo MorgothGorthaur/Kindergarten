@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
-    @Query(value = "select g from Group g")
-    List<Group> getGroupsWithTeacher();
 
     Optional<Group> getGroupByTeacherEmail(String email);
 
