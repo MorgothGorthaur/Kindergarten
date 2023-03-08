@@ -25,6 +25,6 @@ public class Mapper {
     }
 
     public ChildDto toChildDto(Child child) {
-        return new ChildDto(child.getName(), child.getBirthYear());
+        return new ChildDto(child.getId(), child.getName(), child.getBirthYear());
     }
 }
