@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyContainsGroup;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -41,7 +42,10 @@ public class Teacher {
     }
 
     public void removeGroup() {
-        if(group != null) group.setTeacher(null);
+        if(group != null) {
+            if(group.getKids() != null) throw new GroupContainsKidsException();
+            group.setTeacher(null);
+        }
         group = null;
     }
 

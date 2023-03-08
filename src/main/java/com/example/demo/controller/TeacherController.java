@@ -55,7 +55,6 @@ public class TeacherController {
     public void removeTeacher(Principal principal) {
         var teacher = repository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        if(teacher.getGroup().getKids().size() != 0) throw new GroupContainsKidsException();
         teacher.removeGroup();
         repository.delete(teacher);
     }
