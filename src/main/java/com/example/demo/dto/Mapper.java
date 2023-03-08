@@ -33,7 +33,7 @@ public class Mapper {
         return new ChildFullDto(child.getName(), child.getBirthYear(), child.getRelatives().stream().map(this::toRelativeDto).toList());
     }
 
-    private RelativeDto toRelativeDto(Relative relative) {
-        return new RelativeDto(relative.getName(), relative.getPhoneNumber(), relative.getAddress());
+    public RelativeDto toRelativeDto(Relative relative) {
+        return new RelativeDto(relative.getId(), relative.getName(), relative.getPhoneNumber(), relative.getAddress());
     }
 }

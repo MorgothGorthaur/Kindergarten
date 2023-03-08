@@ -19,7 +19,7 @@ public class Relative {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "phone", nullable = false)

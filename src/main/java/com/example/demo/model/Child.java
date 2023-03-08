@@ -41,10 +41,15 @@ public class Child {
         addRelative(relative);
     }
 
-    private void addRelative(Relative relative) {
+    public void addRelative(Relative relative) {
         if(relatives == null) relatives = new HashSet<>();
         relatives.add(relative);
         relative.addChild(this);
+    }
+
+    public void removeRelative(Relative relative) {
+        if(relatives.size() == 1) throw new RuntimeException();
+        else relatives.remove(relative);
     }
 
     @Override
