@@ -1,13 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.Mapper;
-import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
 import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyExist;
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.model.Actuality;
 import com.example.demo.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +27,7 @@ public class TeacherController {
     public void addTeacher(@RequestBody TeacherFullDto dto) {
         var teacher = dto.toTeacher();
         teacher.setPassword(encoder.encode(teacher.getPassword()));
-        if(repository.findTeacherByEmailAndActuality(teacher.getEmail(), Actuality.ACTIVE).isEmpty()) repository.save(teacher);
+        if(repository.findTeacherByEmail(teacher.getEmail()).isEmpty()) repository.save(teacher);
         else throw new TeacherAlreadyExist(teacher.getEmail());
     }
     @GetMapping("/all")
@@ -40,7 +38,7 @@ public class TeacherController {
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void updateTeacher(Principal principal, @RequestBody TeacherFullDto dto) {
-        var teacher = repository.findTeacherByEmailAndActuality(principal.getName(), Actuality.ACTIVE)
+        var teacher = repository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         if(repository.findTeachersWithSameEmailAndAnotherId(teacher.getId(), dto.email()).isEmpty()) {
             teacher.setName(dto.name());
@@ -55,11 +53,10 @@ public class TeacherController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void removeTeacher(Principal principal) {
-        var teacher = repository.findTeacherByEmailAndActuality(principal.getName(), Actuality.ACTIVE)
+        var teacher = repository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        teacher.setActuality(Actuality.REMOVED);
         if(teacher.getGroup().getKids().size() != 0) throw new GroupContainsKidsException();
         teacher.removeGroup();
-        repository.save(teacher);
+        repository.delete(teacher);
     }
 }

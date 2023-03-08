@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.model.Actuality;
 import com.example.demo.model.UserDetailsImpl;
 import com.example.demo.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final TeacherRepository repository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new UserDetailsImpl(repository.findTeacherByEmailAndActuality(username, Actuality.ACTIVE)
+        return new UserDetailsImpl(repository.findTeacherByEmail(username)
                 .orElseThrow(() -> new TeacherNotFoundException(username)));
     }
 }

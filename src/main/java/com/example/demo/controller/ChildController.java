@@ -4,7 +4,6 @@ import com.example.demo.dto.ChildDto;
 import com.example.demo.dto.ChildWithRelativeDto;
 import com.example.demo.dto.Mapper;
 import com.example.demo.exception.GroupNotFoundException;
-import com.example.demo.model.Actuality;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ public class ChildController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void add(Principal principal, @RequestBody ChildWithRelativeDto dto) {
-        var group = groupRepository.getGroupByTeacherEmailAndTeacherActuality(principal.getName(), Actuality.ACTIVE)
+        var group = groupRepository.getGroupByTeacherEmail(principal.getName())
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         group.addChild(dto.toChild());
         groupRepository.save(group);

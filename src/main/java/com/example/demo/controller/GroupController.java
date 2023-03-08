@@ -4,9 +4,7 @@ import com.example.demo.dto.GroupDto;
 import com.example.demo.dto.GroupWithTeacherDto;
 import com.example.demo.dto.Mapper;
 import com.example.demo.exception.GroupNotFoundException;
-import com.example.demo.exception.TeacherAlreadyContainsGroup;
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.model.Actuality;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +30,13 @@ public class GroupController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public GroupDto getAll(Principal principal) {
-        return repository.getGroupByTeacherEmailAndTeacherActuality(principal.getName(), Actuality.ACTIVE).map(mapper::toGroupDto).orElse(null);
+        return repository.getGroupByTeacherEmail(principal.getName()).map(mapper::toGroupDto).orElse(null);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void addGroup(Principal principal, @RequestBody GroupDto dto) {
-        var teacher = teacherRepository.findTeacherByEmailAndActuality(principal.getName(), Actuality.ACTIVE)
+        var teacher = teacherRepository.findTeacherByEmail(principal.getName())
                         .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.addGroup(dto.toGroup());
         teacherRepository.save(teacher);
@@ -47,7 +45,7 @@ public class GroupController {
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void updateGroup(Principal principal, @RequestBody GroupDto dto) {
-        var teacher = teacherRepository.findTeacherByEmailAndActuality(principal.getName(), Actuality.ACTIVE)
+        var teacher = teacherRepository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         var group = teacher.getGroup();
         if(group != null) {
@@ -60,7 +58,7 @@ public class GroupController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void deleteGroup(Principal principal) {
-        var teacher = teacherRepository.findTeacherByEmailAndActuality(principal.getName(), Actuality.ACTIVE)
+        var teacher = teacherRepository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.removeGroup();
         teacherRepository.save(teacher);

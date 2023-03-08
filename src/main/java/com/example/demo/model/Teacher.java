@@ -3,11 +3,13 @@ package com.example.demo.model;
 import com.example.demo.exception.TeacherAlreadyContainsGroup;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "teachers")
 @Getter @Setter
+@NoArgsConstructor
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +28,17 @@ public class Teacher {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "actuality", nullable = false)
-    private Actuality actuality;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Group group;
+
+    public Teacher(String name, String phone, String skype, String email, String password) {
+        this.name = name;
+        this.phone = phone;
+        this.skype = skype;
+        this.email = email;
+        this.password = password;
+        this.role = Role.ROLE_USER;
+    }
 
     public void removeGroup() {
         if(group != null) group.setTeacher(null);

@@ -43,6 +43,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return teacher.getActuality().equals(Actuality.ACTIVE);
+        return true;
     }
 }

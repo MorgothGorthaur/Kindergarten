@@ -12,7 +12,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query(value = "select children.id, children.name, children.birth_year, children.group_id from children \n" +
             "join `groups` g on g.id = children.group_id\n" +
             "join teachers t on g.id = t.group_id\n" +
-            "where t.actuality = 0 and t.email = '?1'", nativeQuery = true)
+            "where t.email = '?1'", nativeQuery = true)
     List<Child> getChildByTeacherEmail(String email);
 
 
