@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,6 +33,18 @@ public class Child {
     public Child(String name, LocalDate birthYear) {
         this.name = name;
         this.birthYear = birthYear;
+    }
+
+    public Child(String name, LocalDate birthYear, Relative relative) {
+        this.name = name;
+        this.birthYear = birthYear;
+        addRelative(relative);
+    }
+
+    private void addRelative(Relative relative) {
+        if(relatives == null) relatives = new HashSet<>();
+        relatives.add(relative);
+        relative.addChild(this);
     }
 
     @Override

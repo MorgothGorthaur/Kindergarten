@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ChildDto;
+import com.example.demo.dto.ChildWithRelativeDto;
 import com.example.demo.dto.Mapper;
 import com.example.demo.exception.GroupNotFoundException;
 import com.example.demo.model.Actuality;
@@ -31,7 +32,7 @@ public class ChildController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void add(Principal principal, @RequestBody ChildDto dto) {
+    public void add(Principal principal, @RequestBody ChildWithRelativeDto dto) {
         var group = groupRepository.getGroupByTeacherEmailAndTeacherActuality(principal.getName(), Actuality.ACTIVE)
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         group.addChild(dto.toChild());
