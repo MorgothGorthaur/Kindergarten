@@ -38,6 +38,13 @@ public class ChildController {
                 .stream().map(mapper::toChildFullDto).toList();
     }
 
+    @GetMapping("/birth")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
+        return repository.getChildThatWaitBirthDay(principal.getName())
+                .stream().map(mapper::toChildDto).toList();
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ChildDto add(Principal principal, @RequestBody ChildWithRelativeDto dto) {
