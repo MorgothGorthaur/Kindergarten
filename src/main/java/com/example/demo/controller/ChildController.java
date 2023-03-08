@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ChildDto;
+import com.example.demo.dto.ChildFullDto;
 import com.example.demo.dto.ChildWithRelativeDto;
 import com.example.demo.dto.Mapper;
 import com.example.demo.exception.ChildNotFoundException;
@@ -28,6 +29,13 @@ public class ChildController {
     public List<ChildDto> getAll(Principal principal) {
         return repository.getKidsByTeacherEmail(principal.getName())
                 .stream().map(mapper::toChildDto).toList();
+    }
+
+    @GetMapping("/full")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public List<ChildFullDto> getFull(Principal principal) {
+        return repository.getKidsByTeacherEmail(principal.getName())
+                .stream().map(mapper::toChildFullDto).toList();
     }
 
     @PostMapping
@@ -58,4 +66,6 @@ public class ChildController {
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         repository.delete(child);
     }
+
+
 }
