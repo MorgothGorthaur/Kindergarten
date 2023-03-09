@@ -8,10 +8,10 @@ import java.util.Optional;
 
 public interface RelativeRepository extends JpaRepository<Relative, Long> {
     @Query(value = """
-            select relatives.* from relatives
-            join children_relatives cr on relatives.id = cr.relatives_id
-            join children c on c.id = cr.kids_id
-            join teachers t on c.group_id = t.group_id
-            where relatives_id = ?1 and c.id = ?2 and t.email = ?3""", nativeQuery = true)
+            SELECT relatives.* FROM relatives
+            JOIN children_relatives cr ON relatives.id = cr.relatives_id
+            JOIN children c ON c.id = cr.kids_id
+            JOIN teachers t ON c.group_id = t.group_id
+            WHERE relatives_id = ?1 AND c.id = ?2 AND t.email = ?3""", nativeQuery = true)
     Optional<Relative> getRelative(long relativeId, long kidsId, String email);
 }

@@ -11,7 +11,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     Optional<Teacher> findTeacherByEmail(String username);
 
-    @Query(value = "select t from Teacher t where t.id <> ?1 and t.email = ?2")
+    @Query(value = "SELECT t FROM Teacher t WHERE t.id <> ?1 AND t.email = ?2")
     Optional<Teacher> findTeachersWithSameEmailAndAnotherId(long id, String email);
 
 }

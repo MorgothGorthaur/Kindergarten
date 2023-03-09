@@ -10,15 +10,15 @@ import java.util.Optional;
 public interface ChildRepository extends JpaRepository<Child, Long> {
 
     @Query(value = """
-            select children.* from children
-            join teachers t on children.group_id = t.group_id
-            where t.email = ?1""", nativeQuery = true)
+            SELECT children.* FROM children
+            JOIN teachers t ON children.group_id = t.group_id
+            WHERE t.email = ?1""", nativeQuery = true)
     List<Child> getKidsByTeacherEmail(String email);
 
     @Query(value = """
-            select children.* from children
-            join teachers t on children.group_id = t.group_id
-            where children.id = ?1 and t.email = ?2""", nativeQuery = true)
+            SELECT children.* FROM children
+            JOIN teachers t ON children.group_id = t.group_id
+            WHERE children.id = ?1 AND t.email = ?2""", nativeQuery = true)
     Optional<Child> getChildByIdAndTeacherEmail(long id, String email);
 
     @Query(value = """
