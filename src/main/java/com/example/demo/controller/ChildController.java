@@ -45,6 +45,7 @@ public class ChildController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getBrothersAndSisters(@PathVariable long id) {
         return repository.getBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
     }
