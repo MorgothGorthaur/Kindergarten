@@ -1,11 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ChildDto;
-import com.example.demo.dto.ChildFullDto;
-import com.example.demo.dto.ChildWithRelativeDto;
-import com.example.demo.dto.Mapper;
+import com.example.demo.dto.*;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.GroupNotFoundException;
+import com.example.demo.model.Child;
+import com.example.demo.model.Group;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +44,10 @@ public class ChildController {
                 .stream().map(mapper::toChildDto).toList();
     }
 
+    @GetMapping("/{id}")
+    public List<ChildDto> getBrothersAndSisters(@PathVariable long id) {
+        return repository.getBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
+    }
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ChildDto add(Principal principal, @RequestBody ChildWithRelativeDto dto) {

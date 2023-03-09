@@ -14,6 +14,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
             join teachers t on children.group_id = t.group_id
             where t.email = ?1""", nativeQuery = true)
     List<Child> getKidsByTeacherEmail(String email);
+
     @Query(value = """
             select children.* from children
             join teachers t on children.group_id = t.group_id
@@ -23,9 +24,16 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query(value = """
             SELECT children.*
             FROM children
-                     JOIN teachers ON children.group_id = teachers.group_id
+            JOIN teachers ON children.group_id = teachers.group_id
             WHERE teachers.email = ?1 and DATE_ADD(birth_year, INTERVAL YEAR(CURRENT_DATE()) - YEAR(birth_year) YEAR) > CURRENT_DATE();""", nativeQuery = true)
     List<Child> getChildThatWaitBirthDay(String email);
 
-
+    @Query(value = """
+            SELECT DISTINCT c.* FROM children c
+            JOIN children_relatives cr ON c.id = cr.kids_id
+            JOIN relatives r ON cr.relatives_id = r.id
+            WHERE r.id = ?1
+            AND c.id <> ?1
+            """, nativeQuery = true)
+    List<Child> getBrothersAndSisters(long id);
 }
