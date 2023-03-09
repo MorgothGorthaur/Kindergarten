@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "children")
 @Getter @Setter
+@EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor
 public class Child {
     @Id
@@ -52,16 +54,5 @@ public class Child {
         else relatives.remove(relative);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if(o == null) return false;
-        if(o == this) return true;
-        if(!(o instanceof Child child)) return false;
-        return Objects.equals(id, child.id);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

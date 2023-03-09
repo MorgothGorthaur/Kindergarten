@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Table(name = "relatives")
 @Getter @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 public class Relative {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,19 +36,6 @@ public class Relative {
         this.name = name;
         this.phoneNumber = phone;
         this.address = address;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(o == null) return false;
-        if(o == this) return true;
-        if(!(o instanceof Relative relative)) return false;
-        return Objects.equals(id, relative.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 
     public void addChild(Child child) {
