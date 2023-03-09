@@ -29,23 +29,24 @@ public class KinderGardenController {
     @GetMapping("/refresh")
     public void refreshTokens(HttpServletRequest request, HttpServletResponse response) {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            try {
-                var refresh_token = authorizationHeader.substring("Bearer ".length());
-                var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
-                var verifier = JWT.require(algorithm).build();
-                var decoderJWT = verifier.verify(refresh_token);
-                var username = decoderJWT.getSubject();
-                var user = new UserDetailsImpl(teacherRepository.findTeacherByEmail(username)
-                        .orElseThrow(() -> new TeacherNotFoundException(username)));
-                var tokens = tokensGenerator.generateTokens(request, user);
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-            } catch (Exception ex) {
-                throw new BadTokenException(ex.getMessage());
-            }
-        } else {
-            throw new RuntimeException("Refresh token is missing");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) regenerateToken(request, response, authorizationHeader);
+        else throw new BadTokenException("Refresh token is missing");
+    }
+
+    private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) {
+        try {
+            var refresh_token = authorizationHeader.substring("Bearer ".length());
+            var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
+            var verifier = JWT.require(algorithm).build();
+            var decoderJWT = verifier.verify(refresh_token);
+            var username = decoderJWT.getSubject();
+            var user = new UserDetailsImpl(teacherRepository.findTeacherByEmail(username)
+                    .orElseThrow(() -> new TeacherNotFoundException(username)));
+            var tokens = tokensGenerator.generateTokens(request, user);
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        } catch (Exception ex) {
+            throw new BadTokenException(ex.getMessage());
         }
     }
 }
