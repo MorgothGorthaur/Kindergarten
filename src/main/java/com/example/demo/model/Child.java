@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -31,11 +30,6 @@ public class Child {
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
-
-    public Child(String name, LocalDate birthYear) {
-        this.name = name;
-        this.birthYear = birthYear;
-    }
 
     public Child(String name, LocalDate birthYear, Relative relative) {
         this.name = name;
