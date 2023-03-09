@@ -2,6 +2,7 @@ package com.example.demo.configuration;
 
 import com.example.demo.configuration.filter.CustomAuthenticationFilter;
 import com.example.demo.configuration.filter.CustomAuthorizationFilter;
+import com.example.demo.configuration.filter.ExceptionHandlerFilter;
 import com.example.demo.service.TokensGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +46,7 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
                 .addFilter(customAuthenticationFilter)
+                .addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
