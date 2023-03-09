@@ -32,11 +32,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
    private final TokensGenerator tokensGenerator;
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        var email = request.getParameter("email");
-        var password = request.getParameter("password");
-        var token = new UsernamePasswordAuthenticationToken(email, password);
-        return authenticationManager.authenticate(token);
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+            var email = request.getParameter("email");
+            var password = request.getParameter("password");
+            var token = new UsernamePasswordAuthenticationToken(email, password);
+        return authenticate(email, password, token);
+    }
+
+    private Authentication authenticate(String email, String password, UsernamePasswordAuthenticationToken token) {
+        try {
+            return authenticationManager.authenticate(token);
+        } catch (Exception ex) {
+            throw new BadPasswordOrEmailException(email, password);
+        }
     }
 
 
@@ -49,8 +57,4 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        throw new BadPasswordOrEmailException(request.getParameter("email"), request.getParameter("password"));
-    }
 }
