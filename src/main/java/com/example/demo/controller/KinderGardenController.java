@@ -30,7 +30,7 @@ public class KinderGardenController {
     public void refreshTokens(HttpServletRequest request, HttpServletResponse response) {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) regenerateToken(request, response, authorizationHeader);
-        else throw new BadTokenException("Refresh token is missing");
+        else throw new BadTokenException();
     }
 
     private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) {
@@ -46,7 +46,7 @@ public class KinderGardenController {
             response.setContentType(APPLICATION_JSON_VALUE);
             new ObjectMapper().writeValue(response.getOutputStream(), tokens);
         } catch (Exception ex) {
-            throw new BadTokenException(ex.getMessage());
+            throw new BadTokenException();
         }
     }
 }

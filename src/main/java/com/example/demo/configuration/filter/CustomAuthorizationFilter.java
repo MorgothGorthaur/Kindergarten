@@ -44,7 +44,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (Exception ex) {
-            throw new BadTokenException(ex.getMessage());
+            throw new BadTokenException();
         }
     }
 }
