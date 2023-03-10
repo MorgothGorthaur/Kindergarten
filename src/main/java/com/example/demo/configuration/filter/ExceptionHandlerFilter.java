@@ -1,5 +1,7 @@
 package com.example.demo.configuration.filter;
 
+import com.example.demo.exception.BadPasswordOrEmailException;
+import com.example.demo.exception.BadTokenException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -21,7 +23,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (RuntimeException ex) {
+        } catch (BadPasswordOrEmailException | BadTokenException ex) {
             response.setHeader("error", ex.getMessage());
             response.setStatus(FORBIDDEN.value());
             var error = new HashMap<String, String>();
