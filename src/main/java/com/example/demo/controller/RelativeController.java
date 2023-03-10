@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/kindergarten/relative")
@@ -31,21 +30,22 @@ public class RelativeController {
     @PostMapping("/{childId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        var child =  childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
+        var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         var relative = dto.toRelative();
-        repository.findByAddress(relative.getAddress()).ifPresent(value -> relative.setId(value.getId()));
+        repository.findEqualRelative(relative.getName(), relative.getAddress(), relative.getPhoneNumber())
+                .ifPresent(value -> relative.setId(value.getId()));
         child.addRelative(relative);
         return mapper.toRelativeDto(repository.save(relative));
     }
 
     @DeleteMapping("/{childId}/{relativeId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void delete(Principal principal,  @PathVariable long childId, @PathVariable long relativeId) {
-        var child =  childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
+    public void delete(Principal principal, @PathVariable long childId, @PathVariable long relativeId) {
+        var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         var relative = repository.findById(relativeId)
-                        .orElseThrow(RelativeNotFoundException::new);
+                .orElseThrow(RelativeNotFoundException::new);
         child.removeRelative(relative);
         childRepository.save(child);
     }
@@ -53,22 +53,22 @@ public class RelativeController {
 
     @PatchMapping("/{childId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void update(Principal principal,  @PathVariable long childId, @RequestBody RelativeDto dto) {
-        var relative = repository.getRelative(dto.id(), childId, principal.getName())
+    public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
+        var relative = repository.getRelativeByRelativeIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
                 .orElseThrow(RelativeNotFoundException::new);
-        var anotherRelativeWithSameAddres = repository.findByAddress(dto.address());
-        if(anotherRelativeWithSameAddres.isPresent() && !anotherRelativeWithSameAddres.get().getId().equals(dto.id())) {
+        var anotherRelativeWithSameAddress = repository.findEqualRelative(dto.name(), dto.address(), dto.phone());
+        if (anotherRelativeWithSameAddress.isPresent() && !anotherRelativeWithSameAddress.get().getId().equals(dto.id())) {
             var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                     .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
+            child.addRelative(anotherRelativeWithSameAddress.get());
             child.removeRelative(relative);
-            relative = dto.toRelative();
-            relative.setId(anotherRelativeWithSameAddres.get().getId());
-            child.addRelative(relative);
+            repository.delete(relative);
+            childRepository.save(child);
         } else {
             relative.setName(dto.name());
             relative.setAddress(dto.address());
             relative.setPhoneNumber(dto.phone());
+            repository.save(relative);
         }
-        repository.save(relative);
     }
 }

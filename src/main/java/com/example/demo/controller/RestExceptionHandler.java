@@ -18,7 +18,7 @@ import java.util.Objects;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler({TeacherNotFoundException.class, RelationNotFoundException.class, GroupNotFoundException.class, ChildNotFoundException.class})
+    @ExceptionHandler({TeacherNotFoundException.class, RelativeNotFoundException.class, GroupNotFoundException.class, ChildNotFoundException.class})
     protected ResponseEntity<Object> handleEntityNotFoundEx(RuntimeException ex) {
         ApiError apiError = new ApiError("entity not found exception", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
