@@ -18,11 +18,11 @@ public class Mapper {
     }
 
     public GroupWithTeacherDto toGroupWithTeacherDto(Group group) {
-        return new GroupWithTeacherDto(group.getName(), group.getMaxSize(), group.getCurrentSize(),toTeacherDto(group.getTeacher()));
+        return new GroupWithTeacherDto(group.getName(), group.getMaxSize(),toTeacherDto(group.getTeacher()));
     }
 
     public GroupDto toGroupDto(Group group) {
-        return new GroupDto(group.getName(), group.getMaxSize(), group.getCurrentSize());
+        return new GroupDto(group.getName(), group.getMaxSize());
     }
 
     public ChildDto toChildDto(Child child) {

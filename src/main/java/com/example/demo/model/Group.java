@@ -24,9 +24,6 @@ public class Group {
     @Column(name = "max_size", nullable = false)
     private int maxSize;
 
-    @Column(name = "current_size", nullable = false)
-    private int currentSize;
-
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Child> kids;
 
