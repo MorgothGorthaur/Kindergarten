@@ -45,7 +45,7 @@ public class Child {
     public void addRelative(Relative relative) {
         if(relatives == null) relatives = new HashSet<>();
         relatives.add(relative);
-        relative.addChild(this);
+        //relative.addChild(this);
     }
 
     public void removeRelative(Relative relative) {
