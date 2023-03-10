@@ -45,14 +45,11 @@ public class ChildController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getBrothersAndSisters(@PathVariable long id) {
-        repository.getBrothersAndSisters(id);
-//        System.out.println();
-//        return repository.getBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
-        return null;
+        return repository.getBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
     }
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ChildDto add(Principal principal, @RequestBody ChildWithRelativeDto dto) {
+    public ChildDto add(Principal principal, @RequestBody ChildDto dto) {
         var group = groupRepository.getGroupWithKidsByTeacherEmail(principal.getName())
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         var child = dto.toChild();

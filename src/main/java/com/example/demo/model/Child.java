@@ -37,6 +37,11 @@ public class Child {
         addRelative(relative);
     }
 
+    public Child(String name, LocalDate birthYear) {
+        this.name = name;
+        this.birthYear = birthYear;
+    }
+
     public void addRelative(Relative relative) {
         if(relatives == null) relatives = new HashSet<>();
         relatives.add(relative);
@@ -44,7 +49,7 @@ public class Child {
     }
 
     public void removeRelative(Relative relative) {
-        if(relatives.size() == 1) throw new RuntimeException();
+        if(relatives == null) throw new RuntimeException();
         else relatives.remove(relative);
     }
 
