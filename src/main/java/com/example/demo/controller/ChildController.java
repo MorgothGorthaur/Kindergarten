@@ -31,7 +31,7 @@ public class ChildController {
     @GetMapping("/full")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildFullDto> getFull(Principal principal) {
-        return repository.getKidsByTeacherEmail(principal.getName())
+        return repository.getKidsWithRelativesByTeacherEmail(principal.getName())
                 .stream().map(mapper::toChildFullDto).toList();
     }
 
@@ -45,7 +45,10 @@ public class ChildController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getBrothersAndSisters(@PathVariable long id) {
-        return repository.getBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
+        repository.getBrothersAndSisters(id);
+//        System.out.println();
+//        return repository.getBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
+        return null;
     }
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
