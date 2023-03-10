@@ -21,6 +21,7 @@ public class GroupController {
     private final GroupRepository repository;
     private final TeacherRepository teacherRepository;
     private final Mapper mapper;
+
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<GroupWithTeacherDto> getAll() {
@@ -29,7 +30,7 @@ public class GroupController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public GroupDto getAll(Principal principal) {
+    public GroupDto getGroup(Principal principal) {
         return repository.getGroupByTeacherEmail(principal.getName()).map(mapper::toGroupDto).orElse(null);
     }
 
@@ -37,18 +38,18 @@ public class GroupController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public void addGroup(Principal principal, @RequestBody GroupDto dto) {
         var teacher = teacherRepository.findTeacherByEmail(principal.getName())
-                        .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
+                .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.addGroup(dto.toGroup());
-        teacherRepository.save(teacher);
+        repository.save(teacher.getGroup());
     }
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void updateGroup(Principal principal, @RequestBody GroupDto dto) {
-        var teacher = teacherRepository.findTeacherByEmail(principal.getName())
+        var teacher = teacherRepository.findTeacherWithGroupByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         var group = teacher.getGroup();
-        if(group != null) {
+        if (group != null) {
             group.setName(dto.name());
             group.setMaxSize(dto.maxSize());
             teacherRepository.save(teacher);
@@ -58,7 +59,7 @@ public class GroupController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void deleteGroup(Principal principal) {
-        var teacher = teacherRepository.findTeacherByEmail(principal.getName())
+        var teacher = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.removeGroup();
         teacherRepository.save(teacher);

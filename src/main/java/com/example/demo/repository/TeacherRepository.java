@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Teacher;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,4 +15,10 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     @Query(value = "SELECT t FROM Teacher t WHERE t.id <> ?1 AND t.email = ?2")
     Optional<Teacher> findTeachersWithSameEmailAndAnotherId(long id, String email);
 
+    @Query(value = "SELECT t FROM Teacher t LEFT JOIN FETCH t.group g WHERE t.email = ?1")
+    Optional<Teacher> findTeacherWithGroupByEmail(String email);
+
+
+    @Query(value = "SELECT t FROM Teacher t LEFT JOIN FETCH t.group g LEFT JOIN FETCH g.kids WHERE t.email = ?1")
+    Optional<Teacher> findTeacherWithGroupAndKidsByEmail(String email);
 }
