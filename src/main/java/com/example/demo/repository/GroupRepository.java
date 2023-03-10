@@ -10,7 +10,11 @@ import java.util.Optional;
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
 
+    @Query("SELECT g FROM Group g JOIN FETCH g.teacher t WHERE t.email = ?1")
     Optional<Group> getGroupByTeacherEmail(String email);
 
+
+    @Query("SELECT g FROM Group g LEFT JOIN FETCH g.kids JOIN FETCH g.teacher t WHERE t.email = ?1")
+    Optional<Group> getGroupWithKidsByTeacherEmail(String email);
 
 }

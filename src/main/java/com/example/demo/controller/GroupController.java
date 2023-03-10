@@ -46,22 +46,19 @@ public class GroupController {
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void updateGroup(Principal principal, @RequestBody GroupDto dto) {
-        var teacher = teacherRepository.findTeacherWithGroupByEmail(principal.getName())
-                .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        var group = teacher.getGroup();
-        if (group != null) {
-            group.setName(dto.name());
-            group.setMaxSize(dto.maxSize());
-            teacherRepository.save(teacher);
-        } else throw new GroupNotFoundException(teacher.getEmail());
+        var group = repository.getGroupByTeacherEmail(principal.getName())
+                .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
+        group.setName(dto.name());
+        group.setMaxSize(dto.maxSize());
+        repository.save(group);
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void deleteGroup(Principal principal) {
-        var teacher = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
-                .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        teacher.removeGroup();
-        teacherRepository.save(teacher);
+        var group = repository.getGroupWithKidsByTeacherEmail(principal.getName())
+                .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
+        group.getTeacher().removeGroup();
+        repository.delete(group);
     }
 }
