@@ -3,8 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.dto.*;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.GroupNotFoundException;
-import com.example.demo.model.Child;
-import com.example.demo.model.Group;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +50,7 @@ public class ChildController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ChildDto add(Principal principal, @RequestBody ChildWithRelativeDto dto) {
-        var group = groupRepository.getGroupByTeacherEmail(principal.getName())
+        var group = groupRepository.getGroupWithKidsByTeacherEmail(principal.getName())
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         var child = dto.toChild();
         group.addChild(child);
@@ -73,7 +71,7 @@ public class ChildController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void delete(Principal principal, @PathVariable long id) {
-        var child = repository.getChildByIdAndTeacherEmail(id, principal.getName())
+        var child = repository.getFullChildByTeacherEmail(id, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         repository.delete(child);
     }

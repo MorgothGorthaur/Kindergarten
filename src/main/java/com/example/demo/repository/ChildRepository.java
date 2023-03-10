@@ -9,16 +9,10 @@ import java.util.Optional;
 
 public interface ChildRepository extends JpaRepository<Child, Long> {
 
-    @Query(value = """
-            SELECT children.* FROM children
-            JOIN teachers t ON children.group_id = t.group_id
-            WHERE t.email = ?1""", nativeQuery = true)
+    @Query("SELECT c FROM Child c WHERE c.group.teacher.email = ?1")
     List<Child> getKidsByTeacherEmail(String email);
 
-    @Query(value = """
-            SELECT children.* FROM children
-            JOIN teachers t ON children.group_id = t.group_id
-            WHERE children.id = ?1 AND t.email = ?2""", nativeQuery = true)
+    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t WHERE c.id = ?1 AND t.email = ?2")
     Optional<Child> getChildByIdAndTeacherEmail(long id, String email);
 
     @Query(value = """
@@ -28,12 +22,15 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
             WHERE teachers.email = ?1 and DATE_ADD(birth_year, INTERVAL YEAR(CURRENT_DATE()) - YEAR(birth_year) YEAR) > CURRENT_DATE();""", nativeQuery = true)
     List<Child> getChildThatWaitBirthDay(String email);
 
-    @Query(value = """
-            SELECT DISTINCT c.* FROM children c
-            JOIN children_relatives cr ON c.id = cr.kids_id
-            JOIN relatives r ON cr.relatives_id = r.id
-            WHERE r.id = ?1
-            AND c.id <> ?1
-            """, nativeQuery = true)
+    @Query("SELECT c FROM Child c JOIN c.relatives r WHERE r.id = ?1 AND c.id <> ?1")
     List<Child> getBrothersAndSisters(long id);
+
+    @Query("SELECT c FROM Child c JOIN FETCH c.relatives r WHERE c.id = ?1 AND c.group.teacher.email = ?2")
+    Optional<Child> getChildWithRelativesByIdAndTeacherEmail(long childId, String teacherEmail);
+
+    @Query("SELECT c FROM Child c JOIN FETCH c.group g JOIN FETCH g.teacher t LEFT JOIN FETCH c.relatives WHERE c.id = ?1 AND t.email = ?2")
+    Optional<Child> getFullChildByTeacherEmail(long id, String email);
+
+
+
 }
