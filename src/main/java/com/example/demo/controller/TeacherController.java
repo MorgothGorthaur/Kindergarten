@@ -7,6 +7,7 @@ import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyExist;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,7 @@ public class TeacherController {
     private final Mapper mapper;
 
     @PostMapping
-    public void addTeacher(@RequestBody TeacherFullDto dto) {
+    public void addTeacher(@RequestBody @Valid TeacherFullDto dto) {
         var teacher = dto.toTeacher();
         teacher.setPassword(encoder.encode(teacher.getPassword()));
         if(repository.findTeacherByEmail(teacher.getEmail()).isEmpty()) repository.save(teacher);
@@ -37,7 +38,7 @@ public class TeacherController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void updateTeacher(Principal principal, @RequestBody TeacherFullDto dto) {
+    public void updateTeacher(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
         var teacher = repository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         if(repository.findTeachersWithSameEmailAndAnotherId(teacher.getId(), dto.email()).isEmpty()) {

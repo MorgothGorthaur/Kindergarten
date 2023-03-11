@@ -7,6 +7,7 @@ import com.example.demo.exception.GroupNotFoundException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class GroupController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void addGroup(Principal principal, @RequestBody GroupDto dto) {
+    public void addGroup(Principal principal, @RequestBody @Valid GroupDto dto) {
         var teacher = teacherRepository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.addGroup(dto.toGroup());
@@ -45,7 +46,7 @@ public class GroupController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void updateGroup(Principal principal, @RequestBody GroupDto dto) {
+    public void updateGroup(Principal principal, @RequestBody @Valid GroupDto dto) {
         var group = repository.getGroupByTeacherEmail(principal.getName())
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         group.setName(dto.name());
