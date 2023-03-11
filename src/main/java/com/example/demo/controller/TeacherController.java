@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.Mapper;
+import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
 import com.example.demo.exception.GroupContainsKidsException;
@@ -34,6 +35,13 @@ public class TeacherController {
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {
         return repository.findAll().stream().map(mapper::toTeacherWithGroupDto).toList();
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public TeacherDto get(Principal principal) {
+        return mapper.toTeacherDto(repository.findTeacherByEmail(principal.getName()).
+                orElseThrow(() -> new TeacherNotFoundException(principal.getName())));
     }
 
     @PatchMapping
