@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -25,7 +24,7 @@ public class Relative {
     private String name;
 
     @Column(name = "phone", nullable = false)
-    private String phoneNumber;
+    private String phone;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -34,7 +33,7 @@ public class Relative {
 
     public Relative(String name, String phone, String address) {
         this.name = name;
-        this.phoneNumber = phone;
+        this.phone = phone;
         this.address = address;
     }
 

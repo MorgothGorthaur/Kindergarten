@@ -33,7 +33,7 @@ public class RelativeController {
         var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         var relative = dto.toRelative();
-        repository.findEqualRelative(relative.getName(), relative.getAddress(), relative.getPhoneNumber())
+        repository.findEqualRelative(relative.getName(), relative.getAddress(), relative.getPhone())
                 .ifPresent(value -> relative.setId(value.getId()));
         child.addRelative(relative);
         return mapper.toRelativeDto(repository.save(relative));
@@ -67,7 +67,7 @@ public class RelativeController {
         } else {
             relative.setName(dto.name());
             relative.setAddress(dto.address());
-            relative.setPhoneNumber(dto.phone());
+            relative.setPhone(dto.phone());
             repository.save(relative);
         }
     }
