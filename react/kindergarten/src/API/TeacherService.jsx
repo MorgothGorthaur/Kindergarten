@@ -52,11 +52,9 @@ export default class TeacherService {
                 }
             };
             const response = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-            if (response.status !== 200) {
-                return {hasError: true}
-            }
+            return await response.json();
         } catch (e) {
-            alert(e);
+            console.log(e);
         }
         window.location.reload(false);
     };

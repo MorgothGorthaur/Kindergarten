@@ -30,13 +30,13 @@ function Home() {
     const handleDelete = () => {
         TeacherService.delete(tokens).then(data => {
             console.log(data);
-            if (data.hasError) {
-                LoginService.refresh(tokens).then(data => {
-                    if (data.hasError) {
-                        alert("you must relogin")
+            if (data.message === "authorization or authentication exception") {
+                LoginService.refresh(tokens).then(refresh => {
+                    if (refresh.hasError) {
+                        alert(data.debugMessage)
                     } else {
-                        setTokens(data, tokens.refresh_token);
-                        TeacherService.delete(data);
+                        setTokens(refresh, tokens.refresh_token);
+                        TeacherService.delete(refresh);
                     }
                 });
             }

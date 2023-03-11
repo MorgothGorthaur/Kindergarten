@@ -1,5 +1,7 @@
 package com.example.demo.configuration.filter;
 
+import com.example.demo.controller.RestExceptionHandler;
+import com.example.demo.dto.ApiError;
 import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.exception.BadTokenException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -26,8 +29,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         } catch (BadPasswordOrEmailException | BadTokenException ex) {
             response.setHeader("error", ex.getMessage());
             response.setStatus(FORBIDDEN.value());
-            var error = new HashMap<String, String>();
-            error.put("error_message", ex.getMessage());
+            var error = new ApiError("authorization or authentication exception", List.of(ex.getMessage()));
             response.setContentType(APPLICATION_JSON_VALUE);
             new ObjectMapper().writeValue(response.getOutputStream(), error);
         }

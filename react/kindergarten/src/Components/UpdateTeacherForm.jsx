@@ -22,10 +22,11 @@ const UpdateTeacherForm = ({teacher, tokens, setTokens}) => {
     const update = (e) => {
         e.preventDefault();
         TeacherService.change(name, phone, skype, email, password, tokens).then(data => {
-            if (data.error_message) {
+            console.log(data);
+            if (data.message === "authorization or authentication exception") {
                 LoginService.refresh(tokens).then(refresh => {
                     if (refresh.hasError) {
-                        alert("you must relogin")
+                        alert(data.debugMessage)
                     } else {
                         setTokens(refresh, tokens.refresh_token);
                         console.log(refresh);

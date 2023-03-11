@@ -14,8 +14,8 @@ function Teachers() {
 
     return (
         <div>
-            <h2>Teachers Page</h2>
-            <p>Welcome to the Teachers Page</p>
+            <h2>Teachers</h2>
+            <p>This is a table with all of the teachers</p>
             {teachers.length > 0 ? (
                 <table className="table">
                     <thead>
