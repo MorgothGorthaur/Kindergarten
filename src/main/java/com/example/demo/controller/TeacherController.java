@@ -25,7 +25,7 @@ public class TeacherController {
     private final Mapper mapper;
 
     @PostMapping
-    public void addTeacher(@RequestBody @Valid TeacherFullDto dto) {
+    public void add(@RequestBody @Valid TeacherFullDto dto) {
         var teacher = dto.toTeacher();
         teacher.setPassword(encoder.encode(teacher.getPassword()));
         if(repository.findTeacherByEmail(teacher.getEmail()).isEmpty()) repository.save(teacher);
@@ -38,7 +38,7 @@ public class TeacherController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void updateTeacher(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
+    public void update(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
         var teacher = repository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         if(repository.findTeachersWithSameEmailAndAnotherId(teacher.getId(), dto.email()).isEmpty()) {
@@ -53,7 +53,7 @@ public class TeacherController {
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void removeTeacher(Principal principal) {
+    public void remove(Principal principal) {
         var teacher = repository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.removeGroup();

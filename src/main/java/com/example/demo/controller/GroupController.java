@@ -37,7 +37,7 @@ public class GroupController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void addGroup(Principal principal, @RequestBody @Valid GroupDto dto) {
+    public void add(Principal principal, @RequestBody @Valid GroupDto dto) {
         var teacher = teacherRepository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.addGroup(dto.toGroup());
@@ -46,7 +46,7 @@ public class GroupController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void updateGroup(Principal principal, @RequestBody @Valid GroupDto dto) {
+    public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
         var group = repository.getGroupByTeacherEmail(principal.getName())
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         group.setName(dto.name());
@@ -56,7 +56,7 @@ public class GroupController {
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void deleteGroup(Principal principal) {
+    public void remove(Principal principal) {
         var group = repository.getGroupWithKidsByTeacherEmail(principal.getName())
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         group.getTeacher().removeGroup();
