@@ -2,9 +2,9 @@ import './App.css';
 import {Routes, Route} from 'react-router-dom';
 import Teachers from "./Components/Teachers";
 import {Button, Modal} from "react-bootstrap";
-import AddTeacherForm from "./Components/AddTeacherForm";
 import {useState} from "react";
 import Home from './Components/Home';
+import TeacherForm from "./Components/TeacherForm";
 function App() {
     const [showForm, setShowForm] = useState(false);
     return (
@@ -21,7 +21,7 @@ function App() {
                     <div>
                         <h1>Main Page</h1>
                         <Button onClick={() => setShowForm(true)}>add teacher</Button>
-                        <Modal show={showForm} onHide={setShowForm}> <AddTeacherForm /></Modal>
+                        <Modal show={showForm} onHide={setShowForm}> <TeacherForm /></Modal>
                     </div>
                 }/>
                 <Route path="/teachers" element={<Teachers/>}/>

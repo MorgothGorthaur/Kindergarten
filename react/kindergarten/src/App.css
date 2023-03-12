@@ -62,14 +62,14 @@ table {
   border-collapse: collapse; /* склеивает границы ячеек */
   margin: 0 auto; /* выравнивает таблицу по центру */
 }
-.teacher-info {
+.elem-info {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.teacher-info h3 {
+.elem-info h3 {
   margin: 10px;
   padding: 10px;
   border: 2px solid #ccc;

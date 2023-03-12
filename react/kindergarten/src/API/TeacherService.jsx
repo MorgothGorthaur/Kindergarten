@@ -1,3 +1,5 @@
+import LoginService from "./LoginService";
+
 export default class TeacherService {
     static async getAll() {
         try {
@@ -42,7 +44,7 @@ export default class TeacherService {
         }
     };
 
-    static async delete(tokens) {
+    static async delete(tokens, setTokens) {
         try {
             const requestOptions = {
                 method: 'DELETE',
@@ -52,14 +54,25 @@ export default class TeacherService {
                 }
             };
             const response = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-            return await response.json();
+            const data = await response.json();
+            if (data.message === "authorization or authentication exception") {
+                const refresh = await LoginService.refresh(tokens);
+                if (refresh.hasError) {
+                    alert(data.debugMessage)
+                } else {
+                    setTokens(refresh, tokens.refresh_token);
+                    const secondResponse = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
+                    return await secondResponse.json();
+                }
+            }
+            return data;
         } catch (e) {
             console.log(e);
         }
         window.location.reload(false);
     };
 
-    static async change(name, phone, skype, email, password, tokens) {
+    static async change(name, phone, skype, email, password, tokens, setTokens) {
         try {
             const requestOptions = {
                 method: 'PATCH',
@@ -70,7 +83,18 @@ export default class TeacherService {
                 body: JSON.stringify({name, phone, skype, email, password})
             };
             const response = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-            return await response.json();
+            const data = await response.json();
+            if (data.message === "authorization or authentication exception") {
+                const refresh = await LoginService.refresh(tokens);
+                if (refresh.hasError) {
+                    alert(data.debugMessage)
+                } else {
+                    setTokens(refresh, tokens.refresh_token);
+                    const secondResponse = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
+                    return await secondResponse.json();
+                }
+            }
+            return data;
         } catch (e) {
             console.log(e);
         }

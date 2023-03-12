@@ -4,7 +4,7 @@ import {useState, useEffect} from "react";
 import TeacherService from "../API/TeacherService";
 import LoginService from "../API/LoginService";
 
-const UpdateTeacherForm = ({teacher, tokens, setTokens}) => {
+const TeacherForm = ({teacher, tokens, setTokens}) => {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [skype, setSkype] = useState('');
@@ -21,37 +21,30 @@ const UpdateTeacherForm = ({teacher, tokens, setTokens}) => {
     }, [teacher]);
     const update = (e) => {
         e.preventDefault();
-        TeacherService.change(name, phone, skype, email, password, tokens).then(data => {
+        TeacherService.change(name, phone, skype, email, password, tokens, setTokens).then(data => {
             console.log(data);
-            if (data.message === "authorization or authentication exception") {
-                LoginService.refresh(tokens).then(refresh => {
-                    if (refresh.hasError) {
-                        alert(data.debugMessage)
-                    } else {
-                        setTokens(refresh, tokens.refresh_token);
-                        console.log(refresh);
-                        TeacherService.change(name, phone, skype, email, password, refresh).then(d => {
-                            validation(d);
-                        })
-                    }
-                });
-            } else {
-                validation(data);
-            }
+            validation(data);
         });
     };
+    const add = (event) => {
+        event.preventDefault();
+        TeacherService.save(name, phone, skype, email, password).then(data => {
+            console.log(data);
+            validation(data);
+        })
+    };
     const validation = (data) => {
-        if(data.debugMessage) alert(data.debugMessage);
+        if (data.debugMessage) alert(data.debugMessage);
     }
     return (
-        <Form className="form" onSubmit={update}>
+        <Form className="form" onSubmit={teacher ? update : add}>
             <Input type="text" placeholder="name" value={name} onChange={e => setName(e.target.value)}/>
             <Input type="text" placeholder="phone" value={phone} onChange={e => setPhone(e.target.value)}/>
             <Input type="text" placeholder="skype" value={skype} onChange={e => setSkype(e.target.value)}/>
             <Input type="text" placeholder="email" value={email} onChange={e => setEmail(e.target.value)}/>
             <Input type="password" placeholder="password" value={password} onChange={e => setPassword(e.target.value)}/>
-            <Button type="submit"> update </Button>
+            <Button type="submit"> {teacher ? "update" : "add"} </Button>
         </Form>
     );
 };
-export default UpdateTeacherForm;
+export default TeacherForm;

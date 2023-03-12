@@ -3,14 +3,15 @@ import Login from "./Login";
 import TeacherService from "../API/TeacherService";
 import LoginService from "../API/LoginService";
 import {Modal, Button} from "react-bootstrap";
-import UpdateTeacherForm from "./UpdateTeacherForm";
+import TeacherForm from "./TeacherForm";
+import Group from "./Group";
 
 function Home() {
     const [tokens, setTokens] = useState(null);
     const [showLoginForm, setShowLoginForm] = useState(true);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [teacher, setTeacher] = useState("");
-
+    const [showGroup, setShowGroup] = useState(false);
     const handleLogin = (data) => {
         setTokens(data);
         setShowLoginForm(false);
@@ -28,25 +29,17 @@ function Home() {
 
 
     const handleDelete = () => {
-        TeacherService.delete(tokens).then(data => {
+        TeacherService.delete(tokens, setTokens).then(data => {
             console.log(data);
-            if (data.message === "authorization or authentication exception") {
-                LoginService.refresh(tokens).then(refresh => {
-                    if (refresh.hasError) {
-                        alert(data.debugMessage)
-                    } else {
-                        setTokens(refresh, tokens.refresh_token);
-                        TeacherService.delete(refresh);
-                    }
-                });
-            }
+            if(data.debugMessage) alert(data.debugMessage);
         });
     };
+
     return (
         <div>
             {teacher ? (
                 <div>
-                    <div className="teacher-info">
+                    <div className="elem-info">
                         <h3>Your Name: {teacher.name}</h3>
                         <h3>Your Phone: {teacher.phone}</h3>
                         <h3>Your Skype: {teacher.skype}</h3>
@@ -55,19 +48,32 @@ function Home() {
                         <Button variant="primary" onClick={() => setShowUpdateForm(true)}>update</Button>{" "}
                         <Button variant="danger" onClick={handleDelete}>delete</Button>
                         <Modal show={showUpdateForm} onHide={setShowUpdateForm}>
-                            <UpdateTeacherForm teacher={teacher} tokens = {tokens} setTokens = {setTokens}/>
+                            <TeacherForm teacher={teacher} tokens={tokens} setTokens={setTokens}/>
                         </Modal>
+                    </div>
+                    <div>
+                        {
+                            showGroup ?
+                                <div>
+                                    <Button variant="dark" onClick={() => setShowGroup(false)}>close</Button>
+                                    <Group tokens={tokens} setTokens={setTokens}/>
+                                </div>
+                                : <Button variant="secondary" onClick={() => setShowGroup(true)}>View Group</Button>
+
+                        }
                     </div>
                 </div>
             ) : tokens ? (
                 <th>Loading teacher data...</th>
             ) : (
-                <Modal show={showLoginForm} onHide={setShowLoginForm}> <Login setTokens={handleLogin}
-                                                                              setModal={setShowLoginForm}/>
+                <Modal show={showLoginForm} onHide={setShowLoginForm}>
+                    <Login setTokens={handleLogin} setModal={setShowLoginForm}/>
                 </Modal>
             )}
+
         </div>
     );
 }
 
 export default Home;
+
