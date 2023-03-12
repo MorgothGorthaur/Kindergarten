@@ -6,7 +6,6 @@ import ChildForm from "./ChildForm";
 
 
 function KidListItem({ kid, tokens, setTokens, kids, setKids}) {
-    const [addChildForm, setAddChildForm] = useState(false);
     const [updateChildForm, setUpdateChildForm] = useState(false);
     const [brothersAndSisters, setBrothersAndSisters] = useState(false);
     const handleDelete = (id) => {
