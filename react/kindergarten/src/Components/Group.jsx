@@ -2,10 +2,13 @@ import {useEffect, useState} from "react";
 import GroupService from "../API/GroupService";
 import {Button, Modal} from "react-bootstrap";
 import GroupForm from "./GroupForm";
+import KidsMenu from "./KidsMenu";
+
 function Group({tokens, setTokens}) {
     const [group, setGroup] = useState()
     const [showAddForm, setShowAddForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
+    const [showKids, setShowKids] = useState(false);
     useEffect(() => {
         if (!group) {
             GroupService.getGroup(tokens).then(data => {
@@ -19,9 +22,9 @@ function Group({tokens, setTokens}) {
         }
     }, [group]);
     const handleDelete = () => {
-        GroupService.delete(tokens,setTokens).then(data => {
+        GroupService.delete(tokens, setTokens).then(data => {
             console.log(data);
-            if(!data) {
+            if (!data) {
                 setGroup()
             } else alert(data.debugMessage);
         });
@@ -42,6 +45,17 @@ function Group({tokens, setTokens}) {
                                        setTokens={setTokens}
                                        setShowForm={setShowUpdateForm}/>
                         </Modal>
+                    </div>
+                    <div>
+                        {
+                            showKids ?
+                                <div>
+                                    <Button variant="dark" onClick={() => setShowKids(false)}> close </Button>
+                                    <KidsMenu tokens={tokens} setTokens={setTokens} />
+                                </div>
+                                :
+                                <Button variant="secondary" onClick={() => setShowKids(true)}> getKidsMenu </Button>
+                        }
                     </div>
                 </div>
 

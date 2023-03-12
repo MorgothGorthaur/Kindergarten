@@ -82,7 +82,33 @@ table {
   justify-content: center;
   align-items: center;
 }
+.kids-list {
+  margin-top: 20px;
+  list-style: none;
+  padding-left: 0;
+}
 
+.kids-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.kids-list-item span {
+  font-size: 18px;
+}
+
+.kids-list-item .kid-name {
+  font-weight: bold;
+}
+
+.kids-list-item .birth-year {
+  margin-left: 10px;
+}
 th, td {
   border: 1px solid black; /* добавляет границы ячейкам */
   padding: 8px; /* добавляет отступ внутри ячеек */
