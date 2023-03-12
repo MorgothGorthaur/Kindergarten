@@ -57,11 +57,6 @@
   margin-right: 1rem;
 }
 
-table {
-  border: 1px solid black; /* добавляет границы */
-  border-collapse: collapse; /* склеивает границы ячеек */
-  margin: 0 auto; /* выравнивает таблицу по центру */
-}
 .elem-info {
   display: flex;
   justify-content: center;
@@ -109,9 +104,37 @@ table {
 .kids-list-item .birth-year {
   margin-left: 10px;
 }
+
+.kids-list-container {
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-y: auto;
+}
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
+table {
+  width: 80%;
+  margin: 0 auto;
+  border-spacing: 0;
+  text-align: center;
+}
+
 th, td {
-  border: 1px solid black; /* добавляет границы ячейкам */
-  padding: 8px; /* добавляет отступ внутри ячеек */
+  border: 1px solid black;
+  padding: 8px;
+  background-color: #f2f2f2;
+  text-align: center;
+}
+
+th {
+  background-color: #ddd;
+  color: #333;
+  font-weight: bold;
 }
 @keyframes App-logo-spin {
   from {

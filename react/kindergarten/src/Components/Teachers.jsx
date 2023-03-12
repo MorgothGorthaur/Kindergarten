@@ -17,7 +17,7 @@ function Teachers() {
             <h2>Teachers</h2>
             <p>This is a table with all of the teachers</p>
             {teachers.length > 0 ? (
-                <table className="table">
+                <table>
                     <thead>
                     <tr>
                         <th>Name</th>

@@ -2,11 +2,15 @@ import {useEffect, useState} from "react";
 import KidsService from "../API/KidsService";
 import {Button, Modal} from "react-bootstrap";
 import ChildForm from "./ChildForm";
+import KidBrothersAndSisters from "./KidBrothersAndSisters";
 
 function AllKids({tokens, setTokens}) {
     const [kids, setKids] = useState([]);
     const [addChildForm, setAddChildForm] = useState(false);
     const [updateChildForm, setUpdateChildForm] = useState(false);
+    const [brothersAndSisters, setBrothersAndSisters] = useState(false);
+    const [selectedKid, setSelectedKid] = useState(null);
+
     useEffect(() => {
         async function fetchData() {
             const data = await KidsService.getAll(tokens, setTokens);
@@ -15,14 +19,26 @@ function AllKids({tokens, setTokens}) {
 
         fetchData();
     }, []);
+
     const handleDelete = (id) => {
-        KidsService.delete(id, tokens, setTokens).then(data => {
+        KidsService.delete(id, tokens, setTokens).then((data) => {
             console.log(data);
             if (!data) {
-                setKids([...kids.filter(k => k.id !== id)])
+                setKids([...kids.filter((k) => k.id !== id)]);
             } else alert(data.debugMessage);
         });
     };
+
+    const handleShowBrothersAndSisters = (kid) => {
+        setSelectedKid(kid);
+        setBrothersAndSisters(true);
+    };
+
+    function handleUpdate(kid) {
+        setSelectedKid(kid);
+        setUpdateChildForm(true);
+    }
+
     return (
         <div>
             {kids.length === 0 ? (
@@ -35,9 +51,11 @@ function AllKids({tokens, setTokens}) {
                             <li className="kids-list-item" key={kid.id}>
                                 <span className="kid-name">{kid.name}</span>
                                 <span className="birth-year">({kid.birthYear})</span>
-                                <Button variant="primary" onClick={() => setUpdateChildForm(true)}>update</Button>
-                                <Button variant="danger" onClick={() => handleDelete(kid.id)}>delete</Button>
-                                <Modal show={updateChildForm} onHide={setUpdateChildForm}> <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens} setShowForm={setUpdateChildForm} child={kid}/></Modal>
+                                <div className="button-container">
+                                    <Button variant="primary" onClick={() => handleUpdate(kid)}>update</Button>
+                                    <Button variant="danger" onClick={() => handleDelete(kid.id)}>delete</Button>
+                                    <Button variant="primary" onClick={() => handleShowBrothersAndSisters(kid)}>brothers and sisters</Button>
+                                </div>
                             </li>
                         ))}
                     </ul>
@@ -45,8 +63,18 @@ function AllKids({tokens, setTokens}) {
             )}
             <div>
                 <Button variant="primary" className="m-3" onClick={() => setAddChildForm(true)}>Add Child</Button>
-                <Modal show={addChildForm} onHide={setAddChildForm}> <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens} setShowForm={setAddChildForm}/></Modal>
+                <Modal show={addChildForm} onHide={setAddChildForm}>
+                    <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens}
+                               setShowForm={setAddChildForm}/>
+                </Modal>
             </div>
+            <Modal show={brothersAndSisters} onHide={setBrothersAndSisters}>
+                <KidBrothersAndSisters id={selectedKid?.id} tokens={tokens} setTokens={setTokens}/>
+            </Modal>
+            <Modal show={updateChildForm} onHide={setUpdateChildForm}>
+                <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens}
+                           setShowForm={setUpdateChildForm} child={selectedKid}/>
+            </Modal>
         </div>
     );
 }

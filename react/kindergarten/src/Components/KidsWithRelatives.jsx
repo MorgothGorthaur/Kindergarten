@@ -49,7 +49,8 @@ function KidsWithRelatives({ tokens, setTokens }) {
                                     </tbody>
                                 </table>
                             ) : (
-                                'No relatives found'
+                                <h3 style={{ textAlign: 'center' }}>No relatives found</h3>
+
                             )}
                         </td>
                     </tr>
