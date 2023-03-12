@@ -31,7 +31,16 @@ export default class KidsService {
         };
         return await this.callApi('http://localhost:8080/kindergarten/child', requestOptions, tokens, setTokens);
     }
-
+    static async getKidsThatWaitBirth(tokens, setTokens) {
+        const requestOptions = {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Authorization': 'Bearer ' + tokens.access_token
+            }
+        };
+        return await this.callApi('http://localhost:8080/kindergarten/child/birth', requestOptions, tokens, setTokens);
+    }
     static async add(name, birthYear, tokens, setTokens) {
         const requestOptions = {
             method: 'POST',
