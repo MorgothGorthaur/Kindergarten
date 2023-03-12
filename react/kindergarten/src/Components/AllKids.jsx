@@ -3,13 +3,11 @@ import KidsService from "../API/KidsService";
 import {Button, Modal} from "react-bootstrap";
 import ChildForm from "./ChildForm";
 import KidBrothersAndSisters from "./KidBrothersAndSisters";
+import KidListItem from "./KidListItem";
 
 function AllKids({tokens, setTokens}) {
     const [kids, setKids] = useState([]);
-    const [addChildForm, setAddChildForm] = useState(false);
-    const [updateChildForm, setUpdateChildForm] = useState(false);
-    const [brothersAndSisters, setBrothersAndSisters] = useState(false);
-    const [selectedKid, setSelectedKid] = useState(null);
+
 
     useEffect(() => {
         async function fetchData() {
@@ -20,24 +18,6 @@ function AllKids({tokens, setTokens}) {
         fetchData();
     }, []);
 
-    const handleDelete = (id) => {
-        KidsService.delete(id, tokens, setTokens).then((data) => {
-            console.log(data);
-            if (!data) {
-                setKids([...kids.filter((k) => k.id !== id)]);
-            } else alert(data.debugMessage);
-        });
-    };
-
-    const handleShowBrothersAndSisters = (kid) => {
-        setSelectedKid(kid);
-        setBrothersAndSisters(true);
-    };
-
-    function handleUpdate(kid) {
-        setSelectedKid(kid);
-        setUpdateChildForm(true);
-    }
 
     return (
         <div>
@@ -48,33 +28,11 @@ function AllKids({tokens, setTokens}) {
                     <h3>All kids</h3>
                     <ul className="kids-list">
                         {kids.map((kid) => (
-                            <li className="kids-list-item" key={kid.id}>
-                                <span className="kid-name">{kid.name}</span>
-                                <span className="birth-year">({kid.birthYear})</span>
-                                <div className="button-container">
-                                    <Button variant="primary" onClick={() => handleUpdate(kid)}>update</Button>
-                                    <Button variant="danger" onClick={() => handleDelete(kid.id)}>delete</Button>
-                                    <Button variant="primary" onClick={() => handleShowBrothersAndSisters(kid)}>brothers and sisters</Button>
-                                </div>
-                            </li>
+                            <KidListItem kid = {kid} kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens} />
                         ))}
                     </ul>
                 </div>
             )}
-            <div>
-                <Button variant="primary" className="m-3" onClick={() => setAddChildForm(true)}>Add Child</Button>
-                <Modal show={addChildForm} onHide={setAddChildForm}>
-                    <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens}
-                               setShowForm={setAddChildForm}/>
-                </Modal>
-            </div>
-            <Modal show={brothersAndSisters} onHide={setBrothersAndSisters}>
-                <KidBrothersAndSisters id={selectedKid?.id} tokens={tokens} setTokens={setTokens}/>
-            </Modal>
-            <Modal show={updateChildForm} onHide={setUpdateChildForm}>
-                <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens}
-                           setShowForm={setUpdateChildForm} child={selectedKid}/>
-            </Modal>
         </div>
     );
 }
