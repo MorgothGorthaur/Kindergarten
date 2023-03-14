@@ -28,7 +28,7 @@ public class GroupController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public GroupDto getGroup(Principal principal) {
-        return repository.findGroupWithTeacherByEmail(principal.getName()).map(mapper::toGroupDto).orElse(null);
+        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(mapper::toGroupDto).orElse(null);
     }
 
     @PostMapping
