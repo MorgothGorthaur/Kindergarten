@@ -75,6 +75,7 @@ public class ChildController {
     public void delete(Principal principal, @PathVariable long id) {
         var child = repository.getFullChildByTeacherEmail(id, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
+        child.setRelatives(null);
         repository.delete(child);
     }
 

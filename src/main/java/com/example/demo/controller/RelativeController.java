@@ -4,6 +4,7 @@ import com.example.demo.dto.Mapper;
 import com.example.demo.dto.RelativeDto;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.RelativeNotFoundException;
+import com.example.demo.model.Relative;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.RelativeRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,7 @@ public class RelativeController {
     public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
         var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        var relative = dto.toRelative();
-        repository.findEqualRelative(relative.getName(), relative.getAddress(), relative.getPhone())
-                .ifPresent(value -> relative.setId(value.getId()));
+        var relative = repository.findEqualRelative(dto.name(), dto.address(), dto.phone()).orElseGet(dto::toRelative);
         child.addRelative(relative);
         return mapper.toRelativeDto(repository.save(relative));
     }
@@ -56,19 +55,23 @@ public class RelativeController {
     public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
         var relative = repository.getRelativeByRelativeIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
                 .orElseThrow(RelativeNotFoundException::new);
-        var anotherRelativeWithSameAddress = repository.findEqualRelative(dto.name(), dto.address(), dto.phone());
-        if (anotherRelativeWithSameAddress.isPresent() && !anotherRelativeWithSameAddress.get().getId().equals(dto.id())) {
-            var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
-                    .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-            child.addRelative(anotherRelativeWithSameAddress.get());
-            child.removeRelative(relative);
-            repository.delete(relative);
-            childRepository.save(child);
-        } else {
-            relative.setName(dto.name());
-            relative.setAddress(dto.address());
-            relative.setPhone(dto.phone());
-            repository.save(relative);
-        }
+        repository.findEqualRelativeWithAnotherId(dto.name(), dto.address(), dto.phone(), dto.id())
+                .ifPresentOrElse(equalRelative -> replaceRelative(principal, childId, relative, equalRelative), () -> updateRelative(dto, relative));
+
+    }
+
+    private void updateRelative(RelativeDto dto, Relative relative) {
+        relative.setName(dto.name());
+        relative.setAddress(dto.address());
+        relative.setPhone(dto.phone());
+        repository.save(relative);
+    }
+
+    private void replaceRelative(Principal principal, long childId, Relative relative, Relative equalRelative) {
+        var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
+                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
+        child.addRelative(equalRelative);
+        child.removeRelative(relative);
+        childRepository.save(child);
     }
 }

@@ -34,7 +34,7 @@ public class TeacherController {
     }
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {
-        return repository.findAll().stream().map(mapper::toTeacherWithGroupDto).toList();
+        return repository.findAllTeachersWithGroups().stream().map(mapper::toTeacherWithGroupDto).toList();
     }
 
     @GetMapping
@@ -62,7 +62,7 @@ public class TeacherController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void remove(Principal principal) {
-        var teacher = repository.findTeacherByEmail(principal.getName())
+        var teacher = repository.findTeacherWithGroupAndKidsByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
         teacher.removeGroup();
         repository.delete(teacher);
