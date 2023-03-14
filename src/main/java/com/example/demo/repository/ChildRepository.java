@@ -21,7 +21,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query("SELECT c FROM Child c JOIN c.group.teacher t WHERE t.email = ?1" +
             " AND (MONTH(c.birthYear) > MONTH(CURRENT_DATE())" +
             " OR (MONTH(c.birthYear) = MONTH(CURRENT_DATE()) AND DAY(c.birthYear) > DAY(CURRENT_DATE())))")
-    List<Child> findChildThatWaitBirthDay(String email);
+    List<Child> findKidsThatWaitBirthDay(String email);
 
     @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t JOIN FETCH c.relatives r JOIN FETCH r.kids k WHERE k.id = ?1 AND c.id <> k.id")
     List<Child> findBrothersAndSisters(long id);

@@ -3,9 +3,9 @@ package com.example.demo.controller;
 import com.example.demo.dto.*;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.GroupNotFoundException;
+import com.example.demo.model.Group;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.ChildRepository;
-import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,7 @@ public class ChildController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getAll(Principal principal) {
-        return repository.findKidsByTeacherEmail(principal.getName())
-                .stream().map(mapper::toChildDto).toList();
+        return repository.findKidsByTeacherEmail(principal.getName()).stream().map(mapper::toChildDto).toList();
     }
 
     @GetMapping("/full")
@@ -40,7 +39,7 @@ public class ChildController {
     @GetMapping("/birth")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.findChildThatWaitBirthDay(principal.getName())
+        return repository.findKidsThatWaitBirthDay(principal.getName())
                 .stream().map(mapper::toChildDto).toList();
     }
 

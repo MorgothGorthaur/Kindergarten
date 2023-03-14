@@ -4,7 +4,6 @@ import com.example.demo.dto.Mapper;
 import com.example.demo.dto.RelativeDto;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.RelativeNotFoundException;
-import com.example.demo.model.Child;
 import com.example.demo.model.Relative;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.RelativeRepository;
@@ -13,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -27,9 +25,8 @@ public class RelativeController {
     @GetMapping("/{childId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<RelativeDto> getAll(Principal principal, @PathVariable long childId) {
-        return childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
-                .stream().flatMap(child -> child.getRelatives().stream())
-                .map(mapper::toRelativeDto).toList();
+        return repository.findRelativesByChildIdAndTeacherEmail(childId, principal.getName())
+                .stream().map(mapper::toRelativeDto).toList();
     }
 
     @PostMapping("/{childId}")
@@ -57,7 +54,7 @@ public class RelativeController {
     @PatchMapping("/{childId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        var relative = repository.findRelativeByRelativeIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
+        var relative = repository.findRelativeByIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
                 .orElseThrow(RelativeNotFoundException::new);
         repository.findEqualRelativeWithAnotherId(dto.name(), dto.address(), dto.phone(), dto.id())
                 .ifPresentOrElse(equalRelative -> replaceRelative(principal, childId, relative, equalRelative), () -> updateRelative(dto, relative));
