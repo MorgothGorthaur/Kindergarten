@@ -4,17 +4,16 @@ import com.example.demo.model.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
 
     @Query("SELECT g FROM Group g JOIN FETCH g.teacher t WHERE t.email = ?1")
-    Optional<Group> getGroupByTeacherEmail(String email);
+    Optional<Group> findGroupWithTeacherByEmail(String email);
 
 
     @Query("SELECT g FROM Group g LEFT JOIN FETCH g.kids JOIN FETCH g.teacher t WHERE t.email = ?1")
-    Optional<Group> getGroupWithKidsByTeacherEmail(String email);
+    Optional<Group> findGroupWithKidsAndTeacherByEmail(String email);
 
 }

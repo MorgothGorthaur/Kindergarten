@@ -25,13 +25,13 @@ public class RelativeController {
     @GetMapping("/{childId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<RelativeDto> getAll(Principal principal, @PathVariable long childId) {
-        return repository.getAllRelativesByChildIdAndTeacherEmail(childId, principal.getName()).stream().map(mapper::toRelativeDto).toList();
+        return repository.findAllRelativesByChildIdAndTeacherEmail(childId, principal.getName()).stream().map(mapper::toRelativeDto).toList();
     }
 
     @PostMapping("/{childId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
+        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         var relative = repository.findEqualRelative(dto.name(), dto.address(), dto.phone()).orElseGet(dto::toRelative);
         child.addRelative(relative);
@@ -41,7 +41,7 @@ public class RelativeController {
     @DeleteMapping("/{childId}/{relativeId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void delete(Principal principal, @PathVariable long childId, @PathVariable long relativeId) {
-        var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
+        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         var relative = repository.findById(relativeId)
                 .orElseThrow(RelativeNotFoundException::new);
@@ -53,7 +53,7 @@ public class RelativeController {
     @PatchMapping("/{childId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        var relative = repository.getRelativeByRelativeIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
+        var relative = repository.findRelativeByRelativeIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
                 .orElseThrow(RelativeNotFoundException::new);
         repository.findEqualRelativeWithAnotherId(dto.name(), dto.address(), dto.phone(), dto.id())
                 .ifPresentOrElse(equalRelative -> replaceRelative(principal, childId, relative, equalRelative), () -> updateRelative(dto, relative));
@@ -68,7 +68,7 @@ public class RelativeController {
     }
 
     private void replaceRelative(Principal principal, long childId, Relative relative, Relative equalRelative) {
-        var child = childRepository.getChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
+        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         child.addRelative(equalRelative);
         child.removeRelative(relative);

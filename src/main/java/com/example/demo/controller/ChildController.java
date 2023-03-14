@@ -25,34 +25,34 @@ public class ChildController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getAll(Principal principal) {
-        return repository.getKidsByTeacherEmail(principal.getName())
+        return repository.findKidsByTeacherEmail(principal.getName())
                 .stream().map(mapper::toChildDto).toList();
     }
 
     @GetMapping("/full")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildFullDto> getFull(Principal principal) {
-        return repository.getKidsWithRelativesByTeacherEmail(principal.getName())
+        return repository.findKidsWithRelativesByTeacherEmail(principal.getName())
                 .stream().map(mapper::toChildFullDto).toList();
     }
 
     @GetMapping("/birth")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.getChildThatWaitBirthDay(principal.getName())
+        return repository.findChildThatWaitBirthDay(principal.getName())
                 .stream().map(mapper::toChildDto).toList();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<ChildDto> getBrothersAndSisters(@PathVariable long id) {
-        return repository.getBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
+        return repository.findBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ChildDto add(Principal principal, @RequestBody @Valid ChildDto dto) {
-        var group = groupRepository.getGroupWithKidsByTeacherEmail(principal.getName())
+        var group = groupRepository.findGroupWithKidsAndTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         var child = dto.toChild();
         group.addChild(child);
@@ -62,7 +62,7 @@ public class ChildController {
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @RequestBody @Valid ChildDto dto) {
-        var child = repository.getChildByIdAndTeacherEmail(dto.id(), principal.getName())
+        var child = repository.findChildByIdAndTeacherEmail(dto.id(), principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         child.setName(dto.name());
         child.setBirthYear(dto.birthYear());
@@ -73,7 +73,7 @@ public class ChildController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void delete(Principal principal, @PathVariable long id) {
-        var child = repository.getFullChildByTeacherEmail(id, principal.getName())
+        var child = repository.findChildWithRelativesByIdAndTeacherEmail(id, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         child.setRelatives(null);
         repository.delete(child);
