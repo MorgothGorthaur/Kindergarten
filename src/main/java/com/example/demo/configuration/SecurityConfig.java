@@ -3,6 +3,8 @@ package com.example.demo.configuration;
 import com.example.demo.configuration.filter.CustomAuthenticationFilter;
 import com.example.demo.configuration.filter.CustomAuthorizationFilter;
 import com.example.demo.configuration.filter.ExceptionHandlerFilter;
+import com.example.demo.configuration.filter.RefreshTokensFilter;
+import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.TokensGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,10 +36,19 @@ public class SecurityConfig {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     private final TokensGenerator tokensGenerator;
+
+    private final TeacherRepository teacherRepository;
+
     @Value("${project.login.url}")
     private String LOGIN_URL;
+    @Value("${jwt.secret.key}")
+    private String SECRET_KEY;
+
+    @Value("${project.refresh.url}")
+    private String REFRESH_URL;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), tokensGenerator);
         customAuthenticationFilter.setFilterProcessesUrl(LOGIN_URL);
         http
@@ -46,23 +57,25 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
                 .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CustomAuthorizationFilter(), CustomAuthenticationFilter.class)
+                .addFilterBefore(new RefreshTokensFilter(tokensGenerator, SECRET_KEY, REFRESH_URL, teacherRepository), CustomAuthorizationFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(), RefreshTokensFilter.class);
         return http.build();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource(){
+    CorsConfigurationSource corsConfigurationSource() {
         var configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("POST","GET", "PUT", "PATCH", "DELETE"));
+        configuration.setAllowedMethods(List.of("POST", "GET", "PUT", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(List.of("*"));
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

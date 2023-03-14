@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.configuration.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -8,31 +8,32 @@ import com.example.demo.model.UserDetailsImpl;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.TokensGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-
-@RestController
-@RequestMapping("/kindergarten")
 @RequiredArgsConstructor
-public class KinderGardenController {
+public class RefreshTokensFilter extends OncePerRequestFilter {
     private final TokensGenerator tokensGenerator;
-    @Value("${jwt.secret.key}")
-    private String SECRET_KEY;
+    private final String SECRET_KEY;
+
+    private final String REFRESH_URL;
     private final TeacherRepository teacherRepository;
-
-    @GetMapping("/refresh")
-    public void refreshTokens(HttpServletRequest request, HttpServletResponse response) {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) regenerateToken(request, response, authorizationHeader);
-        else throw new BadTokenException();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && request.getServletPath().equals(REFRESH_URL)) regenerateToken(request, response, authorizationHeader);
+        else filterChain.doFilter(request,response);
     }
-
     private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) {
         try {
             var refresh_token = authorizationHeader.substring("Bearer ".length());
@@ -43,6 +44,7 @@ public class KinderGardenController {
             var user = new UserDetailsImpl(teacherRepository.findTeacherByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
             var tokens = tokensGenerator.generateTokens(request, user);
+            tokens.remove("refresh_token");
             response.setContentType(APPLICATION_JSON_VALUE);
             new ObjectMapper().writeValue(response.getOutputStream(), tokens);
         } catch (Exception ex) {
