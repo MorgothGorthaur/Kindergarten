@@ -24,12 +24,6 @@ public class GroupController {
     private final TeacherRepository teacherRepository;
     private final Mapper mapper;
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public List<GroupWithTeacherDto> getAll() {
-        return repository.findAll().stream().map(mapper::toGroupWithTeacherDto).toList();
-    }
-
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public GroupDto getGroup(Principal principal) {
