@@ -28,7 +28,7 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Child> kids;
 
-    @OneToOne(mappedBy = "group", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "group")
     private Teacher teacher;
 
     public Group(String name, int maxSize) {
@@ -41,5 +41,13 @@ public class Group {
         if(kids.size() == maxSize) throw new ToBigChildrenInGroupException(maxSize);
         kids.add(child);
         child.setGroup(this);
+    }
+
+    public boolean isAbleToBeRemoved(){
+        return  kids == null || kids.size() == 0;
+    }
+
+    public boolean isAbleToBeUpdated(int newMaxSize) {
+        return kids == null || kids.size() <= newMaxSize;
     }
 }

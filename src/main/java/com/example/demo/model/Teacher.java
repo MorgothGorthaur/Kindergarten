@@ -42,16 +42,12 @@ public class Teacher {
     }
 
     public void removeGroup() {
-        if(group != null) {
-            if(group.getKids() != null && group.getKids().size() != 0) throw new GroupContainsKidsException();
-            group.setTeacher(null);
-        }
-        group = null;
+        if(group != null && group.isAbleToBeRemoved()) group = null;
+        else throw new GroupContainsKidsException();
     }
 
     public void addGroup(Group group) {
         if(this.group != null) throw new TeacherAlreadyContainsGroup(email);
         this.group = group;
-        group.setTeacher(this);
     }
 }
