@@ -21,6 +21,7 @@ function KidBrothersAndSisters({id, tokens, setTokens}) {
                 <tr>
                     <th>Name</th>
                     <th>Birth Year</th>
+                    <th>Group name </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -28,6 +29,7 @@ function KidBrothersAndSisters({id, tokens, setTokens}) {
                     <tr key={kid.id}>
                         <td>{kid.name}</td>
                         <td>{kid.birthYear}</td>
+                        <td>{kid.groupName}</td>
                     </tr>
                 ))}
                 </tbody>

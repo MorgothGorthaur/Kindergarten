@@ -45,8 +45,8 @@ public class ChildController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public List<ChildDto> getBrothersAndSisters(@PathVariable long id) {
-        return repository.findBrothersAndSisters(id).stream().map(mapper::toChildDto).toList();
+    public List<ChildWithGroupDto> getBrothersAndSisters(@PathVariable long id) {
+        return repository.findBrothersAndSisters(id).stream().map(mapper::toChildWithGroupDto).toList();
     }
 
     @PostMapping

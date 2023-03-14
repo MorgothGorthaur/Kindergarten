@@ -36,4 +36,8 @@ public class Mapper {
     public RelativeDto toRelativeDto(Relative relative) {
         return new RelativeDto(relative.getId(), relative.getName(), relative.getPhone(), relative.getAddress());
     }
+
+    public ChildWithGroupDto toChildWithGroupDto(Child child) {
+        return new ChildWithGroupDto(child.getName(), child.getBirthYear(), child.getGroup().getName());
+    }
 }
