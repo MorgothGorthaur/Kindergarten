@@ -18,4 +18,6 @@ public interface RelativeRepository extends JpaRepository<Relative, Long> {
     @Query("SELECT r FROM Relative r LEFT JOIN Child c WHERE r.name = ?1 AND r.address = ?2 AND r.phone = ?3")
     Optional<Relative> findEqualRelative(String name, String address, String phone);
 
+    @Query("SELECT r FROM Relative r LEFT JOIN Child c WHERE r.name = ?1 AND r.address = ?2 AND r.phone = ?3 AND r.id <> ?4")
+    Optional<Relative> findEqualRelativeWithAnotherId(String name, String address, String phone, long id);
 }
