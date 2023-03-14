@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.GroupDto;
+import com.example.demo.dto.GroupWithCurrentSizeDto;
 import com.example.demo.dto.GroupWithTeacherDto;
 import com.example.demo.dto.Mapper;
 import com.example.demo.exception.GroupNotFoundException;
@@ -27,8 +28,8 @@ public class GroupController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public GroupDto getGroup(Principal principal) {
-        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(mapper::toGroupDto).orElse(null);
+    public GroupWithCurrentSizeDto getGroup(Principal principal) {
+        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(mapper::toGroupWithCurrentSizeDto).orElse(null);
     }
 
     @PostMapping

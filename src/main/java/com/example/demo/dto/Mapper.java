@@ -40,4 +40,8 @@ public class Mapper {
     public ChildWithGroupDto toChildWithGroupDto(Child child) {
         return new ChildWithGroupDto(child.getName(), child.getBirthYear(), child.getGroup().getName());
     }
+
+    public GroupWithCurrentSizeDto toGroupWithCurrentSizeDto(Group group) {
+        return new GroupWithCurrentSizeDto(group.getName(), group.getMaxSize(), group.getKids().size());
+    }
 }
