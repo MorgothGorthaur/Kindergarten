@@ -23,7 +23,7 @@ const RelativeForm = ({tokens, setTokens, relatives, setRelatives, relative, set
             console.log(data);
             if (data.debugMessage) alert(data.debugMessage)
             else {
-                setRelatives([...relatives, data]);
+                setRelatives([...relatives.filter(k => k.id !== data.id), data]);
                 setShowForm(false);
             }
         })
@@ -46,7 +46,7 @@ const RelativeForm = ({tokens, setTokens, relatives, setRelatives, relative, set
             <Input type="text" placeholder="name" value={name} onChange={e => setName(e.target.value)}/>
             <Input type="text" placeholder="phone" value={phone} onChange={e => setPhone(e.target.value)}/>
             <Input type="text" placeholder="address" value={address} onChange={e => setAddress(e.target.value)}/>
-            <Button type="submit"> {relatives ? "update" : "add"} </Button>
+            <Button type="submit"> {relative ? "update" : "add"} </Button>
         </Form>
     );
 };
