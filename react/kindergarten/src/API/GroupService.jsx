@@ -1,25 +1,8 @@
 import LoginService from "./LoginService";
-
+import CallApi from './CallApi'
 export default class GroupService {
-    static async callApi(url, requestOptions, tokens, setTokens) {
-        try {
-            const response = await fetch(url, requestOptions);
-            const data = await response.json();
-            if (data.message === "authorization or authentication exception") {
-                const refresh = await LoginService.refresh(tokens);
-                if (refresh.hasError) {
-                    alert(data.debugMessage)
-                } else {
-                    setTokens(refresh, tokens.refresh_token);
-                    const secondResponse = await fetch(url, requestOptions);
-                    return await secondResponse.json();
-                }
-            }
-            return data;
-        } catch (e) {
-            console.log(e);
-        }
-    }
+
+
 
     static async getGroup(tokens, setTokens) {
         const requestOptions = {
@@ -29,7 +12,7 @@ export default class GroupService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await this.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
     }
 
     static async add(name, maxSize, tokens, setTokens) {
@@ -41,7 +24,7 @@ export default class GroupService {
             },
             body: JSON.stringify({name, maxSize})
         };
-        return await this.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
     }
 
     static async update(name, maxSize, tokens, setTokens) {
@@ -53,7 +36,7 @@ export default class GroupService {
             },
             body: JSON.stringify({name, maxSize})
         };
-        return await this.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
     }
 
     static async delete(tokens, setTokens) {
@@ -64,6 +47,6 @@ export default class GroupService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await this.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
     }
 }

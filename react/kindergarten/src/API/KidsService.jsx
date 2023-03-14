@@ -1,25 +1,6 @@
 import LoginService from "./LoginService";
-
+import CallApi from "./CallApi";
 export default class KidsService {
-    static async callApi(url, requestOptions, tokens, setTokens) {
-        try {
-            const response = await fetch(url, requestOptions);
-            const data = await response.json();
-            if (data.message === "authorization or authentication exception") {
-                const refresh = await LoginService.refresh(tokens);
-                if (refresh.hasError) {
-                    alert(data.debugMessage)
-                } else {
-                    setTokens(refresh, tokens.refresh_token);
-                    const secondResponse = await fetch(url, requestOptions);
-                    return await secondResponse.json();
-                }
-            }
-            return data;
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     static async getAll(tokens, setTokens) {
         const requestOptions = {
@@ -29,7 +10,7 @@ export default class KidsService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await this.callApi('http://localhost:8080/kindergarten/child', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/child', requestOptions, tokens, setTokens);
     }
     static async getKidsThatWaitBirth(tokens, setTokens) {
         const requestOptions = {
@@ -39,7 +20,7 @@ export default class KidsService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await this.callApi('http://localhost:8080/kindergarten/child/birth', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/child/birth', requestOptions, tokens, setTokens);
     }
     static async getKidsWithRelatives(tokens, setTokens) {
         const requestOptions = {
@@ -49,7 +30,7 @@ export default class KidsService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await this.callApi('http://localhost:8080/kindergarten/child/full', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/child/full', requestOptions, tokens, setTokens);
     }
     static async getBrothersAndSisters(id, tokens, setTokens) {
         const requestOptions = {
@@ -59,7 +40,7 @@ export default class KidsService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await this.callApi(`http://localhost:8080/kindergarten/child/${id}`, requestOptions, tokens, setTokens);
+        return await CallApi.callApi(`http://localhost:8080/kindergarten/child/${id}`, requestOptions, tokens, setTokens);
     }
     static async add(name, birthYear, tokens, setTokens) {
         const requestOptions = {
@@ -70,7 +51,7 @@ export default class KidsService {
             },
             body: JSON.stringify({ name, birthYear})
         };
-        return await this.callApi('http://localhost:8080/kindergarten/child', requestOptions, tokens, setTokens);
+        return await CallApi.callApi('http://localhost:8080/kindergarten/child', requestOptions, tokens, setTokens);
     }
 
     static async update(id, name, birthYear, tokens, setTokens) {
@@ -82,7 +63,7 @@ export default class KidsService {
             },
             body: JSON.stringify({id, name, birthYear})
         };
-        return await this.callApi(`http://localhost:8080/kindergarten/child`, requestOptions, tokens, setTokens);
+        return await CallApi.callApi(`http://localhost:8080/kindergarten/child`, requestOptions, tokens, setTokens);
     }
 
     static async delete(id, tokens, setTokens) {
@@ -93,6 +74,6 @@ export default class KidsService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await this.callApi(`http://localhost:8080/kindergarten/child/${id}`, requestOptions, tokens, setTokens);
+        return await CallApi.callApi(`http://localhost:8080/kindergarten/child/${id}`, requestOptions, tokens, setTokens);
     }
 }

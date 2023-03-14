@@ -1,4 +1,5 @@
 import LoginService from "./LoginService";
+import CallApi from "./CallApi";
 
 export default class TeacherService {
     static async getAll() {
@@ -53,19 +54,7 @@ export default class TeacherService {
                     'Authorization': 'Bearer ' + tokens.access_token
                 }
             };
-            const response = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-            const data = await response.json();
-            if (data.message === "authorization or authentication exception") {
-                const refresh = await LoginService.refresh(tokens);
-                if (refresh.hasError) {
-                    alert(data.debugMessage)
-                } else {
-                    setTokens(refresh, tokens.refresh_token);
-                    const secondResponse = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-                    return await secondResponse.json();
-                }
-            }
-            return data;
+            return await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
         } catch (e) {
             console.log(e);
         }
@@ -82,19 +71,7 @@ export default class TeacherService {
                 },
                 body: JSON.stringify({name, phone, skype, email, password})
             };
-            const response = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-            const data = await response.json();
-            if (data.message === "authorization or authentication exception") {
-                const refresh = await LoginService.refresh(tokens);
-                if (refresh.hasError) {
-                    alert(data.debugMessage)
-                } else {
-                    setTokens(refresh, tokens.refresh_token);
-                    const secondResponse = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-                    return await secondResponse.json();
-                }
-            }
-            return data;
+            return await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
         } catch (e) {
             console.log(e);
         }

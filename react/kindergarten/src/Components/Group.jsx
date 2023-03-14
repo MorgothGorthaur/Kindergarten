@@ -11,7 +11,7 @@ function Group({tokens, setTokens}) {
     const [showKids, setShowKids] = useState(false);
     useEffect(() => {
         if (!group) {
-            GroupService.getGroup(tokens).then(data => {
+            GroupService.getGroup(tokens, setTokens).then(data => {
                     console.log(data);
                     if (data.debugMessage) alert(data.debugMessage)
                     else setGroup(data);

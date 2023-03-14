@@ -12,20 +12,22 @@ function Home() {
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [teacher, setTeacher] = useState("");
     const [showGroup, setShowGroup] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
     const handleLogin = (data) => {
         setTokens(data);
         setShowLoginForm(false);
+        setIsLogin(true);
     };
 
     useEffect(() => {
-        if (tokens) {
+        if (isLogin) {
             TeacherService.getTeacher(tokens.access_token).then((data) => {
                 if (!data.hasError) {
                     setTeacher(data);
                 }
             });
         }
-    }, [tokens]);
+    }, [isLogin]);
 
 
     const handleDelete = () => {
