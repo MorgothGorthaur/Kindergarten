@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.exception.ToBigChildrenInGroupException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class Group {
 
     public void addChild(Child child) {
         if(this.kids == null) kids = new HashSet<>();
+        if(kids.size() == maxSize) throw new ToBigChildrenInGroupException(maxSize);
         kids.add(child);
         child.setGroup(this);
     }
