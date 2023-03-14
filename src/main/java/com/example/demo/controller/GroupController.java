@@ -6,6 +6,7 @@ import com.example.demo.dto.Mapper;
 import com.example.demo.exception.GroupNotFoundException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.exception.ToBigChildrenInGroupException;
+import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
 import jakarta.validation.Valid;
@@ -42,7 +43,8 @@ public class GroupController {
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
-        var group = repository.findGroupWithKidsAndTeacherByEmail(principal.getName())
+        var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
+                .map(Teacher::getGroup)
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         if(!group.isAbleToBeUpdated(dto.maxSize())) throw new ToBigChildrenInGroupException(dto.maxSize());
         group.setName(dto.name());
@@ -53,7 +55,8 @@ public class GroupController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void remove(Principal principal) {
-        var group = repository.findGroupWithKidsAndTeacherByEmail(principal.getName())
+        var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
+                .map(Teacher::getGroup)
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         group.getTeacher().removeGroup();
         repository.delete(group);

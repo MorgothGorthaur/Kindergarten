@@ -3,8 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.dto.*;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.GroupNotFoundException;
+import com.example.demo.model.Teacher;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.GroupRepository;
+import com.example.demo.repository.TeacherRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,8 +21,7 @@ import java.util.List;
 public class ChildController {
     private final ChildRepository repository;
     private final Mapper mapper;
-
-    private final GroupRepository groupRepository;
+    private final TeacherRepository teacherRepository;
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -52,7 +53,8 @@ public class ChildController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ChildDto add(Principal principal, @RequestBody @Valid ChildDto dto) {
-        var group = groupRepository.findGroupWithKidsAndTeacherByEmail(principal.getName())
+        var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
+                .map(Teacher::getGroup)
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         var child = dto.toChild();
         group.addChild(child);
