@@ -17,14 +17,6 @@ public class Mapper {
         return new TeacherWithGroupDto(teacher.getName(), teacher.getPhone(), teacher.getSkype(), group != null ? group.getName() : "without group");
     }
 
-    public GroupWithTeacherDto toGroupWithTeacherDto(Group group) {
-        return new GroupWithTeacherDto(group.getName(), group.getMaxSize(),toTeacherDto(group.getTeacher()));
-    }
-
-    public GroupDto toGroupDto(Group group) {
-        return new GroupDto(group.getName(), group.getMaxSize());
-    }
-
     public ChildDto toChildDto(Child child) {
         return new ChildDto(child.getId(), child.getName(), child.getBirthYear());
     }
