@@ -6,12 +6,10 @@ import KidBrothersAndSisters from "./KidBrothersAndSisters";
 import Relatives from "./Relatives";
 import KidListItem from "./KidListItem";
 
-function AllKids({tokens, setTokens}) {
+function AllKids({tokens, setTokens, group, setGroup}) {
     const [kids, setKids] = useState([]);
     const [addChildForm, setAddChildForm] = useState(false);
 
-    const [selectedKid, setSelectedKid] = useState(null);
-    const [relatives, setRelatives] = useState(false);
     useEffect(() => {
         async function fetchData() {
             const data = await KidsService.getAll(tokens, setTokens);
@@ -22,13 +20,6 @@ function AllKids({tokens, setTokens}) {
     }, []);
 
 
-
-
-    function handleRelative(kid) {
-        setSelectedKid(kid)
-        setRelatives(true)
-    }
-
     return (
         <div>
             {kids.length === 0 ? (
@@ -38,7 +29,7 @@ function AllKids({tokens, setTokens}) {
                     <h3>All kids</h3>
                     <ul className="kids-list">
                         {kids.map((kid) => (
-                            <KidListItem kid={kid} tokens={tokens} setTokens={setTokens} kids={kids} setKids={setKids} />
+                            <KidListItem kid={kid} tokens={tokens} setTokens={setTokens} kids={kids} setKids={setKids} group={group} setGroup={setGroup} />
                         ))}
                     </ul>
                 </div>
@@ -48,7 +39,7 @@ function AllKids({tokens, setTokens}) {
                     Child</Button>
                 <Modal show={addChildForm} onHide={setAddChildForm}>
                     <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens}
-                               setShowForm={setAddChildForm}/>
+                               setShowForm={setAddChildForm} group={group} setGroup={setGroup}/>
                 </Modal>
             </div>
         </div>

@@ -35,7 +35,8 @@ function Group({tokens, setTokens}) {
                 <div>
                     <div className="elem-info">
                         <h3>Group name : {group.name}</h3>
-                        <h3>Max size: {group.maxSize}</h3>
+                        <h3>Max. size: {group.maxSize}</h3>
+                        <h3>Curr. size: {group.currentSize}</h3>
                     </div>
                     <div className="elem-actions">
                         <Button variant="primary" onClick={() => setShowUpdateForm(true)}>update</Button>
@@ -51,7 +52,7 @@ function Group({tokens, setTokens}) {
                             showKids ?
                                 <div>
                                     <Button variant="dark" onClick={() => setShowKids(false)}> close </Button>
-                                    <KidsMenu tokens={tokens} setTokens={setTokens} />
+                                    <KidsMenu tokens={tokens} setTokens={setTokens} group={group} setGroup={setGroup} />
                                 </div>
                                 :
                                 <Button variant="secondary" onClick={() => setShowKids(true)}> getKidsMenu </Button>

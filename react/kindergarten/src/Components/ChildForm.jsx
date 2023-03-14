@@ -3,7 +3,7 @@ import {useState, useEffect} from "react";
  import Input from "../UI/Input/Input";
  import KidsService from "../API/KidsService";
 
- const ChildForm = ({child, kids, setKids, tokens, setTokens, setShowForm}) => {
+ const ChildForm = ({child, kids, setKids, tokens, setTokens, setShowForm, group, setGroup}) => {
  const [id, setId] = useState('');
  const [name, setName] = useState('');
  const [birthYear, setBirthYear] = useState('');
@@ -22,6 +22,7 @@ import {useState, useEffect} from "react";
          if(data.debugMessage) alert(data.debugMessage)
          else {
              setKids([...kids, data]);
+             setGroup({ ...group, currentSize: group.currentSize + 1 });
              setShowForm(false);
          }
      })

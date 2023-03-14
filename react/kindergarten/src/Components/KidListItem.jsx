@@ -5,7 +5,7 @@ import ChildForm from "./ChildForm";
 import {useState} from "react";
 import Relatives from "./Relatives";
 
-function KidListItem({kid, tokens, setTokens, kids, setKids}) {
+function KidListItem({kid, tokens, setTokens, kids, setKids, group, setGroup}) {
     const [updateChildForm, setUpdateChildForm] = useState(false);
     const [brothersAndSisters, setBrothersAndSisters] = useState(false);
     const [relatives, setRelatives] = useState(false);
@@ -14,6 +14,7 @@ function KidListItem({kid, tokens, setTokens, kids, setKids}) {
             console.log(data);
             if (!data) {
                 setKids([...kids.filter((k) => k.id !== kid.id)]);
+                setGroup({ ...group, currentSize: group.currentSize - 1 });
             } else alert(data.debugMessage);
         });
     };
