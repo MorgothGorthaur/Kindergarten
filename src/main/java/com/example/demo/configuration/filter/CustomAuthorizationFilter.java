@@ -25,11 +25,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !request.getServletPath().equals("/kindergarten/refresh")) verifyTokens(request, response, filterChain, authorizationHeader);
-        else filterChain.doFilter(request, response);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !request.getServletPath().equals("/kindergarten/refresh")) verifyTokens(authorizationHeader);
+        filterChain.doFilter(request, response);
     }
 
-    private void verifyTokens(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain, String authorizationHeader) {
+    private void verifyTokens(String authorizationHeader) {
         try {
             var token = authorizationHeader.substring("Bearer ".length());
             var algorithm = Algorithm.HMAC256("secret".getBytes());
@@ -41,8 +41,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
             var authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request, response);
-
         } catch (Exception ex) {
             throw new BadTokenException();
         }
