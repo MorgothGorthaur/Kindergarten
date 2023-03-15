@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ApiError;
 import com.example.demo.exception.*;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -40,7 +41,9 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleInvalidArgument(MethodArgumentNotValidException ex) {
-        ApiError apiError = new ApiError("validation error", List.of(ex.getMessage()));
+        var errors = ex.getBindingResult().getAllErrors().stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+        ApiError apiError = new ApiError("validation error", errors);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
