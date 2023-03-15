@@ -18,6 +18,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/kindergarten/group")
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupRepository repository;
@@ -25,13 +26,11 @@ public class GroupController {
     private final Mapper mapper;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
     public GroupWithCurrentSizeDto getGroup(Principal principal) {
         return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(mapper::toGroupWithCurrentSizeDto).orElse(null);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void add(Principal principal, @RequestBody @Valid GroupDto dto) {
         var teacher = teacherRepository.findTeacherByEmail(principal.getName())
                 .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
@@ -40,7 +39,6 @@ public class GroupController {
     }
 
     @PatchMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
         var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
                 .map(Teacher::getGroup)
@@ -52,7 +50,6 @@ public class GroupController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void remove(Principal principal) {
         var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
                 .map(Teacher::getGroup)

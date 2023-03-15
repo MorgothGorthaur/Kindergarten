@@ -27,10 +27,8 @@ const GroupForm = ({group, setGroup, tokens, setTokens, setShowForm}) => {
         })
     }
     const validation = (data) => {
-        console.log(data)
         if(!data) {
-            setGroup({ name: name, maxSize: maxSize, currentSize: group.currentSize });
-            console.log(group);
+            setGroup({ name: name, maxSize: maxSize, currentSize: group ? group.currentSize : 0});
             setShowForm(false);
         }
         else {

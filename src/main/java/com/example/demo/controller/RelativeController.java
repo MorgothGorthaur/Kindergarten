@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/kindergarten/relative")
+@PreAuthorize("hasRole('ROLE_USER')")
 @RequiredArgsConstructor
 public class RelativeController {
     private final RelativeRepository repository;
@@ -23,14 +24,12 @@ public class RelativeController {
     private final Mapper mapper;
 
     @GetMapping("/{childId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public List<RelativeDto> getAll(Principal principal, @PathVariable long childId) {
         return repository.findRelativesByChildIdAndTeacherEmail(childId, principal.getName())
                 .stream().map(mapper::toRelativeDto).toList();
     }
 
     @PostMapping("/{childId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
@@ -40,7 +39,6 @@ public class RelativeController {
     }
 
     @DeleteMapping("/{childId}/{relativeId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void delete(Principal principal, @PathVariable long childId, @PathVariable long relativeId) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
@@ -52,7 +50,6 @@ public class RelativeController {
 
 
     @PatchMapping("/{childId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
         var relative = repository.findRelativeByIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
                 .orElseThrow(RelativeNotFoundException::new);

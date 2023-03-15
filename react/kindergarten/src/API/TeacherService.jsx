@@ -54,11 +54,12 @@ export default class TeacherService {
                     'Authorization': 'Bearer ' + tokens.access_token
                 }
             };
-            await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
+            const data = await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
+            if(data) alert(data.debugMessage)
+            else window.location.reload(false);
         } catch (e) {
             console.log(e);
         }
-        window.location.reload(false);
     };
 
     static async change(name, phone, skype, email, password, tokens, setTokens) {
