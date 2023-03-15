@@ -42,7 +42,7 @@ public class Teacher {
     }
 
     public void removeGroup() {
-        if(group != null && group.isAbleToBeRemoved()) group = null;
+        if(group == null || group.isAbleToBeRemoved()) group = null;
         else throw new GroupContainsKidsException();
     }
 
