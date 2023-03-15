@@ -25,7 +25,8 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ChildMustHaveRelativeException.class, GroupContainsKidsException.class, TeacherAlreadyContainsGroup.class, TeacherAlreadyExist.class})
+    @ExceptionHandler({ChildMustHaveRelativeException.class, GroupContainsKidsException.class,
+            TeacherAlreadyContainsGroup.class, TeacherAlreadyExist.class, ToBigChildrenInGroupException.class})
     protected ResponseEntity<Object> handleDataNotAcceptableEx(RuntimeException ex) {
         ApiError apiError = new ApiError("This data is not acceptable!", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);
@@ -39,9 +40,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleInvalidArgument(MethodArgumentNotValidException ex) {
-        var errors = ex.getBindingResult().getAllErrors().stream()
-                .map(error -> error.getDefaultMessage()).toList();
-        ApiError apiError = new ApiError("validation error", errors);
+        ApiError apiError = new ApiError("validation error", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
