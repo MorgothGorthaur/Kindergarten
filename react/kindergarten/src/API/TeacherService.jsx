@@ -54,7 +54,7 @@ export default class TeacherService {
                     'Authorization': 'Bearer ' + tokens.access_token
                 }
             };
-            return await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
+            await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
         } catch (e) {
             console.log(e);
         }
@@ -71,7 +71,7 @@ export default class TeacherService {
                 },
                 body: JSON.stringify({name, phone, skype, email, password})
             };
-            return await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
+          await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
         } catch (e) {
             console.log(e);
         }

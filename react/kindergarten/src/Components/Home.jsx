@@ -31,10 +31,7 @@ function Home() {
 
 
     const handleDelete = () => {
-        TeacherService.delete(tokens, setTokens).then(data => {
-            console.log(data);
-            if(data.debugMessage) alert(data.debugMessage);
-        });
+        TeacherService.delete(tokens, setTokens);
     };
 
     return (
