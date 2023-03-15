@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
                 .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new CustomAuthorizationFilter(), CustomAuthenticationFilter.class)
+                .addFilterBefore(new CustomAuthorizationFilter(SECRET_KEY), CustomAuthenticationFilter.class)
                 .addFilterBefore(new RefreshTokensFilter(tokensGenerator, SECRET_KEY, REFRESH_URL, teacherRepository), CustomAuthorizationFilter.class)
                 .addFilterBefore(new ExceptionHandlerFilter(), RefreshTokensFilter.class);
         return http.build();

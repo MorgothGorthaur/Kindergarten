@@ -18,9 +18,10 @@ import java.util.ArrayList;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
+@AllArgsConstructor
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
+    private String SECRET_KEY;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -32,7 +33,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     private void verifyTokens(String authorizationHeader) {
         try {
             var token = authorizationHeader.substring("Bearer ".length());
-            var algorithm = Algorithm.HMAC256("secret".getBytes());
+            var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(token);
             var username = decoderJWT.getSubject();
