@@ -3,9 +3,7 @@ package com.example.demo.configuration.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.enums.AuthorizationType;
-import com.example.demo.enums.Keys;
 import com.example.demo.enums.Token;
-import com.example.demo.enums.Urls;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.UserDetailsImpl;
@@ -24,18 +22,20 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class RefreshTokensFilter extends OncePerRequestFilter {
     private final TokensGenerator tokensGenerator;
-
     private final TeacherRepository teacherRepository;
+    private final String secretKey;
+
+    private final String refreshUrl;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith(AuthorizationType.BEARER.getPrefix()) && request.getServletPath().equals(Urls.REFRESH.getUrl())) regenerateToken(request, response, authorizationHeader);
+        if (authorizationHeader != null && authorizationHeader.startsWith(AuthorizationType.BEARER.getPrefix()) && request.getServletPath().equals(refreshUrl)) regenerateToken(request, response, authorizationHeader);
         else filterChain.doFilter(request,response);
     }
     private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) {
         try {
             var refresh_token = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
-            var algorithm = Algorithm.HMAC256(Keys.SECRET_KEY.getValue().getBytes());
+            var algorithm = Algorithm.HMAC256(secretKey.getBytes());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refresh_token);
             var username = decoderJWT.getSubject();

@@ -4,10 +4,10 @@ import com.example.demo.configuration.filter.CustomAuthenticationFilter;
 import com.example.demo.configuration.filter.CustomAuthorizationFilter;
 import com.example.demo.configuration.filter.ExceptionHandlerFilter;
 import com.example.demo.configuration.filter.RefreshTokensFilter;
-import com.example.demo.enums.Urls;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.TokensGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -38,18 +38,26 @@ public class SecurityConfig {
 
     private final TeacherRepository teacherRepository;
 
+    @Value("${project.login.url}")
+    private String LOGIN_URL;
+
+    @Value("${project.refresh.url}")
+    private String REFRESH_URL;
+
+    @Value("${jwt.secret.key}")
+    private String SECRET_KEY;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), tokensGenerator);
-        customAuthenticationFilter.setFilterProcessesUrl(Urls.LOGIN.getUrl());
+        customAuthenticationFilter.setFilterProcessesUrl(LOGIN_URL);
         http
                 .cors(withDefaults())
                 .csrf().disable()
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
                 .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new CustomAuthorizationFilter(), CustomAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokensFilter(tokensGenerator, teacherRepository), CustomAuthorizationFilter.class)
+                .addFilterBefore(new CustomAuthorizationFilter(SECRET_KEY), CustomAuthenticationFilter.class)
+                .addFilterBefore(new RefreshTokensFilter(tokensGenerator, teacherRepository, SECRET_KEY, REFRESH_URL), CustomAuthorizationFilter.class)
                 .addFilterBefore(new ExceptionHandlerFilter(), RefreshTokensFilter.class);
         return http.build();
     }

@@ -4,12 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.enums.AuthorizationType;
 import com.example.demo.enums.Claim;
-import com.example.demo.enums.Keys;
 import com.example.demo.exception.BadTokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,11 +20,10 @@ import java.util.ArrayList;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
+@RequiredArgsConstructor
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
-
-
+    private final String secretKey;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -35,7 +34,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     private void verifyTokens(String authorizationHeader) {
         try {
             var token = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
-            var algorithm = Algorithm.HMAC256(Keys.SECRET_KEY.getValue().getBytes());
+            var algorithm = Algorithm.HMAC256(secretKey.getBytes());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(token);
             var username = decoderJWT.getSubject();
