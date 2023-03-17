@@ -1,7 +1,7 @@
 package com.example.demo.configuration.filter;
 
-import com.example.demo.configuration.filter.enums.ContentType;
-import com.example.demo.configuration.filter.enums.RequestParameter;
+import com.example.demo.enums.ContentType;
+import com.example.demo.enums.RequestParameter;
 import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.model.UserDetailsImpl;
 import com.example.demo.service.TokensGenerator;

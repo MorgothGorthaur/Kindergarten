@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.enums.Role;
 import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyContainsGroup;
 import jakarta.persistence.*;

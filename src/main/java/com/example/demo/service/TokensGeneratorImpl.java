@@ -2,11 +2,10 @@ package com.example.demo.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.configuration.filter.enums.Keys;
-import com.example.demo.configuration.filter.enums.TokenTime;
+import com.example.demo.enums.Keys;
+import com.example.demo.enums.TokenTime;
 import com.example.demo.model.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 

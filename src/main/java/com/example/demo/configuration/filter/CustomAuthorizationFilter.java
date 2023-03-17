@@ -2,15 +2,14 @@ package com.example.demo.configuration.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.configuration.filter.enums.AuthorizationType;
-import com.example.demo.configuration.filter.enums.Claim;
-import com.example.demo.configuration.filter.enums.Keys;
+import com.example.demo.enums.AuthorizationType;
+import com.example.demo.enums.Claim;
+import com.example.demo.enums.Keys;
 import com.example.demo.exception.BadTokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,4 +1,4 @@
-package com.example.demo.configuration.filter.enums;
+package com.example.demo.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

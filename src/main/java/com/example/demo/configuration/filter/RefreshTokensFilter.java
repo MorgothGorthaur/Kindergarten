@@ -2,10 +2,10 @@ package com.example.demo.configuration.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.configuration.filter.enums.AuthorizationType;
-import com.example.demo.configuration.filter.enums.Keys;
-import com.example.demo.configuration.filter.enums.Token;
-import com.example.demo.configuration.filter.enums.Urls;
+import com.example.demo.enums.AuthorizationType;
+import com.example.demo.enums.Keys;
+import com.example.demo.enums.Token;
+import com.example.demo.enums.Urls;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.UserDetailsImpl;
