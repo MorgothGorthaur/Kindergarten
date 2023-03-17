@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import TeacherService from '../API/TeacherService';
-
+import Loader from "../UI/Loader/Loader";
 function Teachers() {
     const [teachers, setTeachers] = useState([]);
-
+    const [loader, setLoader] = useState(true);
     useEffect(() => {
         async function fetchData() {
             const data = await TeacherService.getAll();
             setTeachers(data);
+            setLoader(false)
         }
         fetchData();
     }, []);
@@ -16,7 +17,7 @@ function Teachers() {
         <div>
             <h2>Teachers</h2>
             <p>This is a table with all of the teachers</p>
-            {teachers ? (
+            {teachers && teachers.length !== 0 ? (
                 <table>
                     <thead>
                     <tr>
@@ -37,7 +38,11 @@ function Teachers() {
                     ))}
                     </tbody>
                 </table>
-            ) : (
+            ) : loader ? (
+                <div style={{ textAlign: 'center', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Loader />
+                </div>
+            ) :(
                 <p>Teachers not found</p>
             )}
         </div>

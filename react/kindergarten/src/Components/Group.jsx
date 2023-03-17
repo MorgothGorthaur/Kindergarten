@@ -3,20 +3,21 @@ import GroupService from "../API/GroupService";
 import {Button, Modal} from "react-bootstrap";
 import GroupForm from "./GroupForm";
 import KidsMenu from "./KidsMenu";
+import Loader from "../UI/Loader/Loader";
+import React from "react";
 
 function Group({tokens, setTokens}) {
     const [group, setGroup] = useState()
     const [showAddForm, setShowAddForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [showKids, setShowKids] = useState(false);
+    const [loader, setLoader] = useState(true);
     useEffect(() => {
         if (!group) {
             GroupService.getGroup(tokens, setTokens).then(data => {
                     console.log(data);
-                    if (data.debugMessage) alert(data.debugMessage)
-                    else setGroup(data);
-
-
+                    setGroup(data);
+                    setLoader(false);
                 }
             )
         }
@@ -52,7 +53,7 @@ function Group({tokens, setTokens}) {
                             showKids ?
                                 <div>
                                     <Button variant="dark" onClick={() => setShowKids(false)}> close </Button>
-                                    <KidsMenu tokens={tokens} setTokens={setTokens} group={group} setGroup={setGroup} />
+                                    <KidsMenu tokens={tokens} setTokens={setTokens} group={group} setGroup={setGroup}/>
                                 </div>
                                 :
                                 <Button variant="secondary" onClick={() => setShowKids(true)}> getKidsMenu </Button>
@@ -60,6 +61,16 @@ function Group({tokens, setTokens}) {
                     </div>
                 </div>
 
+            ) : loader ? (
+                <div style={{
+                    textAlign: 'center',
+                    height: '100vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    <Loader/>
+                </div>
             ) : (
                 <div>
                     <Button onClick={() => setShowAddForm(true)}>Add group</Button>

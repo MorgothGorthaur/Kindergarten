@@ -5,6 +5,8 @@ import LoginService from "../API/LoginService";
 import {Modal, Button} from "react-bootstrap";
 import TeacherForm from "./TeacherForm";
 import Group from "./Group";
+import Loader from "../UI/Loader/Loader";
+import React from "react";
 
 function Home() {
     const [tokens, setTokens] = useState(null);
@@ -63,7 +65,9 @@ function Home() {
                     </div>
                 </div>
             ) : tokens ? (
-                <th>Loading teacher data...</th>
+                <div style={{ textAlign: 'center', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Loader />
+                </div>
             ) : (
                 <Modal show={showLoginForm} onHide={setShowLoginForm}>
                     <Login setTokens={handleLogin} setModal={setShowLoginForm}/>
