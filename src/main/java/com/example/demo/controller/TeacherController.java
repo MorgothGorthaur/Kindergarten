@@ -4,10 +4,12 @@ import com.example.demo.dto.Mapper;
 import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
+import com.example.demo.enums.Role;
 import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyExist;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,10 +29,13 @@ public class TeacherController {
 
     @PostMapping
     public void add(@RequestBody @Valid TeacherFullDto dto) {
-        var teacher = dto.toTeacher();
-        teacher.setPassword(encoder.encode(teacher.getPassword()));
-        if(repository.findTeacherByEmail(teacher.getEmail()).isEmpty()) repository.save(teacher);
-        else throw new TeacherAlreadyExist(teacher.getEmail());
+        try{
+            var teacher = dto.toTeacher();
+            teacher.setPassword(encoder.encode(teacher.getPassword()));
+            repository.save(teacher);
+        } catch (Exception ex) {
+            throw new TeacherAlreadyExist(dto.email());
+        }
     }
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {
@@ -46,25 +51,15 @@ public class TeacherController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
+    @Transactional
     public void update(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
-        var teacher = repository.findTeacherByEmail(principal.getName())
-                .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        if(repository.findTeachersWithSameEmailAndAnotherId(teacher.getId(), dto.email()).isEmpty()) {
-            teacher.setName(dto.name());
-            teacher.setSkype(dto.skype());
-            teacher.setEmail(dto.email());
-            teacher.setPassword(encoder.encode(dto.password()));
-            teacher.setPhone(dto.phone());
-            repository.save(teacher);
-        } else throw new TeacherAlreadyExist(dto.email());
+        if(repository.updateTeacherByEmail(principal.getName(), dto.email(), dto.name(), dto.skype(), dto.phone(), encoder.encode(dto.password())) == 0) throw new TeacherAlreadyExist(principal.getName());
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
+    @Transactional
     public void remove(Principal principal) {
-        var teacher = repository.findTeacherWithGroupAndKidsByEmail(principal.getName())
-                .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        teacher.removeGroup();
-        repository.delete(teacher);
+        if(repository.deleteTeacherWithGroupByEmail(principal.getName())==0) throw new GroupContainsKidsException();
     }
 }
