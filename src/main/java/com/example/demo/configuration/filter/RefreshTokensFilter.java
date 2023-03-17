@@ -2,6 +2,8 @@ package com.example.demo.configuration.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.configuration.filter.enums.AuthorizationType;
+import com.example.demo.configuration.filter.enums.Token;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.UserDetailsImpl;
@@ -13,12 +15,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
@@ -31,12 +29,12 @@ public class RefreshTokensFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && request.getServletPath().equals(REFRESH_URL)) regenerateToken(request, response, authorizationHeader);
+        if (authorizationHeader != null && authorizationHeader.startsWith(AuthorizationType.BEARER.getPrefix()) && request.getServletPath().equals(REFRESH_URL)) regenerateToken(request, response, authorizationHeader);
         else filterChain.doFilter(request,response);
     }
     private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) {
         try {
-            var refresh_token = authorizationHeader.substring("Bearer ".length());
+            var refresh_token = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
             var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refresh_token);
@@ -44,7 +42,7 @@ public class RefreshTokensFilter extends OncePerRequestFilter {
             var user = new UserDetailsImpl(teacherRepository.findTeacherByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
             var tokens = tokensGenerator.generateTokens(request, user);
-            tokens.remove("refresh_token");
+            tokens.remove(Token.REFRESH_TOKEN.getTokenType());
             response.setContentType(APPLICATION_JSON_VALUE);
             new ObjectMapper().writeValue(response.getOutputStream(), tokens);
         } catch (Exception ex) {
