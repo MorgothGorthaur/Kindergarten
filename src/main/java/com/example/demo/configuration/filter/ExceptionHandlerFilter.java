@@ -1,21 +1,16 @@
 package com.example.demo.configuration.filter;
 
-import com.example.demo.controller.RestExceptionHandler;
 import com.example.demo.dto.ApiError;
 import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.exception.BadTokenException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
