@@ -1,12 +1,14 @@
 package com.example.demo.service;
 
-import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.model.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.time.Instant;
 import java.util.Map;
 
-public interface TokensGenerator {
+public interface TokensService {
     Map<String, String> generateTokens(HttpServletRequest request, UserDetailsImpl user);
+
+    void verifyTokens(String authorizationHeader);
+
+    Map<String, String> verifyAndRegenerateAccessToken(String authorizationHeader, HttpServletRequest request);
 }

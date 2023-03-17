@@ -4,7 +4,7 @@ import com.example.demo.enums.ContentType;
 import com.example.demo.enums.RequestParameter;
 import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.model.UserDetailsImpl;
-import com.example.demo.service.TokensGenerator;
+import com.example.demo.service.TokensService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
    private final AuthenticationManager authenticationManager;
-   private final TokensGenerator tokensGenerator;
+   private final TokensService tokensService;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -43,7 +43,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException{
         var user = (UserDetailsImpl) authResult.getPrincipal();
-        var tokens = tokensGenerator.generateTokens(request, user);
+        var tokens = tokensService.generateTokens(request, user);
         response.setContentType(ContentType.JSON.getContentType());
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
