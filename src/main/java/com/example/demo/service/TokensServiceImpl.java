@@ -29,19 +29,21 @@ import static java.util.Arrays.stream;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Component
-@RequiredArgsConstructor
 public class TokensServiceImpl implements TokensService {
 
-    @Value("${jwt.secret.key}")
-    private String SECRET_KEY;
-
+    private final Algorithm algorithm;
+    private final TeacherRepository repository;
     @Value("${jwt.access_token.time}")
     private long ACCESS_TOKEN_TIME;
 
     @Value("${jwt.refresh_token.time}")
     private long REFRESH_TOKEN_TIME;
 
-    private final TeacherRepository repository;
+    public TokensServiceImpl(TeacherRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
+        this.repository = repository;
+        this.algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
+    }
+
     @Override
     public Map<String, String> generateTokens(HttpServletRequest request, UserDetailsImpl user) {
         var tokens = new HashMap<String, String>();
@@ -54,7 +56,6 @@ public class TokensServiceImpl implements TokensService {
     public void verifyTokens(String authorizationHeader) {
         try {
             var accessToken = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
-            var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(accessToken);
             var username = decoderJWT.getSubject();
@@ -72,7 +73,6 @@ public class TokensServiceImpl implements TokensService {
     public Map<String, String> verifyAndRegenerateAccessToken(String authorizationHeader, HttpServletRequest request) {
         try {
             var refreshToken = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
-            var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
             var username = decoderJWT.getSubject();
@@ -88,7 +88,6 @@ public class TokensServiceImpl implements TokensService {
 
     private String generateRefreshToken(HttpServletRequest request, UserDetailsImpl user) {
         var instant = Instant.now();
-        var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(REFRESH_TOKEN_TIME, ChronoUnit.MINUTES))
                 .withIssuer(request.getRequestURL().toString()).sign(algorithm);
@@ -96,7 +95,6 @@ public class TokensServiceImpl implements TokensService {
 
     private String generateAccessToken(HttpServletRequest request, UserDetailsImpl user) {
         var instant = Instant.now();
-        var algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(ACCESS_TOKEN_TIME, ChronoUnit.MINUTES))
                 .withIssuer(request.getRequestURL().toString())
