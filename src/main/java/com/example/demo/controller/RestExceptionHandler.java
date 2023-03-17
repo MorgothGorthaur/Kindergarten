@@ -33,12 +33,6 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @ExceptionHandler({BadPasswordOrEmailException.class, BadTokenException.class})
-    protected ResponseEntity<Object> handleSecurityException(RuntimeException ex) {
-        var apiError = new ApiError("authorization or authentication exception", List.of(ex.getMessage()));
-        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleInvalidArgument(MethodArgumentNotValidException ex) {
         var errors = ex.getBindingResult().getAllErrors().stream()
