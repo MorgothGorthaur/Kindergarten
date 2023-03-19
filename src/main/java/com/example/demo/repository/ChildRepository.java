@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Child;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,10 +34,12 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     Optional<Child> findChildWithRelativesByIdAndTeacherEmail(long childId, String teacherEmail);
 
     @Modifying
+    @Transactional
     @Query("UPDATE Child c SET c.name = ?3, c.birthYear = ?4 WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
     int updateChild(String email, long id, String name, LocalDate birthYear);
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM Child c WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
     int deleteChild(String email, long id);
 }
