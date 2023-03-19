@@ -42,12 +42,4 @@ public class Group {
         kids.add(child);
         child.setGroup(this);
     }
-
-    public boolean isAbleToBeRemoved(){
-        return  kids == null || kids.size() == 0;
-    }
-
-    public boolean isAbleToBeUpdated(int newMaxSize) {
-        return kids == null || kids.size() <= newMaxSize;
-    }
 }

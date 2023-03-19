@@ -41,12 +41,6 @@ public class Teacher {
         this.password = password;
         this.role = Role.ROLE_USER;
     }
-
-    public void removeGroup() {
-        if(group == null || group.isAbleToBeRemoved()) group = null;
-        else throw new GroupContainsKidsException();
-    }
-
     public void addGroup(Group group) {
         if(this.group != null) throw new TeacherAlreadyContainsGroup(email);
         this.group = group;

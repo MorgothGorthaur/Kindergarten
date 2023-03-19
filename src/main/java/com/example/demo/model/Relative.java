@@ -36,9 +36,4 @@ public class Relative {
         this.phone = phone;
         this.address = address;
     }
-
-    public void addChild(Child child) {
-        if(kids == null) kids = new HashSet<>();
-        kids.add(child);
-    }
 }
