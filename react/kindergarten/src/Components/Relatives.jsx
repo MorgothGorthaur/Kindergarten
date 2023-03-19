@@ -11,15 +11,17 @@ function Relatives({tokens, setTokens, kidId}) {
     const [showForm, setShowForm] = useState(false);
     const [loader, setLoader] = useState(true);
     useEffect(() => {
-        async function fetchRelatives() {
-            RelativesService.get(tokens, setTokens, kidId).then((data) => {
-                setRelatives(data);
-                setLoader(false);
-            });
-        }
+        if(loader) {
+            async function fetchRelatives() {
+                RelativesService.get(tokens, setTokens, kidId).then((data) => {
+                    setRelatives(data);
+                    setLoader(false);
+                });
+            }
 
-        fetchRelatives();
-    }, []);
+            fetchRelatives();
+        }
+    }, [loader]);
 
     return (
         <div>

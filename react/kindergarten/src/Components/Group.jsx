@@ -13,7 +13,7 @@ function Group({tokens, setTokens}) {
     const [showKids, setShowKids] = useState(false);
     const [loader, setLoader] = useState(true);
     useEffect(() => {
-        if (!group) {
+        if (loader) {
             GroupService.getGroup(tokens, setTokens).then(data => {
                     console.log(data);
                     setGroup(data);
@@ -21,7 +21,7 @@ function Group({tokens, setTokens}) {
                 }
             )
         }
-    }, [group]);
+    }, [loader]);
     const handleDelete = () => {
         GroupService.delete(tokens, setTokens).then(data => {
             console.log(data);

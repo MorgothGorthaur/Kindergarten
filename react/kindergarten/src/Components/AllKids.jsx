@@ -13,14 +13,16 @@ function AllKids({tokens, setTokens, group, setGroup}) {
     const [addChildForm, setAddChildForm] = useState(false);
     const [loader, setLoader] = useState(true);
     useEffect(() => {
-        async function fetchData() {
-            const data = await KidsService.getAll(tokens, setTokens);
-            setKids(data);
-            setLoader(false);
-        }
+        if(loader) {
+            async function fetchData() {
+                const data = await KidsService.getAll(tokens, setTokens);
+                setKids(data);
+                setLoader(false);
+            }
 
-        fetchData();
-    }, []);
+            fetchData();
+        }
+    }, [loader]);
 
 
     return (
