@@ -51,14 +51,12 @@ public class TeacherController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Transactional
     public void update(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
         if(repository.updateTeacherByEmail(principal.getName(), dto.email(), dto.name(), dto.skype(), dto.phone(), encoder.encode(dto.password())) == 0) throw new TeacherAlreadyExist(principal.getName());
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Transactional
     public void remove(Principal principal) {
         if(repository.deleteTeacherWithGroupByEmail(principal.getName())==0) throw new GroupContainsKidsException();
     }

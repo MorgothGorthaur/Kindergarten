@@ -38,13 +38,11 @@ public class GroupController {
     }
 
     @PatchMapping
-    @Transactional
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
         if(repository.updateGroup(principal.getName(), dto.name(), dto.maxSize()) == 0) throw new ToBigChildrenInGroupException(dto.maxSize());
     }
 
     @DeleteMapping
-    @Transactional
     public void remove(Principal principal) {
         if(repository.deleteGroupFromTeacher(principal.getName()) == 0) throw new GroupContainsKidsException();
     }

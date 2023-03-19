@@ -58,13 +58,11 @@ public class ChildController {
     }
 
     @PatchMapping
-    @Transactional
     public void update(Principal principal, @RequestBody @Valid ChildDto dto) {
         if(repository.updateChild(principal.getName(),dto.id(), dto.name(), dto.birthYear()) == 0) throw new ChildNotFoundException(principal.getName());
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
     public void delete(Principal principal, @PathVariable long id) {
         if(repository.deleteChild(principal.getName(), id) == 0) throw new ChildNotFoundException(principal.getName());
     }
