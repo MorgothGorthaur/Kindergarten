@@ -3,12 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.dto.GroupDto;
 import com.example.demo.dto.GroupWithCurrentSizeDto;
 import com.example.demo.dto.Mapper;
-import com.example.demo.exception.GroupNotFoundException;
-import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.exception.ToBigChildrenInGroupException;
+import com.example.demo.exception.*;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,22 +38,14 @@ public class GroupController {
     }
 
     @PatchMapping
+    @Transactional
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
-        var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
-                .map(Teacher::getGroup)
-                .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
-        if(!group.isAbleToBeUpdated(dto.maxSize())) throw new ToBigChildrenInGroupException(dto.maxSize());
-        group.setName(dto.name());
-        group.setMaxSize(dto.maxSize());
-        repository.save(group);
+        if(repository.updateGroup(principal.getName(), dto.name(), dto.maxSize()) == 0) throw new ToBigChildrenInGroupException(dto.maxSize());
     }
 
     @DeleteMapping
+    @Transactional
     public void remove(Principal principal) {
-        var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
-                .map(Teacher::getGroup)
-                .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
-        group.getTeacher().removeGroup();
-        repository.delete(group);
+        if(repository.deleteGroupFromTeacher(principal.getName()) == 0) throw new GroupContainsKidsException();
     }
 }
