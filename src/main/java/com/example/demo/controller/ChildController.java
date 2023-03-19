@@ -7,6 +7,7 @@ import com.example.demo.model.Group;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.TeacherRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,22 +58,15 @@ public class ChildController {
     }
 
     @PatchMapping
+    @Transactional
     public void update(Principal principal, @RequestBody @Valid ChildDto dto) {
-        var child = repository.findChildByIdAndTeacherEmail(dto.id(), principal.getName())
-                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        child.setName(dto.name());
-        child.setBirthYear(dto.birthYear());
-        repository.save(child);
-
+        if(repository.updateChild(principal.getName(),dto.id(), dto.name(), dto.birthYear()) == 0) throw new ChildNotFoundException(principal.getName());
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public void delete(Principal principal, @PathVariable long id) {
-        var child = repository.findChildWithRelativesByIdAndTeacherEmail(id, principal.getName())
-                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        child.setRelatives(null);
-        repository.delete(child);
+        if(repository.deleteChild(principal.getName(), id) == 0) throw new ChildNotFoundException(principal.getName());
     }
-
 
 }
