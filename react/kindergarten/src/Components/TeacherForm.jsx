@@ -16,7 +16,6 @@ const TeacherForm = ({teacher, tokens, setTokens}) => {
             setPhone(teacher.phone);
             setSkype(teacher.skype);
             setEmail(teacher.email);
-            setPassword(teacher.password);
         }
     }, [teacher]);
     const update = (e) => {

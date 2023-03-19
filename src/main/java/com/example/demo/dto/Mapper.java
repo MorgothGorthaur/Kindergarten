@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Mapper {
     public TeacherDto toTeacherDto(Teacher teacher) {
-        return new TeacherDto(teacher.getName(), teacher.getPhone(), teacher.getSkype());
+        return new TeacherDto(teacher.getName(), teacher.getPhone(), teacher.getSkype(), teacher.getEmail());
     }
 
     public TeacherWithGroupDto toTeacherWithGroupDto(Teacher teacher) {

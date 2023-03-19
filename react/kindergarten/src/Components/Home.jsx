@@ -44,6 +44,7 @@ function Home() {
                         <h3>Your Name: {teacher.name}</h3>
                         <h3>Your Phone: {teacher.phone}</h3>
                         <h3>Your Skype: {teacher.skype}</h3>
+                        <h3>Your Mail: {teacher.email}</h3>
                     </div>
                     <div className="teacher-actions">
                         <Button variant="primary" onClick={() => setShowUpdateForm(true)}>update</Button>{" "}
