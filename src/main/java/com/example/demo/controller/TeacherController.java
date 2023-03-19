@@ -4,12 +4,10 @@ import com.example.demo.dto.Mapper;
 import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
-import com.example.demo.enums.Role;
 import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyExist;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,6 +56,6 @@ public class TeacherController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void remove(Principal principal) {
-        if(repository.deleteTeacherWithGroupByEmail(principal.getName())==0) throw new GroupContainsKidsException();
+        if(repository.deleteTeacherByEmailIfGroupDoesntContainsKids(principal.getName())==0) throw new GroupContainsKidsException();
     }
 }
