@@ -42,4 +42,8 @@ public class Group {
         kids.add(child);
         child.setGroup(this);
     }
+
+    public int getCurrentSize() {
+        return kids != null ? kids.size() : 0;
+    }
 }

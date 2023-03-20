@@ -34,6 +34,6 @@ public class Mapper {
     }
 
     public GroupWithCurrentSizeDto toGroupWithCurrentSizeDto(Group group) {
-        return new GroupWithCurrentSizeDto(group.getName(), group.getMaxSize(), group.getKids().size());
+        return new GroupWithCurrentSizeDto(group.getName(), group.getMaxSize(), group.getCurrentSize());
     }
 }
