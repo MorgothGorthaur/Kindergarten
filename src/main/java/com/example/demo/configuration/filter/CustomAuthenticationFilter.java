@@ -45,7 +45,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException{
         var user = (TeacherUserDetails) authResult.getPrincipal();
-        var tokens = tokenProvider.generateTokens(request, user);
+        var tokens = tokenProvider.generateTokens(request.getRequestURL().toString(), user);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }

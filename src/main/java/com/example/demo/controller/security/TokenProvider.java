@@ -6,9 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface TokenProvider {
-    Map<String, String> generateTokens(HttpServletRequest request, TeacherUserDetails user);
+    Map<String, String> generateTokens(String requestUrl, TeacherUserDetails user);
 
-    void verifyTokens(String authorizationHeader);
+    void verifyTokens(String accessToken);
 
-    Map<String, String> verifyAndRegenerateAccessToken(String authorizationHeader, HttpServletRequest request);
+    Map<String, String> verifyAndRegenerateAccessToken(String refreshToken, String requestUrl);
 }

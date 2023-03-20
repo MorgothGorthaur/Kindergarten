@@ -43,17 +43,14 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public Map<String, String> generateTokens(HttpServletRequest request, TeacherUserDetails user) {
-        var tokens = new HashMap<String, String>();
-        tokens.put(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(request, user));
-        tokens.put(Token.REFRESH_TOKEN.getTokenType(), generateRefreshToken(request, user));
-        return tokens;
+    public Map<String, String> generateTokens(String requestUrl, TeacherUserDetails user) {
+        return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user),
+                Token.REFRESH_TOKEN.getTokenType(), generateRefreshToken(requestUrl, user));
     }
 
     @Override
-    public void verifyTokens(String authorizationHeader) {
+    public void verifyTokens(String accessToken) {
         try {
-            var accessToken = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(accessToken);
             var username = decoderJWT.getSubject();
@@ -68,34 +65,31 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public Map<String, String> verifyAndRegenerateAccessToken(String authorizationHeader, HttpServletRequest request) {
+    public Map<String, String> verifyAndRegenerateAccessToken(String refreshToken, String requestUrl) {
         try {
-            var refreshToken = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
             var username = decoderJWT.getSubject();
             var user = new TeacherUserDetails(repository.findTeacherByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
-            var tokens = new HashMap<String, String>();
-            tokens.put(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(request, user));
-            return tokens;
+            return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user));
         } catch (Exception ex) {
             throw new BadTokenException();
         }
     }
 
-    private String generateRefreshToken(HttpServletRequest request, TeacherUserDetails user) {
+    private String generateRefreshToken(String requestUrl, TeacherUserDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(REFRESH_TOKEN_TIME, ChronoUnit.MINUTES))
-                .withIssuer(request.getRequestURL().toString()).sign(algorithm);
+                .withIssuer(requestUrl).sign(algorithm);
     }
 
-    private String generateAccessToken(HttpServletRequest request, TeacherUserDetails user) {
+    private String generateAccessToken(String requestUrl, TeacherUserDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(ACCESS_TOKEN_TIME, ChronoUnit.MINUTES))
-                .withIssuer(request.getRequestURL().toString())
+                .withIssuer(requestUrl)
                 .withClaim(Claim.ROLES.getClaim(), user.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority).toList()).sign(algorithm);
     }
