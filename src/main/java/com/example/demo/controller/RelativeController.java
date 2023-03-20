@@ -42,7 +42,7 @@ public class RelativeController {
     public void delete(Principal principal, @PathVariable long childId, @PathVariable long relativeId) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        var relative = repository.findById(relativeId)
+        var relative = repository.findRelativeByIdAndChildIdAndTeacherEmail(relativeId, childId, principal.getName())
                 .orElseThrow(RelativeNotFoundException::new);
         child.removeRelative(relative);
         childRepository.save(child);
