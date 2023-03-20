@@ -11,7 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "groups")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class Group {
     @Id
@@ -37,7 +38,7 @@ public class Group {
     }
 
     public void addChild(Child child) {
-        if(kids.size() == maxSize) throw new ToManyChildrenInGroupException(maxSize);
+        if (kids.size() == maxSize) throw new ToManyChildrenInGroupException(maxSize);
         kids.add(child);
         child.setGroup(this);
     }

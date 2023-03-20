@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ChildDto;
 import com.example.demo.exception.GroupNotFoundException;
 import com.example.demo.model.Child;
 import com.example.demo.model.Teacher;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class ChildServiceImpl implements ChildService {
     private final TeacherRepository teacherRepository;
     private final ChildRepository repository;
+
     @Override
     public Child add(String email, Child child) {
         var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(email)

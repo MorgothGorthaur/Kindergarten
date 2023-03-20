@@ -12,7 +12,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "children")
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor
 public class Child {

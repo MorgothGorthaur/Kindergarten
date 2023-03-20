@@ -28,8 +28,9 @@ public class TeacherController {
 
     @PostMapping
     public void add(@RequestBody @Valid TeacherFullDto dto) {
-       teacherService.add(dto.toTeacher());
+        teacherService.add(dto.toTeacher());
     }
+
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {
         return repository.findAllTeachersWithGroups().stream().map(TeacherWithGroupDto::new).toList();
@@ -45,12 +46,14 @@ public class TeacherController {
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
-        if(repository.updateTeacherByEmail(principal.getName(), dto.email(), dto.name(), dto.skype(), dto.phone(), encoder.encode(dto.password())) == 0) throw new TeacherAlreadyExist(principal.getName());
+        if (repository.updateTeacherByEmail(principal.getName(), dto.email(), dto.name(), dto.skype(), dto.phone(), encoder.encode(dto.password())) == 0)
+            throw new TeacherAlreadyExist(principal.getName());
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void remove(Principal principal) {
-        if(repository.deleteTeacherByEmailIfGroupDoesntContainsKids(principal.getName())==0) throw new GroupContainsKidsException();
+        if (repository.deleteTeacherByEmailIfGroupDoesntContainsKids(principal.getName()) == 0)
+            throw new GroupContainsKidsException();
     }
 }

@@ -10,9 +10,11 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy =  DateValidationImpl.class)
+@Constraint(validatedBy = DateValidationImpl.class)
 public @interface DateValidation {
     String message() default "Birth year must be before today`s date!";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

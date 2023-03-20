@@ -21,14 +21,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-   private final AuthenticationManager authenticationManager;
-   private final TokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider tokenProvider;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-            var email = request.getParameter(AuthenticationRequestParameter.EMAIL.getParameter());
-            var password = request.getParameter(AuthenticationRequestParameter.PASSWORD.getParameter());
-            var token = new UsernamePasswordAuthenticationToken(email, password);
+        var email = request.getParameter(AuthenticationRequestParameter.EMAIL.getParameter());
+        var password = request.getParameter(AuthenticationRequestParameter.PASSWORD.getParameter());
+        var token = new UsernamePasswordAuthenticationToken(email, password);
         return authenticate(email, password, token);
     }
 
@@ -43,7 +43,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                            FilterChain chain, Authentication authResult) throws IOException{
+                                            FilterChain chain, Authentication authResult) throws IOException {
         var user = (TeacherUserDetails) authResult.getPrincipal();
         var tokens = tokenProvider.generateTokens(request.getRequestURL().toString(), user);
         response.setContentType(APPLICATION_JSON_VALUE);

@@ -13,9 +13,10 @@ import org.springframework.stereotype.Service;
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository repository;
     private final BCryptPasswordEncoder encoder;
+
     @Override
     public void add(Teacher teacher) {
-        try{
+        try {
             teacher.setPassword(encoder.encode(teacher.getPassword()));
             repository.save(teacher);
         } catch (DataIntegrityViolationException ex) {

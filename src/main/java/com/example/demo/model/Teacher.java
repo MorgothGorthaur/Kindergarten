@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.Role;
-import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyContainsGroup;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +9,8 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "teachers")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class Teacher {
     @Id
@@ -41,8 +41,9 @@ public class Teacher {
         this.password = password;
         this.role = Role.ROLE_USER;
     }
+
     public void addGroup(Group group) {
-        if(this.group != null) throw new TeacherAlreadyContainsGroup(email);
+        if (this.group != null) throw new TeacherAlreadyContainsGroup(email);
         this.group = group;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class GroupServiceImpl implements GroupService {
     private final TeacherRepository teacherRepository;
     private final GroupRepository repository;
+
     @Override
     public void add(String email, Group group) {
         var teacher = teacherRepository.findTeacherByEmail(email)

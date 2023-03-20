@@ -1,14 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.*;
+import com.example.demo.dto.ChildDto;
+import com.example.demo.dto.ChildFullDto;
+import com.example.demo.dto.ChildWithGroupDto;
 import com.example.demo.exception.ChildNotFoundException;
-import com.example.demo.exception.GroupNotFoundException;
-import com.example.demo.model.Group;
-import com.example.demo.model.Teacher;
 import com.example.demo.repository.ChildRepository;
-import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.ChildService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,12 +51,13 @@ public class ChildController {
 
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid ChildDto dto) {
-        if(repository.updateChild(principal.getName(),dto.id(), dto.name(), dto.birthYear()) == 0) throw new ChildNotFoundException(principal.getName());
+        if (repository.updateChild(principal.getName(), dto.id(), dto.name(), dto.birthYear()) == 0)
+            throw new ChildNotFoundException(principal.getName());
     }
 
     @DeleteMapping("/{id}")
     public void delete(Principal principal, @PathVariable long id) {
-        if(repository.deleteChild(principal.getName(), id) == 0) throw new ChildNotFoundException(principal.getName());
+        if (repository.deleteChild(principal.getName(), id) == 0) throw new ChildNotFoundException(principal.getName());
     }
 
 }

@@ -11,7 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "relatives")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 public class Relative {

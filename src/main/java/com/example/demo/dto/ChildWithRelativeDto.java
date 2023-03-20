@@ -6,8 +6,8 @@ import com.example.demo.model.Child;
 import java.time.LocalDate;
 
 public record ChildWithRelativeDto(String name, LocalDate birthYear, RelativeDto relative) {
-    public ChildWithRelativeDto{
-        if(relative == null) throw new ChildMustHaveRelativeException();
+    public ChildWithRelativeDto {
+        if (relative == null) throw new ChildMustHaveRelativeException();
     }
 
     public Child toChild() {
