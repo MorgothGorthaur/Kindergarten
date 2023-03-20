@@ -1,6 +1,6 @@
 package com.example.demo.configuration.filter;
 
-import com.example.demo.enums.ContentType;
+
 import com.example.demo.enums.RequestParameter;
 import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.model.TeacherUserDetails;
@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -44,7 +46,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                                             FilterChain chain, Authentication authResult) throws IOException{
         var user = (TeacherUserDetails) authResult.getPrincipal();
         var tokens = tokenProvider.generateTokens(request, user);
-        response.setContentType(ContentType.JSON.getContentType());
+        response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 
