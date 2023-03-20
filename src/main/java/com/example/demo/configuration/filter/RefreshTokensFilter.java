@@ -1,7 +1,7 @@
 package com.example.demo.configuration.filter;
 
-import com.example.demo.enums.AuthorizationType;
 import com.example.demo.controller.security.TokenProvider;
+import com.example.demo.enums.AuthorizationType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,7 +29,7 @@ public class RefreshTokensFilter extends OncePerRequestFilter {
     }
 
     private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) throws IOException {
-        var token = tokenProvider.verifyAndRegenerateAccessToken(
+        var token = tokenProvider.verifyRefreshAndRegenerateAccessToken(
                 authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length()),
                 request.getRequestURL().toString());
         response.setContentType(APPLICATION_JSON_VALUE);

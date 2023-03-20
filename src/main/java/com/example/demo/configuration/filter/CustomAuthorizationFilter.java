@@ -1,7 +1,7 @@
 package com.example.demo.configuration.filter;
 
-import com.example.demo.enums.AuthorizationType;
 import com.example.demo.controller.security.TokenProvider;
+import com.example.demo.enums.AuthorizationType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith(AuthorizationType.BEARER.getPrefix()))
-            tokenProvider.verifyTokens(authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length()));
+            tokenProvider.verifyAccessToken(authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length()));
         filterChain.doFilter(request, response);
     }
 

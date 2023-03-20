@@ -2,15 +2,12 @@ package com.example.demo.controller.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.controller.security.TokenProvider;
-import com.example.demo.enums.AuthorizationType;
 import com.example.demo.enums.Claim;
 import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.TeacherUserDetails;
 import com.example.demo.repository.TeacherRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
@@ -49,7 +45,7 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public void verifyTokens(String accessToken) {
+    public void verifyAccessToken(String accessToken) {
         try {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(accessToken);
@@ -65,7 +61,7 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public Map<String, String> verifyAndRegenerateAccessToken(String refreshToken, String requestUrl) {
+    public Map<String, String> verifyRefreshAndRegenerateAccessToken(String refreshToken, String requestUrl) {
         try {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
