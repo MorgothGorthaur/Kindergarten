@@ -9,6 +9,7 @@ import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class TeacherController {
             var teacher = dto.toTeacher();
             teacher.setPassword(encoder.encode(teacher.getPassword()));
             repository.save(teacher);
-        } catch (Exception ex) {
+        } catch (DataIntegrityViolationException ex) {
             throw new TeacherAlreadyExist(dto.email());
         }
     }
