@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.GroupDto;
 import com.example.demo.dto.GroupWithCurrentSizeDto;
-import com.example.demo.dto.Mapper;
 import com.example.demo.exception.*;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
@@ -21,11 +20,10 @@ import java.security.Principal;
 public class GroupController {
     private final GroupRepository repository;
     private final TeacherRepository teacherRepository;
-    private final Mapper mapper;
 
     @GetMapping
     public GroupWithCurrentSizeDto getGroup(Principal principal) {
-        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(mapper::toGroupWithCurrentSizeDto).orElse(null);
+        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(GroupWithCurrentSizeDto::new).orElse(null);
     }
 
     @PostMapping

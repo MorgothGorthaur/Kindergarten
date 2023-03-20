@@ -22,29 +22,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChildController {
     private final ChildRepository repository;
-    private final Mapper mapper;
     private final TeacherRepository teacherRepository;
 
     @GetMapping
     public List<ChildDto> getAll(Principal principal) {
-        return repository.findKidsByTeacherEmail(principal.getName()).stream().map(mapper::toChildDto).toList();
+        return repository.findKidsByTeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
     }
 
     @GetMapping("/full")
     public List<ChildFullDto> getFull(Principal principal) {
         return repository.findKidsWithRelativesByTeacherEmail(principal.getName())
-                .stream().map(mapper::toChildFullDto).toList();
+                .stream().map(ChildFullDto::new).toList();
     }
 
     @GetMapping("/birth")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
         return repository.findKidsThatWaitBirthDay(principal.getName())
-                .stream().map(mapper::toChildDto).toList();
+                .stream().map(ChildDto::new).toList();
     }
 
     @GetMapping("/{id}")
     public List<ChildWithGroupDto> getBrothersAndSisters(@PathVariable long id) {
-        return repository.findBrothersAndSisters(id).stream().map(mapper::toChildWithGroupDto).toList();
+        return repository.findBrothersAndSisters(id).stream().map(ChildWithGroupDto::new).toList();
     }
 
     @PostMapping
@@ -54,7 +53,7 @@ public class ChildController {
                 .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
         var child = dto.toChild();
         group.addChild(child);
-        return mapper.toChildDto(repository.save(child));
+        return new ChildDto(repository.save(child));
     }
 
     @PatchMapping

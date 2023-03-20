@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.Mapper;
 import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
@@ -23,7 +22,6 @@ import java.util.List;
 public class TeacherController {
     private final PasswordEncoder encoder;
     private final TeacherRepository repository;
-    private final Mapper mapper;
 
     @PostMapping
     public void add(@RequestBody @Valid TeacherFullDto dto) {
@@ -37,14 +35,14 @@ public class TeacherController {
     }
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {
-        return repository.findAllTeachersWithGroups().stream().map(mapper::toTeacherWithGroupDto).toList();
+        return repository.findAllTeachersWithGroups().stream().map(TeacherWithGroupDto::new).toList();
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public TeacherDto get(Principal principal) {
-        return mapper.toTeacherDto(repository.findTeacherByEmail(principal.getName()).
-                orElseThrow(() -> new TeacherNotFoundException(principal.getName())));
+        return repository.findTeacherByEmail(principal.getName()).map(TeacherDto::new).
+                orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
     }
 
     @PatchMapping

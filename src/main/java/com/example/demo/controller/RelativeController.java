@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.Mapper;
 import com.example.demo.dto.RelativeDto;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.RelativeNotFoundException;
@@ -21,12 +20,11 @@ import java.util.List;
 public class RelativeController {
     private final RelativeRepository repository;
     private final ChildRepository childRepository;
-    private final Mapper mapper;
 
     @GetMapping("/{childId}")
     public List<RelativeDto> getAll(Principal principal, @PathVariable long childId) {
         return repository.findRelativesByChildIdAndTeacherEmail(childId, principal.getName())
-                .stream().map(mapper::toRelativeDto).toList();
+                .stream().map(RelativeDto::new).toList();
     }
 
     @PostMapping("/{childId}")
@@ -35,7 +33,7 @@ public class RelativeController {
                 .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
         var relative = repository.findEqualRelative(dto.name(), dto.address(), dto.phone()).orElseGet(dto::toRelative);
         child.addRelative(relative);
-        return mapper.toRelativeDto(repository.save(relative));
+        return new RelativeDto(repository.save(relative));
     }
 
     @DeleteMapping("/{childId}/{relativeId}")
