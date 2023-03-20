@@ -41,6 +41,6 @@ public class RelativeController {
 
     @PatchMapping("/{childId}")
     public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        service.updateOrReplaceRelative(principal.getName(), childId, dto.id(), dto.toRelative());
+        service.updateOrReplaceRelative(principal.getName(), childId, dto);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.RelativeDto;
 import com.example.demo.model.Relative;
 
 public interface RelativeService {
@@ -7,5 +8,5 @@ public interface RelativeService {
 
     void delete(String email, long childId, long relativeId);
 
-    void updateOrReplaceRelative(String email, long childId, long relativeId, Relative relative);
+    void updateOrReplaceRelative(String email, long childId, RelativeDto dto);
 }

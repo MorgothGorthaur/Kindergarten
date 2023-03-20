@@ -35,18 +35,18 @@ public class RelativeServiceImpl implements RelativeService {
     }
 
     @Override
-    public void updateOrReplaceRelative(String email, long childId, long relativeId, Relative relative) {
-        var updatedRelative = repository.findRelativeByIdAndChildIdAndTeacherEmail(relativeId, childId, email)
+    public void updateOrReplaceRelative(String email, long childId, RelativeDto dto) {
+        var updatedRelative = repository.findRelativeByIdAndChildIdAndTeacherEmail(dto.id(), childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
-        repository.findEqualRelativeWithAnotherId(relative.getName(), relative.getAddress(), relative.getPhone(), relativeId)
-                .ifPresentOrElse(equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative), () -> updateRelative(relative, updatedRelative));
+        repository.findEqualRelativeWithAnotherId(dto.name(), dto.address(), dto.phone(), dto.id())
+                .ifPresentOrElse(equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative), () -> updateRelative(dto, updatedRelative));
     }
 
-    private void updateRelative(Relative relative, Relative updatedRelative) {
-        updatedRelative.setName(relative.getName());
-        updatedRelative.setAddress(relative.getAddress());
-        updatedRelative.setPhone(relative.getAddress());
-        repository.save(relative);
+    private void updateRelative(RelativeDto dto, Relative updatedRelative) {
+        updatedRelative.setName(dto.name());
+        updatedRelative.setAddress(dto.address());
+        updatedRelative.setPhone(dto.phone());
+        repository.save(updatedRelative);
     }
 
     private void replaceRelative(String email, long childId, Relative updatedRelative, Relative equalRelative) {
