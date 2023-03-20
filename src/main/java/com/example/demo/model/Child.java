@@ -1,13 +1,20 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "children")
-@Getter
+@Getter @Setter
+@EqualsAndHashCode(of = {"id"})
+@NoArgsConstructor
 public class Child {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,25 +22,35 @@ public class Child {
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "age", nullable = false)
-    private int age;
+    @Column(name = "birth_year", nullable = false)
+    private LocalDate birthYear;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Relative> relatives;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @Override
-    public boolean equals(Object o) {
-        if(o == null) return false;
-        if(o == this) return true;
-        if(!(o instanceof Child child)) return false;
-        return id.equals(child.id);
+    public Child(String name, LocalDate birthYear, Relative relative) {
+        this.name = name;
+        this.birthYear = birthYear;
+        addRelative(relative);
     }
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
+    public Child(String name, LocalDate birthYear) {
+        this.name = name;
+        this.birthYear = birthYear;
     }
+
+    public void addRelative(Relative relative) {
+        if(relatives == null) relatives = new HashSet<>();
+        relatives.add(relative);
+    }
+
+    public void removeRelative(Relative relative) {
+        if(relatives == null) throw new RuntimeException();
+        else relatives.remove(relative);
+    }
+
+
 }
