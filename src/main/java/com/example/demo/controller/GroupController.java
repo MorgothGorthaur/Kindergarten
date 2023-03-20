@@ -36,7 +36,7 @@ public class GroupController {
 
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
-        if(repository.updateGroup(principal.getName(), dto.name(), dto.maxSize()) == 0) throw new ToBigChildrenInGroupException(dto.maxSize());
+        if(repository.updateGroup(principal.getName(), dto.name(), dto.maxSize()) == 0) throw new ToManyChildrenInGroupException(dto.maxSize());
     }
 
     @DeleteMapping
