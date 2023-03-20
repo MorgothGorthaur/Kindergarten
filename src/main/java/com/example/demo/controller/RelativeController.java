@@ -1,10 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.RelativeDto;
-import com.example.demo.exception.ChildNotFoundException;
-import com.example.demo.exception.RelativeNotFoundException;
-import com.example.demo.model.Relative;
-import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.RelativeRepository;
 import com.example.demo.service.RelativeService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +26,7 @@ public class RelativeController {
 
     @PostMapping("/{childId}")
     public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        return new RelativeDto(service.add(principal.getName(), childId, dto.toRelative()));
+        return new RelativeDto(service.add(principal.getName(), childId, dto.name(), dto.address(), dto.phone()));
     }
 
     @DeleteMapping("/{childId}/{relativeId}")
@@ -41,6 +37,6 @@ public class RelativeController {
 
     @PatchMapping("/{childId}")
     public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        service.updateOrReplaceRelative(principal.getName(), childId, dto);
+        service.updateOrReplaceRelative(principal.getName(), childId, dto.id(), dto.name(), dto.address(), dto.phone());
     }
 }

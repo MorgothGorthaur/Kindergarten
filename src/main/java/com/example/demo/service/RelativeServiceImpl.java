@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.RelativeDto;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.exception.RelativeNotFoundException;
 import com.example.demo.model.Relative;
@@ -16,10 +15,10 @@ public class RelativeServiceImpl implements RelativeService {
     private final RelativeRepository repository;
 
     @Override
-    public Relative add(String email, long childId, Relative relative) {
+    public Relative add(String email, long childId, String name, String address, String phone) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
-        var addedRelative = repository.findEqualRelative(relative.getName(), relative.getAddress(), relative.getPhone()).orElse(relative);
+        var addedRelative = repository.findEqualRelative(name, address, phone).orElse(new Relative(name, address, phone));
         child.addRelative(addedRelative);
         return repository.save(addedRelative);
     }
@@ -35,17 +34,17 @@ public class RelativeServiceImpl implements RelativeService {
     }
 
     @Override
-    public void updateOrReplaceRelative(String email, long childId, RelativeDto dto) {
-        var updatedRelative = repository.findRelativeByIdAndChildIdAndTeacherEmail(dto.id(), childId, email)
+    public void updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone) {
+        var updatedRelative = repository.findRelativeByIdAndChildIdAndTeacherEmail(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
-        repository.findEqualRelativeWithAnotherId(dto.name(), dto.address(), dto.phone(), dto.id())
-                .ifPresentOrElse(equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative), () -> updateRelative(dto, updatedRelative));
+        repository.findEqualRelativeWithAnotherId(name, address, phone, relativeId)
+                .ifPresentOrElse(equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative), () -> updateRelative(name, address, phone, updatedRelative));
     }
 
-    private void updateRelative(RelativeDto dto, Relative updatedRelative) {
-        updatedRelative.setName(dto.name());
-        updatedRelative.setAddress(dto.address());
-        updatedRelative.setPhone(dto.phone());
+    private void updateRelative(String name, String address, String phone, Relative updatedRelative) {
+        updatedRelative.setName(name);
+        updatedRelative.setAddress(address);
+        updatedRelative.setPhone(phone);
         repository.save(updatedRelative);
     }
 
