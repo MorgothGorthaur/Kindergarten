@@ -29,7 +29,7 @@ public class Relative {
     @Column(name = "address", nullable = false)
     private String address;
     @ManyToMany(mappedBy = "relatives", fetch = FetchType.LAZY)
-    private Set<Child> kids;
+    private Set<Child> kids = new HashSet<>();
 
     public Relative(String name, String phone, String address) {
         this.name = name;

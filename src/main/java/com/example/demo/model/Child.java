@@ -25,7 +25,7 @@ public class Child {
     @Column(name = "birth_year", nullable = false)
     private LocalDate birthYear;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Relative> relatives;
+    private Set<Relative> relatives = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -43,13 +43,11 @@ public class Child {
     }
 
     public void addRelative(Relative relative) {
-        if(relatives == null) relatives = new HashSet<>();
         relatives.add(relative);
     }
 
     public void removeRelative(Relative relative) {
-        if(relatives == null) throw new RuntimeException();
-        else relatives.remove(relative);
+        relatives.remove(relative);
     }
 
 
