@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig
 @DataJpaTest
@@ -81,13 +80,13 @@ class GroupRepositoryTest {
     @Test
     void testDeleteGroupFromTeacher_shouldReturnOne() {
         var email = "bob@example.com";
-        assertThat(groupRepository.deleteGroupFromTeacher(email)).isEqualTo(1);
+        assertThat(groupRepository.deleteGroupFromTeacherIfGroupDoesntContainsKids(email)).isEqualTo(1);
     }
 
     @Test
     void testDeleteGroupFromTeacher_shouldReturnZero() {
         var email = "john@example.com";
-        assertThat(groupRepository.deleteGroupFromTeacher(email)).isEqualTo(0);
+        assertThat(groupRepository.deleteGroupFromTeacherIfGroupDoesntContainsKids(email)).isEqualTo(0);
     }
 
     @Test

@@ -6,13 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Optional;
-
 public interface GroupRepository extends JpaRepository<Group, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Teacher t SET t.group = NULL  WHERE t.email = ?1 AND NOT EXISTS (SELECT c FROM Child c WHERE c.group.teacher.email = ?1)")
-    int deleteGroupFromTeacher(String email);
+    int deleteGroupFromTeacherIfGroupDoesntContainsKids(String email);
 
     @Modifying
     @Transactional

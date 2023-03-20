@@ -7,7 +7,6 @@ import com.example.demo.exception.*;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +43,6 @@ public class GroupController {
 
     @DeleteMapping
     public void remove(Principal principal) {
-        if(repository.deleteGroupFromTeacher(principal.getName()) == 0) throw new GroupContainsKidsException();
+        if(repository.deleteGroupFromTeacherIfGroupDoesntContainsKids(principal.getName()) == 0) throw new GroupContainsKidsException();
     }
 }
