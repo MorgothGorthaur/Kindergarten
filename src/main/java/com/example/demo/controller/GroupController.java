@@ -6,6 +6,7 @@ import com.example.demo.exception.*;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
+import com.example.demo.service.GroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,8 @@ public class GroupController {
     private final GroupRepository repository;
     private final TeacherRepository teacherRepository;
 
+    private final GroupService service;
+
     @GetMapping
     public GroupWithCurrentSizeDto getGroup(Principal principal) {
         return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(GroupWithCurrentSizeDto::new).orElse(null);
@@ -28,10 +31,7 @@ public class GroupController {
 
     @PostMapping
     public void add(Principal principal, @RequestBody @Valid GroupDto dto) {
-        var teacher = teacherRepository.findTeacherByEmail(principal.getName())
-                .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        teacher.addGroup(dto.toGroup());
-        repository.save(teacher.getGroup());
+        service.add(principal.getName(), dto.toGroup());
     }
 
     @PatchMapping

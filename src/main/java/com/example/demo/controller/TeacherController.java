@@ -7,9 +7,9 @@ import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyExist;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
+import com.example.demo.service.TeacherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +24,11 @@ public class TeacherController {
     private final PasswordEncoder encoder;
     private final TeacherRepository repository;
 
+    private final TeacherService teacherService;
+
     @PostMapping
     public void add(@RequestBody @Valid TeacherFullDto dto) {
-        try{
-            var teacher = dto.toTeacher();
-            teacher.setPassword(encoder.encode(teacher.getPassword()));
-            repository.save(teacher);
-        } catch (DataIntegrityViolationException ex) {
-            throw new TeacherAlreadyExist(dto.email());
-        }
+       teacherService.add(dto.toTeacher());
     }
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {

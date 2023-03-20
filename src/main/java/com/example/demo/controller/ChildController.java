@@ -7,6 +7,7 @@ import com.example.demo.model.Group;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.TeacherRepository;
+import com.example.demo.service.ChildService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChildController {
     private final ChildRepository repository;
-    private final TeacherRepository teacherRepository;
+    private final ChildService service;
 
     @GetMapping
     public List<ChildDto> getAll(Principal principal) {
@@ -48,12 +49,7 @@ public class ChildController {
 
     @PostMapping
     public ChildDto add(Principal principal, @RequestBody @Valid ChildDto dto) {
-        var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
-                .map(Teacher::getGroup)
-                .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
-        var child = dto.toChild();
-        group.addChild(child);
-        return new ChildDto(repository.save(child));
+        return new ChildDto(service.add(principal.getName(), dto.toChild()));
     }
 
     @PatchMapping

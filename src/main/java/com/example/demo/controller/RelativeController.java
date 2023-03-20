@@ -6,6 +6,7 @@ import com.example.demo.exception.RelativeNotFoundException;
 import com.example.demo.model.Relative;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.RelativeRepository;
+import com.example.demo.service.RelativeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RelativeController {
     private final RelativeRepository repository;
-    private final ChildRepository childRepository;
+    private final RelativeService service;
 
     @GetMapping("/{childId}")
     public List<RelativeDto> getAll(Principal principal, @PathVariable long childId) {
@@ -29,45 +30,17 @@ public class RelativeController {
 
     @PostMapping("/{childId}")
     public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
-                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        var relative = repository.findEqualRelative(dto.name(), dto.address(), dto.phone()).orElseGet(dto::toRelative);
-        child.addRelative(relative);
-        return new RelativeDto(repository.save(relative));
+        return new RelativeDto(service.add(principal.getName(), childId, dto.toRelative()));
     }
 
     @DeleteMapping("/{childId}/{relativeId}")
     public void delete(Principal principal, @PathVariable long childId, @PathVariable long relativeId) {
-        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
-                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        var relative = repository.findRelativeByIdAndChildIdAndTeacherEmail(relativeId, childId, principal.getName())
-                .orElseThrow(RelativeNotFoundException::new);
-        child.removeRelative(relative);
-        childRepository.save(child);
+        service.delete(principal.getName(), childId, relativeId);
     }
 
 
     @PatchMapping("/{childId}")
     public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
-        var relative = repository.findRelativeByIdAndChildIdAndTeacherEmail(dto.id(), childId, principal.getName())
-                .orElseThrow(RelativeNotFoundException::new);
-        repository.findEqualRelativeWithAnotherId(dto.name(), dto.address(), dto.phone(), dto.id())
-                .ifPresentOrElse(equalRelative -> replaceRelative(principal, childId, relative, equalRelative), () -> updateRelative(dto, relative));
-
-    }
-
-    private void updateRelative(RelativeDto dto, Relative relative) {
-        relative.setName(dto.name());
-        relative.setAddress(dto.address());
-        relative.setPhone(dto.phone());
-        repository.save(relative);
-    }
-
-    private void replaceRelative(Principal principal, long childId, Relative relative, Relative equalRelative) {
-        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, principal.getName())
-                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        child.addRelative(equalRelative);
-        child.removeRelative(relative);
-        childRepository.save(child);
+        service.updateOrReplaceRelative(principal.getName(), childId, dto.id(), dto.toRelative());
     }
 }
