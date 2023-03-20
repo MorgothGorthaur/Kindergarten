@@ -4,7 +4,7 @@ import com.example.demo.configuration.filter.CustomAuthenticationFilter;
 import com.example.demo.configuration.filter.CustomAuthorizationFilter;
 import com.example.demo.configuration.filter.ExceptionHandlerFilter;
 import com.example.demo.configuration.filter.RefreshTokensFilter;
-import com.example.demo.service.TokensService;
+import com.example.demo.controller.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +33,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    private final TokensService tokensService;
+    private final TokenProvider tokenProvider;
 
 
     @Value("${project.login.url}")
@@ -44,7 +44,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), tokensService);
+        var customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), tokenProvider);
         customAuthenticationFilter.setFilterProcessesUrl(LOGIN_URL);
         http
                 .cors(withDefaults())
@@ -52,8 +52,8 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .httpBasic(withDefaults())
                 .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new CustomAuthorizationFilter(tokensService), CustomAuthenticationFilter.class)
-                .addFilterBefore(new RefreshTokensFilter(tokensService, REFRESH_URL), CustomAuthorizationFilter.class)
+                .addFilterBefore(new CustomAuthorizationFilter(tokenProvider), CustomAuthenticationFilter.class)
+                .addFilterBefore(new RefreshTokensFilter(tokenProvider, REFRESH_URL), CustomAuthorizationFilter.class)
                 .addFilterBefore(new ExceptionHandlerFilter(), RefreshTokensFilter.class);
         return http.build();
     }

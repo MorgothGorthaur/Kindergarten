@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @AllArgsConstructor
-public class UserDetailsImpl implements UserDetails {
+public class TeacherUserDetails implements UserDetails {
     private Teacher teacher;
 
     @Override

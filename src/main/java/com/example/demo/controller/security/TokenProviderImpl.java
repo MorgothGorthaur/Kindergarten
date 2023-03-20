@@ -1,17 +1,16 @@
-package com.example.demo.service;
+package com.example.demo.controller.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.controller.security.TokenProvider;
 import com.example.demo.enums.AuthorizationType;
 import com.example.demo.enums.Claim;
 import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.model.UserDetailsImpl;
+import com.example.demo.model.TeacherUserDetails;
 import com.example.demo.repository.TeacherRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,10 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Component
-public class TokensServiceImpl implements TokensService {
+public class TokenProviderImpl implements TokenProvider {
 
     private final Algorithm algorithm;
     private final TeacherRepository repository;
@@ -39,13 +37,13 @@ public class TokensServiceImpl implements TokensService {
     @Value("${jwt.refresh_token.time}")
     private long REFRESH_TOKEN_TIME;
 
-    public TokensServiceImpl(TeacherRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
+    public TokenProviderImpl(TeacherRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
         this.repository = repository;
         this.algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
     }
 
     @Override
-    public Map<String, String> generateTokens(HttpServletRequest request, UserDetailsImpl user) {
+    public Map<String, String> generateTokens(HttpServletRequest request, TeacherUserDetails user) {
         var tokens = new HashMap<String, String>();
         tokens.put(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(request, user));
         tokens.put(Token.REFRESH_TOKEN.getTokenType(), generateRefreshToken(request, user));
@@ -76,7 +74,7 @@ public class TokensServiceImpl implements TokensService {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
             var username = decoderJWT.getSubject();
-            var user = new UserDetailsImpl(repository.findTeacherByEmail(username)
+            var user = new TeacherUserDetails(repository.findTeacherByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
             var tokens = new HashMap<String, String>();
             tokens.put(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(request, user));
@@ -86,14 +84,14 @@ public class TokensServiceImpl implements TokensService {
         }
     }
 
-    private String generateRefreshToken(HttpServletRequest request, UserDetailsImpl user) {
+    private String generateRefreshToken(HttpServletRequest request, TeacherUserDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(REFRESH_TOKEN_TIME, ChronoUnit.MINUTES))
                 .withIssuer(request.getRequestURL().toString()).sign(algorithm);
     }
 
-    private String generateAccessToken(HttpServletRequest request, UserDetailsImpl user) {
+    private String generateAccessToken(HttpServletRequest request, TeacherUserDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(ACCESS_TOKEN_TIME, ChronoUnit.MINUTES))

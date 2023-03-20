@@ -1,7 +1,7 @@
 package com.example.demo.configuration.filter;
 
 import com.example.demo.enums.AuthorizationType;
-import com.example.demo.service.TokensService;
+import com.example.demo.controller.security.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,7 +14,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class RefreshTokensFilter extends OncePerRequestFilter {
-    private final TokensService tokensService;
+    private final TokenProvider tokenProvider;
     private final String refreshUrl;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -24,7 +24,7 @@ public class RefreshTokensFilter extends OncePerRequestFilter {
         else filterChain.doFilter(request,response);
     }
     private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) throws IOException {
-        var token = tokensService.verifyAndRegenerateAccessToken(authorizationHeader, request);
+        var token = tokenProvider.verifyAndRegenerateAccessToken(authorizationHeader, request);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), token);
     }

@@ -1,12 +1,12 @@
-package com.example.demo.service;
+package com.example.demo.controller.security;
 
-import com.example.demo.model.UserDetailsImpl;
+import com.example.demo.model.TeacherUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
-public interface TokensService {
-    Map<String, String> generateTokens(HttpServletRequest request, UserDetailsImpl user);
+public interface TokenProvider {
+    Map<String, String> generateTokens(HttpServletRequest request, TeacherUserDetails user);
 
     void verifyTokens(String authorizationHeader);
 
