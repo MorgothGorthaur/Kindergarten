@@ -10,7 +10,7 @@ public record TeacherFullDto(@Size(min = 1, max = 15, message = "name must be se
                              @Size(min = 1, max = 15, message = "skype must be set") String skype,
                              @NotNull(message = "email name mst be set!") @Email String email,
                              @NotNull(message = "password must be set!") String password) {
-    public Teacher toTeacher() {
+    public Teacher createTeacher() {
         return new Teacher(name, phone, skype, email, password);
     }
 }

@@ -46,7 +46,7 @@ public class ChildController {
 
     @PostMapping
     public ChildDto add(Principal principal, @RequestBody @Valid ChildDto dto) {
-        return new ChildDto(service.add(principal.getName(), dto.toChild()));
+        return new ChildDto(service.add(principal.getName(), dto.createChild()));
     }
 
     @PatchMapping

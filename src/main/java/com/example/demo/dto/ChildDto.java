@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public record ChildDto(long id,
                        @Size(min = 1, max = 15, message = "name must be set") String name,
                        LocalDate birthYear) {
-    public Child toChild() {
+    public Child createChild() {
         return new Child(name, birthYear);
     }
 

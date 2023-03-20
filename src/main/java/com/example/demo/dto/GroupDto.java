@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public record GroupDto(@Size(min = 1, max = 15, message = "name must be set") String name,
                        @Min(value = 1, message = "max size must be bigger then zero")
                        @Max(value = 99, message = "max size must be lover then hundred") int maxSize) {
-    public Group toGroup() {
+    public Group createGroup() {
         return new Group(name, maxSize);
     }
 }
