@@ -2,6 +2,8 @@ package com.example.demo.controller.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.demo.enums.Claim;
 import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
@@ -55,7 +57,7 @@ public class TokenProviderImpl implements TokenProvider {
             stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
             var authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        } catch (Exception ex) {
+        } catch (TokenExpiredException | JWTDecodeException ex) {
             throw new BadTokenException();
         }
     }
@@ -69,7 +71,7 @@ public class TokenProviderImpl implements TokenProvider {
             var user = new TeacherUserDetails(repository.findTeacherByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
             return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user));
-        } catch (Exception ex) {
+        } catch (TokenExpiredException | JWTDecodeException | TeacherNotFoundException ex) {
             throw new BadTokenException();
         }
     }

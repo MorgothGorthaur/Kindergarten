@@ -1,16 +1,17 @@
 package com.example.demo.configuration.filter;
 
 
+import com.example.demo.controller.security.TokenProvider;
 import com.example.demo.enums.AuthenticationRequestParameter;
 import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.model.TeacherUserDetails;
-import com.example.demo.controller.security.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -35,7 +36,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private Authentication authenticate(String email, String password, UsernamePasswordAuthenticationToken token) {
         try {
             return authenticationManager.authenticate(token);
-        } catch (Exception ex) {
+        } catch (InternalAuthenticationServiceException ex) {
             throw new BadPasswordOrEmailException(email, password);
         }
     }
