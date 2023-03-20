@@ -1,7 +1,7 @@
 package com.example.demo.configuration.filter;
 
 
-import com.example.demo.enums.RequestParameter;
+import com.example.demo.enums.AuthenticationRequestParameter;
 import com.example.demo.exception.BadPasswordOrEmailException;
 import com.example.demo.model.TeacherUserDetails;
 import com.example.demo.controller.security.TokenProvider;
@@ -26,8 +26,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-            var email = request.getParameter(RequestParameter.EMAIL.getParameter());
-            var password = request.getParameter(RequestParameter.PASSWORD.getParameter());
+            var email = request.getParameter(AuthenticationRequestParameter.EMAIL.getParameter());
+            var password = request.getParameter(AuthenticationRequestParameter.PASSWORD.getParameter());
             var token = new UsernamePasswordAuthenticationToken(email, password);
         return authenticate(email, password, token);
     }
