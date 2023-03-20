@@ -10,4 +10,8 @@ public record RelativeDto(long id,
     public Relative toRelative() {
         return new Relative(name, phone, address);
     }
+
+    public RelativeDto(Relative relative) {
+        this(relative.getId(), relative.getName(), relative.getPhone(), relative.getAddress());
+    }
 }

@@ -13,4 +13,8 @@ public record ChildDto(long id,
     public Child toChild() {
         return new Child(name, birthYear);
     }
+
+    public ChildDto(Child child) {
+        this(child.getId(), child.getName(), child.getBirthYear());
+    }
 }
