@@ -36,6 +36,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private Authentication authenticate(UsernamePasswordAuthenticationToken token) {
         try {
             return authenticationManager.authenticate(token);
+
         } catch (InternalAuthenticationServiceException ex) {
             throw new BadPasswordOrEmailException(token.getName());
         }
