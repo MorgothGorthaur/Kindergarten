@@ -1,4 +1,3 @@
-import LoginService from "./LoginService";
 import CallApi from "./CallApi";
 
 export default class RelativesService {
@@ -23,7 +22,7 @@ export default class RelativesService {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + tokens.access_token
             },
-            body: JSON.stringify({ name, phone, address})
+            body: JSON.stringify({name, phone, address})
         };
         return await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}`, requestOptions, tokens, setTokens);
     }
@@ -47,7 +46,7 @@ export default class RelativesService {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + tokens.access_token
             },
-            body: JSON.stringify({ id, name, phone, address})
+            body: JSON.stringify({id, name, phone, address})
         };
         return await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}`, requestOptions, tokens, setTokens);
     }

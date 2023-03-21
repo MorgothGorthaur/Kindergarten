@@ -1,17 +1,16 @@
-import {useState, useEffect} from "react";
-import {Button, Modal, ModalFooter} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {Button, Modal} from "react-bootstrap";
 import RelativesService from "../API/RelativesService";
 import RelativeListItem from "./RelativeLIstItem";
 import RelativeForm from "./RelativeForm";
 import Loader from "../UI/Loader/Loader";
-import React from "react";
 
 function Relatives({tokens, setTokens, kidId}) {
     const [relatives, setRelatives] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [loader, setLoader] = useState(true);
     useEffect(() => {
-        if(loader) {
+        if (loader) {
             async function fetchRelatives() {
                 RelativesService.get(tokens, setTokens, kidId).then((data) => {
                     setRelatives(data);
@@ -29,7 +28,7 @@ function Relatives({tokens, setTokens, kidId}) {
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                     <Loader/>
                 </div>
-            ):(
+            ) : (
                 <div>
                     {relatives.length === 0 ? (
                         <p>Relatives not found.</p>

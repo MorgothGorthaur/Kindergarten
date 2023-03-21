@@ -1,7 +1,6 @@
-import LoginService from "./LoginService";
 import CallApi from './CallApi'
-export default class GroupService {
 
+export default class GroupService {
 
 
     static async getGroup(tokens, setTokens) {

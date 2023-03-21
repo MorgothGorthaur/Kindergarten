@@ -1,8 +1,7 @@
 import {Button, Form} from "react-bootstrap";
 import Input from "../UI/Input/Input";
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import TeacherService from "../API/TeacherService";
-import LoginService from "../API/LoginService";
 
 const TeacherForm = ({teacher, tokens, setTokens}) => {
     const [name, setName] = useState('');
