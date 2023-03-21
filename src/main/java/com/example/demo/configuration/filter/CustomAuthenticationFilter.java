@@ -30,14 +30,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         var email = request.getParameter(AuthenticationRequestParameter.EMAIL.getParameter());
         var password = request.getParameter(AuthenticationRequestParameter.PASSWORD.getParameter());
         var token = new UsernamePasswordAuthenticationToken(email, password);
-        return authenticate(email, password, token);
+        return authenticate(token);
     }
 
-    private Authentication authenticate(String email, String password, UsernamePasswordAuthenticationToken token) {
+    private Authentication authenticate(UsernamePasswordAuthenticationToken token) {
         try {
             return authenticationManager.authenticate(token);
         } catch (InternalAuthenticationServiceException ex) {
-            throw new BadPasswordOrEmailException(email, password);
+            throw new BadPasswordOrEmailException(token.getName());
         }
     }
 
