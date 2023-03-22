@@ -69,11 +69,11 @@ class TokenProviderTest {
 
     @Test
     void testVerifyAccessToken_shouldThrowBadTokenException_withExpiredToken() {
-        var invalidToken = """
+        var expiredToken = """
                 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.
                 eyJzdWIiOiJ2YXN5YXB1cGtpbkBnbWFpbC5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG
                 9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjc4NDk1NTc5fQ.BOuGXju7RUGvP2qfoA6ZRNHk6kV7IuSlENm4qPkXQ8Q""";
-        assertThrows(BadTokenException.class, () -> tokenProvider.verifyAccessToken(invalidToken));
+        assertThrows(BadTokenException.class, () -> tokenProvider.verifyAccessToken(expiredToken));
     }
 
 
@@ -96,11 +96,11 @@ class TokenProviderTest {
 
     @Test
     void testVerifyRefreshAndRegenerateAccessToken_shouldThrowBadTokenException_withExpiredToken() {
-        var invalidToken = """
+        var expiredToken = """
                 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
                 .eyJzdWIiOiJ2aWN0b3JAZ21haWwuY29tIiwiaXNzIjoiaHR0cDovL2xvY2FsaG
                 9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjc5NDIyNTQwfQ.2ddMsRQPlfPCurDi749DFIqcEIhuKqRvyhdXg8DW3Iw""";
-        assertThrows(BadTokenException.class, () -> tokenProvider.verifyRefreshAndRegenerateAccessToken(invalidToken, "/refresh"));
+        assertThrows(BadTokenException.class, () -> tokenProvider.verifyRefreshAndRegenerateAccessToken(expiredToken, "/refresh"));
     }
 
 }
