@@ -97,14 +97,6 @@
   font-size: 18px;
 }
 
-.kids-list-item .kid-name {
-  font-weight: bold;
-}
-
-.kids-list-item .birth-year {
-  margin-left: 10px;
-}
-
 .kids-list-container {
   max-width: 800px;
   margin: 0 auto;

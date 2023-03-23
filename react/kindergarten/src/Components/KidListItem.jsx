@@ -22,8 +22,8 @@ function KidListItem({kid, tokens, setTokens, kids, setKids, group, setGroup}) {
         <div>
             <div>
                 <li className="kids-list-item" key={kid.id}>
-                    <span className="kid-name">{kid.name}</span>
-                    <span className="birth-year">({kid.birthYear})</span>
+                    <span>{kid.name}</span>
+                    <span>({kid.birthYear})</span>
                     <div className="button-container">
                         <Button variant="primary" onClick={() => setUpdateChildForm(true)}>update</Button>
                         <Button variant="danger" onClick={() => handleDelete()}>delete</Button>
