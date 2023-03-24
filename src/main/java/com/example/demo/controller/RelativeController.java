@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.RelativeDto;
 import com.example.demo.repository.RelativeRepository;
 import com.example.demo.service.RelativeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class RelativeController {
     }
 
     @PostMapping("/{childId}")
-    public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
+    public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody @Valid RelativeDto dto) {
         return new RelativeDto(service.add(principal.getName(), childId, dto.name(), dto.address(), dto.phone()));
     }
 
@@ -36,7 +37,7 @@ public class RelativeController {
 
 
     @PatchMapping("/{childId}")
-    public void update(Principal principal, @PathVariable long childId, @RequestBody RelativeDto dto) {
+    public void update(Principal principal, @PathVariable long childId, @RequestBody @Valid RelativeDto dto) {
         service.updateOrReplaceRelative(principal.getName(), childId, dto.id(), dto.name(), dto.address(), dto.phone());
     }
 }
