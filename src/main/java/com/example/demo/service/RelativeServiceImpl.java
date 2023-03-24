@@ -37,8 +37,9 @@ public class RelativeServiceImpl implements RelativeService {
     public void updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone) {
         var updatedRelative = repository.findRelativeByIdAndChildIdAndTeacherEmail(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
-        repository.findEqualRelativeWithAnotherId(name, address, phone, relativeId)
-                .ifPresentOrElse(equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative), () -> updateRelative(name, address, phone, updatedRelative));
+        repository.findEqualRelativeWithAnotherId(name, address, phone, relativeId).ifPresentOrElse(
+                equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative),
+                () -> updateRelative(name, address, phone, updatedRelative));
     }
 
     private void updateRelative(String name, String address, String phone, Relative updatedRelative) {
