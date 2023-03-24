@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 @SpringJUnitConfig
 @DataJpaTest
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -42,8 +42,8 @@ class RelativeRepositoryTest {
         var group2 = new Group("Group 2", 4);
         var group3 = new Group("Group 3", 2);
 
-        var relative1 = relativeRepository.save( new Relative("John's relative", "+1234567890", "John's relative address"));
-        var relative2 =  relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
+        var relative1 = relativeRepository.save(new Relative("John's relative", "+1234567890", "John's relative address"));
+        var relative2 = relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
         var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1),
                 relative1));
         var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2),
@@ -51,7 +51,7 @@ class RelativeRepositoryTest {
         var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3),
                 relative2));
         var child4 = childRepository.save(new Child("Child 4", LocalDate.of(2018, 4, 4),
-               relative2));
+                relative2));
         var child5 = childRepository.save(new Child("Child 5", LocalDate.of(2019, 5, 5),
                 relative2));
         child5.addRelative(relative1);
@@ -98,11 +98,12 @@ class RelativeRepositoryTest {
     @Test
     void testFindEqualRelative() {
         var relatives = relativeRepository.findAll();
-        assertThat(relativeRepository.findEqualRelative("John's relative", "John's relative address","+1234567890")).isPresent();
+        assertThat(relativeRepository.findEqualRelative("John's relative", "John's relative address", "+1234567890")).isPresent();
     }
 
     @Test
     void testFindEqualRelativeWithAnotherId() {
-        assertThat(relativeRepository.findEqualRelativeWithAnotherId("John's relative", "John's relative address","+1234567890", 3L)).isPresent();
+        assertThat(relativeRepository.findEqualRelativeWithAnotherId("John's relative", "John's relative address", "+1234567890", 3L)).isPresent();
     }
+
 }
