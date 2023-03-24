@@ -7,6 +7,9 @@ import java.util.Map;
 public interface TokenProvider {
     Map<String, String> generateTokens(String requestUrl, TeacherUserDetails user);
 
+    /**
+     * verifies access token, next creates a UsernamePasswordAuthenticationToken and adds it to a SecurityContextHolder
+     */
     void verifyAccessToken(String accessToken);
 
     Map<String, String> verifyRefreshAndRegenerateAccessToken(String refreshToken, String requestUrl);
