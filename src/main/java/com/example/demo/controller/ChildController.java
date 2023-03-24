@@ -35,7 +35,7 @@ public class ChildController {
 
     @GetMapping("/birth")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.findKidsThatWaitBirthDay(principal.getName())
+        return repository.findKidsByTeachersEmailThatWaitBirthDay(principal.getName())
                 .stream().map(ChildDto::new).toList();
     }
 
@@ -51,13 +51,14 @@ public class ChildController {
 
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid ChildDto dto) {
-        if (repository.updateChild(principal.getName(), dto.id(), dto.name(), dto.birthYear()) == 0)
+        if (repository.updateChildByIdAndTeachersEmail(principal.getName(), dto.id(), dto.name(), dto.birthYear()) == 0)
             throw new ChildNotFoundException(principal.getName());
     }
 
     @DeleteMapping("/{id}")
     public void delete(Principal principal, @PathVariable long id) {
-        if (repository.deleteChild(principal.getName(), id) == 0) throw new ChildNotFoundException(principal.getName());
+        if (repository.deleteChildByIdAndTeachersEmail(principal.getName(), id) == 0)
+            throw new ChildNotFoundException(principal.getName());
     }
 
 }

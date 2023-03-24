@@ -117,7 +117,7 @@ class ChildRepositoryTest {
     void testUpdateChild_shouldReturnOne() {
         var email = "john@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.updateChild(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(1);
+        assertThat(childRepository.updateChildByIdAndTeachersEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(1);
 
     }
 
@@ -125,7 +125,7 @@ class ChildRepositoryTest {
     void testUpdateChild_shouldReturnZero() {
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.updateChild(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(0);
+        assertThat(childRepository.updateChildByIdAndTeachersEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(0);
 
     }
 
@@ -140,13 +140,13 @@ class ChildRepositoryTest {
 
     @Transactional
     int delete(String email, long id) {
-        return childRepository.deleteChild(email, id);
+        return childRepository.deleteChildByIdAndTeachersEmail(email, id);
     }
 
     @Test
     void testDeleteChild_shouldReturnZero() {
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.deleteChild(email, kids.get(0).getId())).isEqualTo(0);
+        assertThat(childRepository.deleteChildByIdAndTeachersEmail(email, kids.get(0).getId())).isEqualTo(0);
     }
 }

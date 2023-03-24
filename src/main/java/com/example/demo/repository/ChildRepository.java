@@ -21,7 +21,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query("SELECT c FROM Child c WHERE c.group.teacher.email = ?1" +
             " AND (MONTH(c.birthYear) > MONTH(CURRENT_DATE())" +
             " OR (MONTH(c.birthYear) = MONTH(CURRENT_DATE()) AND DAY(c.birthYear) > DAY(CURRENT_DATE())))")
-    List<Child> findKidsThatWaitBirthDay(String email);
+    List<Child> findKidsByTeachersEmailThatWaitBirthDay(String email);
 
     @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t JOIN FETCH c.relatives r JOIN FETCH r.kids k WHERE k.id = ?1 AND c.id <> k.id")
     List<Child> findBrothersAndSistersWithTheirGroupsAndTeachers(long id);
@@ -32,10 +32,10 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Child c SET c.name = ?3, c.birthYear = ?4 WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
-    int updateChild(String email, long id, String name, LocalDate birthYear);
+    int updateChildByIdAndTeachersEmail(String email, long id, String name, LocalDate birthYear);
 
     @Modifying
     @Transactional
     @Query("DELETE FROM Child c WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
-    int deleteChild(String email, long id);
+    int deleteChildByIdAndTeachersEmail(String email, long id);
 }
