@@ -12,6 +12,9 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("UPDATE Teacher t SET t.group = NULL  WHERE t.email = ?1 AND NOT EXISTS (SELECT c FROM Child c WHERE c.group.teacher.email = ?1)")
     int deleteGroupFromTeacherIfGroupDoesntContainsKids(String email);
 
+    /**
+     * updates group by teacher`s email, if quantity of kids in this group is lower than new maxSize
+     */
     @Modifying
     @Transactional
     @Query("UPDATE Group g SET g.name = ?2, g.maxSize = ?3 WHERE SIZE(g.kids) <= ?3 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = g.id)")
