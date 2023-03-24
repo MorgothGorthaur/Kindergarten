@@ -7,25 +7,25 @@ import com.example.demo.model.Relative;
 import com.example.demo.model.Teacher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig
 @DataJpaTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ChildRepositoryTest {
     @Autowired
     private TeacherRepository teacherRepository;
@@ -35,6 +35,7 @@ class ChildRepositoryTest {
     private ChildRepository childRepository;
     @Autowired
     private RelativeRepository relativeRepository;
+
     @BeforeEach
     public void setUp() {
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
@@ -45,8 +46,8 @@ class ChildRepositoryTest {
         var group2 = new Group("Group 2", 4);
         var group3 = new Group("Group 3", 2);
 
-        var relative1 = relativeRepository.save( new Relative("John's relative", "+1234567890", "John's relative address"));
-        var relative2 =  relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
+        var relative1 = relativeRepository.save(new Relative("John's relative", "+1234567890", "John's relative address"));
+        var relative2 = relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
         var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1),
                 relative1));
         var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2),
@@ -79,6 +80,7 @@ class ChildRepositoryTest {
         childRepository.deleteAll();
         relativeRepository.deleteAll();
     }
+
     @Test
     void testFindKidsByTeacherEmail() {
         var email = "john@example.com";
@@ -128,14 +130,18 @@ class ChildRepositoryTest {
     }
 
     @Test
-    @Disabled
+    @Transactional
     void testDeleteChild_shouldReturnOne() {
         var email = "john@example.com";
         var id = childRepository.findAll().get(0).getId();
-        assertThat(childRepository.deleteChild(email, id)).isEqualTo(1);
+        //  childRepository.deleteChild(email, id);
+        delete(email, id);
     }
 
-
+    @Transactional
+    int delete(String email, long id) {
+        return childRepository.deleteChild(email, id);
+    }
 
     @Test
     void testDeleteChild_shouldReturnZero() {

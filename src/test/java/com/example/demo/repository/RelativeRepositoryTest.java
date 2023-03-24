@@ -97,7 +97,6 @@ class RelativeRepositoryTest {
 
     @Test
     void testFindEqualRelative() {
-        var relatives = relativeRepository.findAll();
         assertThat(relativeRepository.findEqualRelative("John's relative", "John's relative address", "+1234567890")).isPresent();
     }
 
