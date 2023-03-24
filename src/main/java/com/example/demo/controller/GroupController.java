@@ -27,7 +27,8 @@ public class GroupController {
 
     @GetMapping
     public GroupWithCurrentSizeDto getGroup(Principal principal) {
-        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(GroupWithCurrentSizeDto::new).orElse(null);
+        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
+                .map(Teacher::getGroup).map(GroupWithCurrentSizeDto::new).orElse(null);
     }
 
     @PostMapping
