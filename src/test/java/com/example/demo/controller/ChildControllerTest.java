@@ -119,7 +119,7 @@ class ChildControllerTest {
         child1.setGroup(group);
         child2.setGroup(group);
         child3.setGroup(group);
-        when(repository.findBrothersAndSisters(anyLong())).thenReturn(List.of(child2, child3));
+        when(repository.findBrothersAndSistersWithTheirGroupsAndTeachers(anyLong())).thenReturn(List.of(child2, child3));
 
         mockMvc.perform(get("/kindergarten/child/{id}", 1))
                 .andExpect(status().isOk())

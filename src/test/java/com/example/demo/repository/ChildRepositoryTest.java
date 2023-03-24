@@ -100,7 +100,7 @@ class ChildRepositoryTest {
     void testFindBrothersAndSisters() {
         var email = "john@example.com";
         var kids = childRepository.findAll();
-        var result = childRepository.findBrothersAndSisters(kids.get(0).getId());
+        var result = childRepository.findBrothersAndSistersWithTheirGroupsAndTeachers(kids.get(0).getId());
         assertThat(result.size()).isEqualTo(2);
     }
 
