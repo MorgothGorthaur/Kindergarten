@@ -51,5 +51,8 @@ public class Child {
         relatives.remove(relative);
     }
 
+    public void addGroup(Group group) {
+        this.group = group;
+    }
 
 }
