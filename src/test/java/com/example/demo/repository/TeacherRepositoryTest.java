@@ -9,15 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
- 
+
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class TeacherRepositoryTest {
 
     @Autowired
@@ -26,15 +29,12 @@ class TeacherRepositoryTest {
     private GroupRepository groupRepository;
     @Autowired
     private ChildRepository childRepository;
-    @Autowired
-    private RelativeRepository relativeRepository;
 
     @AfterEach
     public void remove() {
         teacherRepository.deleteAll();
         groupRepository.deleteAll();
         childRepository.deleteAll();
-        relativeRepository.deleteAll();
     }
 
     @Test
@@ -92,20 +92,23 @@ class TeacherRepositoryTest {
         assertThat(teacherRepository.deleteTeacherByEmailIfGroupDoesntContainsKids(email)).isEqualTo(0);
     }
 
-    private void createTeacherWithGroupAndKids() {
+    public void createTeacherWithGroupAndKids() {
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
         var group1 = new Group("Group 1", 3);
-        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1), null));
-        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2), null));
-        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3), null));
-        group1.addChild(child1);
-        group1.addChild(child2);
-        group1.addChild(child3);
         teacher1.addGroup(group1);
         teacherRepository.save(teacher1);
+        var child1 = new Child("Child 1", LocalDate.of(2015, 1, 1), null);
+        child1.addGroup(group1);
+        childRepository.save(child1);
+        var child2 = new Child("Child 2", LocalDate.of(2016, 2, 2), null);
+        child2.addGroup(group1);
+        childRepository.save(child2);
+        var child3 = new Child("Child 3", LocalDate.of(2017, 3, 3), null);
+        child3.addGroup(group1);
+        childRepository.save(child3);
     }
 
-    private void createTeachersWithGroups() {
+    public void createTeachersWithGroups() {
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
         var teacher2 = new Teacher("Jane Doe", "+0987654321", "jane_skype", "jane@example.com", "password2");
         var teacher3 = new Teacher("Bob Johnson", "+1111111111", "bob_skype", "bob@example.com", "password3");
@@ -119,7 +122,7 @@ class TeacherRepositoryTest {
         teacherRepository.saveAll(List.of(teacher1, teacher2, teacher3));
     }
 
-    private void createTeacher() {
+    public void createTeacher() {
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
         teacherRepository.save(teacher1);
     }
