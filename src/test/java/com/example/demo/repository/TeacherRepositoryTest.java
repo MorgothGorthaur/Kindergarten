@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+ 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -95,12 +95,9 @@ class TeacherRepositoryTest {
     private void createTeacherWithGroupAndKids() {
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
         var group1 = new Group("Group 1", 3);
-        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1),
-                null));
-        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2),
-                null));
-        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3),
-                null));
+        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1), null));
+        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2), null));
+        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3), null));
         group1.addChild(child1);
         group1.addChild(child2);
         group1.addChild(child3);
