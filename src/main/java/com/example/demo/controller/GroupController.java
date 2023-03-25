@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.GroupDto;
 import com.example.demo.dto.GroupWithCurrentSizeDto;
 import com.example.demo.exception.GroupContainsKidsException;
-import com.example.demo.exception.ToManyChildrenInGroupException;
+import com.example.demo.exception.TooManyChildrenInGroupException;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
@@ -39,7 +39,7 @@ public class GroupController {
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
         if (repository.updateGroup(principal.getName(), dto.name(), dto.maxSize()) == 0)
-            throw new ToManyChildrenInGroupException(dto.maxSize());
+            throw new TooManyChildrenInGroupException(dto.maxSize());
     }
 
     @DeleteMapping

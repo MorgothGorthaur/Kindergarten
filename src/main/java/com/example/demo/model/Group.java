@@ -14,6 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class Group {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -34,6 +35,10 @@ public class Group {
     public Group(String name, int maxSize) {
         this.name = name;
         this.maxSize = maxSize;
+    }
+
+    public boolean isFull() {
+        return kids.size() >= maxSize;
     }
 
     public int getCurrentSize() {
