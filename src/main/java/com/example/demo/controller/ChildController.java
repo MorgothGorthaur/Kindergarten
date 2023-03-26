@@ -40,7 +40,7 @@ public class ChildController {
     }
 
     @GetMapping("/{id}")
-    public List<ChildWithGroupDto> getBrothersAndSisters(@PathVariable long id) {
+    public List<ChildWithGroupDto> getSiblings(@PathVariable long id) {
         return repository.findSiblingsWithTheirGroupsAndTeachers(id).stream().map(ChildWithGroupDto::new).toList();
     }
 

@@ -1,9 +1,8 @@
-import {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import KidsService from "../API/KidsService";
 import Loader from "../UI/Loader/Loader";
-import React from "react";
 
-function KidBrothersAndSisters({id, tokens, setTokens}) {
+function Siblings({id, tokens, setTokens}) {
     const [kids, setKids] = useState([]);
     const [loader, setLoader] = useState(true);
     useEffect(() => {
@@ -46,4 +45,4 @@ function KidBrothersAndSisters({id, tokens, setTokens}) {
     );
 };
 
-export default KidBrothersAndSisters;
+export default Siblings;
