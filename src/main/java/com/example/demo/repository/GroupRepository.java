@@ -7,13 +7,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
+    /**
+     * deletes the group of the teacher if it doesn`t contain any child
+     */
     @Modifying
     @Transactional
     @Query("UPDATE Teacher t SET t.group = NULL  WHERE t.email = ?1 AND NOT EXISTS (SELECT c FROM Child c WHERE c.group.teacher.email = ?1)")
-    int deleteGroupFromTeacherIfGroupDoesntContainsKids(String email);
+    int deleteGroup(String email);
 
     /**
-     * updates group by teacher`s email, if quantity of kids in this group is lower than new maxSize
+     * updates the group by the teacher`s email, if quantity of kids in this group is lower than the new maxSize
      */
     @Modifying
     @Transactional

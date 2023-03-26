@@ -35,7 +35,7 @@ public class ChildController {
 
     @GetMapping("/birth")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.findKidsByTeachersEmailThatWaitBirthDay(principal.getName())
+        return repository.findKidsThatWaitBirthDayByTeachersEmail(principal.getName())
                 .stream().map(ChildDto::new).toList();
     }
 

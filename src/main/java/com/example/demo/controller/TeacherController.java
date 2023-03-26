@@ -53,7 +53,7 @@ public class TeacherController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void remove(Principal principal) {
-        if (repository.deleteTeacherByEmailIfGroupDoesntContainsKids(principal.getName()) == 0)
+        if (repository.deleteTeacherByEmail(principal.getName()) == 0)
             throw new GroupContainsKidsException();
     }
 }

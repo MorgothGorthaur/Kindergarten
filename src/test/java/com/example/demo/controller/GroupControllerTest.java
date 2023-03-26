@@ -88,7 +88,7 @@ class GroupControllerTest {
 
     @Test
     void testRemove() throws Exception {
-        when(groupRepository.deleteGroupFromTeacherIfGroupDoesntContainsKids(anyString())).thenReturn(1);
+        when(groupRepository.deleteGroup(anyString())).thenReturn(1);
 
         mockMvc.perform(delete("/kindergarten/group"))
                 .andExpect(status().isOk());

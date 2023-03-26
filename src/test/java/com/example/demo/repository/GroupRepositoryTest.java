@@ -43,14 +43,14 @@ class GroupRepositoryTest {
     void testDeleteGroupFromTeacher_shouldReturnOne() {
         createTeacherWithGroup();
         var email = "john@example.com";
-        assertThat(groupRepository.deleteGroupFromTeacherIfGroupDoesntContainsKids(email)).isEqualTo(1);
+        assertThat(groupRepository.deleteGroup(email)).isEqualTo(1);
     }
 
     @Test
     void testDeleteGroupFromTeacher_shouldReturnZero() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
-        assertThat(groupRepository.deleteGroupFromTeacherIfGroupDoesntContainsKids(email)).isEqualTo(0);
+        assertThat(groupRepository.deleteGroup(email)).isEqualTo(0);
     }
 
     @Test

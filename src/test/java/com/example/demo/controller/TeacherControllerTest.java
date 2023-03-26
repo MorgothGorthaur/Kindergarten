@@ -108,7 +108,7 @@ public class TeacherControllerTest {
     @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
     void testRemove() throws Exception {
-        when(teacherRepository.deleteTeacherByEmailIfGroupDoesntContainsKids(anyString())).thenReturn(1);
+        when(teacherRepository.deleteTeacherByEmail(anyString())).thenReturn(1);
 
         mockMvc.perform(delete("/kindergarten/teacher")
                         .contentType(MediaType.APPLICATION_JSON))

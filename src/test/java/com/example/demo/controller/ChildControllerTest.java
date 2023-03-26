@@ -97,7 +97,7 @@ class ChildControllerTest {
         child2.setId(1L);
         var child3 = new Child("Charlie", LocalDate.of(2022, 3, 21));
         child3.setId(2L);
-        when(repository.findKidsByTeachersEmailThatWaitBirthDay(anyString())).thenReturn(List.of(child1, child2, child3));
+        when(repository.findKidsThatWaitBirthDayByTeachersEmail(anyString())).thenReturn(List.of(child1, child2, child3));
 
         mockMvc.perform(get("/kindergarten/child/birth"))
                 .andExpect(status().isOk())

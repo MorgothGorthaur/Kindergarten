@@ -53,7 +53,7 @@ class RelativeControllerTest {
         relative2.setId(1L);
         var relativeList = List.of(relative1, relative2);
 
-        when(repository.findRelativesByChildIdAndTeacherEmail(childId, email)).thenReturn(relativeList);
+        when(repository.findRelatives(childId, email)).thenReturn(relativeList);
 
         mockMvc.perform(get("/kindergarten/relative/{childId}", childId))
                 .andExpect(status().isOk())

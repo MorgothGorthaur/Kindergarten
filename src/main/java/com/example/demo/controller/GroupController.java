@@ -44,7 +44,7 @@ public class GroupController {
 
     @DeleteMapping
     public void remove(Principal principal) {
-        if (repository.deleteGroupFromTeacherIfGroupDoesntContainsKids(principal.getName()) == 0)
+        if (repository.deleteGroup(principal.getName()) == 0)
             throw new GroupContainsKidsException();
     }
 }
