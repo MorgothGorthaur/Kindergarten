@@ -31,12 +31,7 @@ public class Child {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
-
-    public Child(String name, LocalDate birthYear, Relative relative) {
-        this.name = name;
-        this.birthYear = birthYear;
-        addRelative(relative);
-    }
+    
 
     public Child(String name, LocalDate birthYear) {
         this.name = name;
