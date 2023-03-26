@@ -11,11 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class ChildRepositoryTest {
     @Autowired
     private TeacherRepository teacherRepository;
@@ -81,7 +77,7 @@ class ChildRepositoryTest {
     }
 
     @Test
-    void testUpdateChild_shouldReturnOne() {
+    void testUpdateChildByIdAndTeachersEmail_shouldReturnOne() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
         var kids = childRepository.findAll();
@@ -89,7 +85,7 @@ class ChildRepositoryTest {
     }
 
     @Test
-    void testUpdateChild_shouldReturnZero() {
+    void testUpdateChildByIdAndTeachersEmail_shouldReturnZero() {
         createTeacherWithGroupAndKids();
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
@@ -97,7 +93,7 @@ class ChildRepositoryTest {
     }
 
     @Test
-    public void testDeleteChild_shouldReturnOne() {
+    public void testDeleteChildByIdAndTeachersEmail_shouldReturnOne() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
         var kids = childRepository.findAll();
@@ -107,7 +103,7 @@ class ChildRepositoryTest {
     }
 
     @Test
-    void testDeleteChild_shouldReturnZero() {
+    void testDeleteChildByIdAndTeachersEmail_shouldReturnZero() {
         createTeacherWithGroupAndKids();
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
@@ -118,36 +114,31 @@ class ChildRepositoryTest {
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
         var group1 = new Group("Group 1", 3);
         teacher1.addGroup(group1);
+        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1)));
+        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2)));
+        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3)));
+        group1.addChild(child1);
+        group1.addChild(child2);
+        group1.addChild(child3);
         teacherRepository.save(teacher1);
-        var child1 = new Child("Child 1", LocalDate.of(2015, 1, 1), null);
-        child1.addGroup(group1);
-        childRepository.save(child1);
-        var child2 = new Child("Child 2", LocalDate.of(2016, 2, 2), null);
-        child2.addGroup(group1);
-        childRepository.save(child2);
-        var child3 = new Child("Child 3", LocalDate.of(2017, 3, 3), null);
-        child3.addGroup(group1);
-        childRepository.save(child3);
     }
 
     public void createTeacherWithGroupAndKidsAndRelatives() {
-        var relative1 = new Relative("John's relative", "+1234567890", "John's relative address");
-        var relative2 = new Relative("Jane's relative", "+0987654321", "Jane's relative address");
+        var relative1 = relativeRepository.save(new Relative("John's relative", "+1234567890", "John's relative address"));
+        var relative2 = relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
         var group1 = new Group("Group 1", 3);
         teacher1.addGroup(group1);
-        teacherRepository.save(teacher1);
-        var child1 = new Child("Child 1", LocalDate.of(2015, 1, 1), null);
-        child1.addGroup(group1);
+        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1)));
         child1.addRelative(relative1);
-        var child2 = new Child("Child 2", LocalDate.of(2016, 2, 2), null);
-        child2.addGroup(group1);
+        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2)));
         child2.addRelative(relative1);
-        childRepository.saveAll(List.of(child1, child2));
-        var child3 = new Child("Child 3", LocalDate.of(2017, 3, 3), null);
-        child3.addGroup(group1);
+        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3)));
         child3.addRelative(relative2);
-        childRepository.save(child3);
+        group1.addChild(child1);
+        group1.addChild(child2);
+        group1.addChild(child3);
+        teacherRepository.save(teacher1);
 
     }
 }
