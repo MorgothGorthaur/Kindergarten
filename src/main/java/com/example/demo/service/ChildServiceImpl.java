@@ -19,7 +19,7 @@ public class ChildServiceImpl implements ChildService {
         var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(email)
                 .map(Teacher::getGroup)
                 .orElseThrow(() -> new GroupNotFoundException(email));
-        child.addGroup(group);
+        group.addChild(child);
         return repository.save(child);
     }
 }

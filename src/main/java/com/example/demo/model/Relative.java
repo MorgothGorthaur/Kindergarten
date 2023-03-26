@@ -37,4 +37,12 @@ public class Relative {
         this.phone = phone;
         this.address = address;
     }
+
+    public void addChild(Child child) {
+        kids.add(child);
+    }
+
+    public void removeChild(Child child) {
+        kids.remove(child);
+    }
 }

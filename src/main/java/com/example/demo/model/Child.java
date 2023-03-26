@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import com.example.demo.exception.TooManyChildrenInGroupException;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -46,15 +45,13 @@ public class Child {
 
     public void addRelative(Relative relative) {
         relatives.add(relative);
+        relative.addChild(this);
     }
 
     public void removeRelative(Relative relative) {
         relatives.remove(relative);
+        relative.removeChild(this);
     }
 
-    public void addGroup(Group group) {
-        if (group.isFull()) throw new TooManyChildrenInGroupException(group.getMaxSize());
-        this.group = group;
-    }
 
 }

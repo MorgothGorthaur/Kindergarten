@@ -45,5 +45,6 @@ public class Teacher {
     public void addGroup(Group group) {
         if (this.group != null) throw new TeacherAlreadyContainsGroup(email);
         this.group = group;
+        group.setTeacher(this);
     }
 }

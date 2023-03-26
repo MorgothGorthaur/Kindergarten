@@ -18,7 +18,7 @@ public class RelativeServiceImpl implements RelativeService {
     public Relative add(String email, long childId, String name, String address, String phone) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
-        var addedRelative = repository.findEqualRelative(name, address, phone).orElse(new Relative(name, address, phone));
+        var addedRelative = repository.findEqualRelativeWithKids(name, address, phone).orElse(new Relative(name, address, phone));
         child.addRelative(addedRelative);
         return repository.save(addedRelative);
     }
@@ -27,7 +27,7 @@ public class RelativeServiceImpl implements RelativeService {
     public void delete(String email, long childId, long relativeId) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
-        var relative = repository.findRelativeByIdAndChildIdAndTeacherEmail(relativeId, childId, email)
+        var relative = repository.findRelativeWithChildByIdAndChildIdAndTeacherEmail(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
         child.removeRelative(relative);
         childRepository.save(child);
@@ -35,9 +35,9 @@ public class RelativeServiceImpl implements RelativeService {
 
     @Override
     public void updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone) {
-        var updatedRelative = repository.findRelativeByIdAndChildIdAndTeacherEmail(relativeId, childId, email)
+        var updatedRelative = repository.findRelativeWithChildByIdAndChildIdAndTeacherEmail(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
-        repository.findEqualRelativeWithAnotherId(name, address, phone, relativeId).ifPresentOrElse(
+        repository.findEqualRelativeWithKidsAnotherId(name, address, phone, relativeId).ifPresentOrElse(
                 equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative),
                 () -> updateRelative(name, address, phone, updatedRelative));
     }

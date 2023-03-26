@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.exception.TooManyChildrenInGroupException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,8 +38,10 @@ public class Group {
         this.maxSize = maxSize;
     }
 
-    public boolean isFull() {
-        return kids.size() >= maxSize;
+    public void addChild(Child child) {
+        if (kids.size() >= maxSize) throw new TooManyChildrenInGroupException(maxSize);
+        kids.add(child);
+        child.setGroup(this);
     }
 
     public int getCurrentSize() {
