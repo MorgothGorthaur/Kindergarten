@@ -97,7 +97,7 @@ class ChildControllerTest {
         child2.setId(1L);
         var child3 = new Child("Charlie", LocalDate.of(2022, 3, 21));
         child3.setId(2L);
-        when(repository.findKidsThatWaitBirthDayByTeachersEmail(anyString())).thenReturn(List.of(child1, child2, child3));
+        when(repository.findKidsThatWaitBirthDayByTeacherEmail(anyString())).thenReturn(List.of(child1, child2, child3));
 
         mockMvc.perform(get("/kindergarten/child/birth"))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ class ChildControllerTest {
         child1.setGroup(group);
         child2.setGroup(group);
         child3.setGroup(group);
-        when(repository.findBrothersAndSistersWithTheirGroupsAndTeachers(anyLong())).thenReturn(List.of(child2, child3));
+        when(repository.findSiblingsWithTheirGroupsAndTeachers(anyLong())).thenReturn(List.of(child2, child3));
 
         mockMvc.perform(get("/kindergarten/child/{id}", 1))
                 .andExpect(status().isOk())
@@ -151,7 +151,7 @@ class ChildControllerTest {
     void testUpdateChild() throws Exception {
         var child = new ChildDto(1L, "Alice", LocalDate.of(2019, 5, 1));
 
-        when(repository.updateChildByIdAndTeachersEmail(anyString(), anyLong(), anyString(), any(LocalDate.class))).thenReturn(1);
+        when(repository.updateChildByIdAndTeacherEmail(anyString(), anyLong(), anyString(), any(LocalDate.class))).thenReturn(1);
 
         mockMvc.perform(patch("/kindergarten/child")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -161,7 +161,7 @@ class ChildControllerTest {
 
     @Test
     void testDeleteChild() throws Exception {
-        when(repository.deleteChildByIdAndTeachersEmail(anyString(), anyLong())).thenReturn(1);
+        when(repository.deleteChildByIdAndTeacherEmail(anyString(), anyLong())).thenReturn(1);
 
         mockMvc.perform(delete("/kindergarten/child/1"))
                 .andExpect(status().isOk());

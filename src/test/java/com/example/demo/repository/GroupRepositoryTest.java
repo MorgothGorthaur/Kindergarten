@@ -37,31 +37,31 @@ class GroupRepositoryTest {
     }
 
     @Test
-    void testDeleteGroup_shouldReturnOne() {
+    void testDeleteGroupIfEmptyByTeacherEmail_shouldReturnOne() {
         createTeacherWithGroup();
         var email = "john@example.com";
-        assertThat(groupRepository.deleteGroup(email)).isEqualTo(1);
+        assertThat(groupRepository.deleteGroupIfEmptyByTeacherEmail(email)).isEqualTo(1);
     }
 
     @Test
-    void testDeleteGroup_shouldReturnZero() {
+    void testDeleteGroupIfEmptyByTeacherEmail_shouldReturnZero() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
-        assertThat(groupRepository.deleteGroup(email)).isEqualTo(0);
+        assertThat(groupRepository.deleteGroupIfEmptyByTeacherEmail(email)).isEqualTo(0);
     }
 
     @Test
-    void testUpdateGroup_shouldReturnOne() {
+    void testUpdateGroupByTeacherEmail_shouldReturnOne() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
-        assertThat(groupRepository.updateGroup(email, "name", 5)).isEqualTo(1);
+        assertThat(groupRepository.updateGroupByTeacherEmail(email, "name", 5)).isEqualTo(1);
     }
 
     @Test
-    void testUpdateGroup_shouldReturnZero() {
+    void testUpdateGroupByTeacherEmail_shouldReturnZero() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
-        assertThat(groupRepository.updateGroup(email, "name", 1)).isEqualTo(0);
+        assertThat(groupRepository.updateGroupByTeacherEmail(email, "name", 1)).isEqualTo(0);
     }
 
     public void createTeacherWithGroupAndKids() {

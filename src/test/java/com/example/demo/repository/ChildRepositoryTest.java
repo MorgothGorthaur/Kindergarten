@@ -56,10 +56,10 @@ class ChildRepositoryTest {
 
 
     @Test
-    void testFindBrothersAndSistersWithTheirGroupsAndTeachers() {
+    void testFindSiblingsWithTheirGroupsAndTeachers() {
         createTeacherWithGroupAndKidsAndRelatives();
         var kids = childRepository.findAll();
-        var result = childRepository.findBrothersAndSistersWithTheirGroupsAndTeachers(kids.get(0).getId());
+        var result = childRepository.findSiblingsWithTheirGroupsAndTeachers(kids.get(0).getId());
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getGroup()).isNotNull();
         assertThat(result.get(0).getGroup().getTeacher()).isNotNull();
@@ -77,37 +77,37 @@ class ChildRepositoryTest {
     }
 
     @Test
-    void testUpdateChildByIdAndTeachersEmail_shouldReturnOne() {
+    void testUpdateChildByIdAndTeacherEmail_shouldReturnOne() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.updateChildByIdAndTeachersEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(1);
+        assertThat(childRepository.updateChildByIdAndTeacherEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(1);
     }
 
     @Test
-    void testUpdateChildByIdAndTeachersEmail_shouldReturnZero() {
+    void testUpdateChildByIdAndTeacherEmail_shouldReturnZero() {
         createTeacherWithGroupAndKids();
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.updateChildByIdAndTeachersEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(0);
+        assertThat(childRepository.updateChildByIdAndTeacherEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(0);
     }
 
     @Test
-    public void testDeleteChildByIdAndTeachersEmail_shouldReturnOne() {
+    public void testDeleteChildByIdAndTeacherEmail_shouldReturnOne() {
         createTeacherWithGroupAndKids();
         var email = "john@example.com";
         var kids = childRepository.findAll();
         var id = kids.get(0).getId();
-        var res = childRepository.deleteChildByIdAndTeachersEmail(email, id);
+        var res = childRepository.deleteChildByIdAndTeacherEmail(email, id);
         assertThat(res).isEqualTo(1);
     }
 
     @Test
-    void testDeleteChildByIdAndTeachersEmail_shouldReturnZero() {
+    void testDeleteChildByIdAndTeacherEmail_shouldReturnZero() {
         createTeacherWithGroupAndKids();
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.deleteChildByIdAndTeachersEmail(email, kids.get(0).getId())).isEqualTo(0);
+        assertThat(childRepository.deleteChildByIdAndTeacherEmail(email, kids.get(0).getId())).isEqualTo(0);
     }
 
     public void createTeacherWithGroupAndKids() {

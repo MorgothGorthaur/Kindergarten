@@ -78,7 +78,7 @@ class GroupControllerTest {
     void testUpdate() throws Exception {
         GroupDto dto = new GroupDto("New Group Name", 20);
 
-        when(groupRepository.updateGroup(anyString(), anyString(), anyInt())).thenReturn(1);
+        when(groupRepository.updateGroupByTeacherEmail(anyString(), anyString(), anyInt())).thenReturn(1);
 
         mockMvc.perform(patch("/kindergarten/group")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +88,7 @@ class GroupControllerTest {
 
     @Test
     void testRemove() throws Exception {
-        when(groupRepository.deleteGroup(anyString())).thenReturn(1);
+        when(groupRepository.deleteGroupIfEmptyByTeacherEmail(anyString())).thenReturn(1);
 
         mockMvc.perform(delete("/kindergarten/group"))
                 .andExpect(status().isOk());
