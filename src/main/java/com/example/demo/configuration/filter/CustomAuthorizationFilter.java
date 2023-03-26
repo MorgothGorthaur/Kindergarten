@@ -22,7 +22,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith(AuthorizationType.BEARER.getPrefix()))
-            tokenProvider.AuthorizeIfAccessTokenIsValid(authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length()));
+            tokenProvider.authorizeIfAccessTokenIsValid(authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length()));
         filterChain.doFilter(request, response);
     }
 

@@ -45,14 +45,14 @@ class TokenProviderTest {
     }
 
     @Test
-    void testVerifyAccessToken() {
+    void testAuthorizeIfAccessTokenIsValid() {
         var teacher = new Teacher("John", "1234567", "john_skype", "john@example.com", "password");
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
         var userDetails = new TeacherUserDetails(teacher);
         var tokens = tokenProvider.generateTokens("/login", userDetails);
 
-        tokenProvider.AuthorizeIfAccessTokenIsValid(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
+        tokenProvider.authorizeIfAccessTokenIsValid(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         assertThat(authentication).isNotNull();
@@ -62,40 +62,40 @@ class TokenProviderTest {
     }
 
     @Test
-    void testVerifyAccessToken_shouldThrowBadTokenException_withInvalidToken() {
+    void testAuthorizeIfAccessTokenIsValid_shouldThrowBadTokenException_withInvalidToken() {
         var invalidToken = "invalid-token";
-        assertThrows(BadTokenException.class, () -> tokenProvider.AuthorizeIfAccessTokenIsValid(invalidToken));
+        assertThrows(BadTokenException.class, () -> tokenProvider.authorizeIfAccessTokenIsValid(invalidToken));
     }
 
     @Test
-    void testVerifyAccessToken_shouldThrowBadTokenException_withExpiredToken() {
+    void testAuthorizeIfAccessTokenIsValid_shouldThrowBadTokenException_withExpiredToken() {
         var expiredToken = """
                 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.
                 eyJzdWIiOiJ2YXN5YXB1cGtpbkBnbWFpbC5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG
                 9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjc4NDk1NTc5fQ.BOuGXju7RUGvP2qfoA6ZRNHk6kV7IuSlENm4qPkXQ8Q""";
-        assertThrows(BadTokenException.class, () -> tokenProvider.AuthorizeIfAccessTokenIsValid(expiredToken));
+        assertThrows(BadTokenException.class, () -> tokenProvider.authorizeIfAccessTokenIsValid(expiredToken));
     }
 
 
     @Test
-    void testVerifyRefreshAndRegenerateAccessToken() {
+    void testRegenerateAccessTokenIfRefreshTokenIsValid() {
         var teacher = new Teacher("John", "1234567", "john_skype", "john@example.com", "password");
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
         var userDetails = new TeacherUserDetails(teacher);
         var tokens = tokenProvider.generateTokens("/login", userDetails);
-
-        tokenProvider.AuthorizeIfAccessTokenIsValid(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
+        var result = tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(tokens.get(Token.REFRESH_TOKEN.getTokenType()), "/refresh");
+        assertThat(result).isNotNull();
     }
 
     @Test
-    void testVerifyRefreshAndRegenerateAccessToken_shouldThrowBadTokenException_withInvalidToken() {
+    void testRegenerateAccessTokenIfRefreshTokenIsValid_shouldThrowBadTokenException_withInvalidToken() {
         var invalidToken = "invalid-token";
         assertThrows(BadTokenException.class, () -> tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(invalidToken, "/refresh"));
     }
 
     @Test
-    void testVerifyRefreshAndRegenerateAccessToken_shouldThrowBadTokenException_withExpiredToken() {
+    void testRegenerateAccessTokenIfRefreshTokenIsValid_shouldThrowBadTokenException_withExpiredToken() {
         var expiredToken = """
                 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
                 .eyJzdWIiOiJ2aWN0b3JAZ21haWwuY29tIiwiaXNzIjoiaHR0cDovL2xvY2FsaG

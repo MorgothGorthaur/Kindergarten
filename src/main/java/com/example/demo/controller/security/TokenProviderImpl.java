@@ -47,7 +47,7 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public void AuthorizeIfAccessTokenIsValid(String accessToken) {
+    public void authorizeIfAccessTokenIsValid(String accessToken) {
         try {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(accessToken);
