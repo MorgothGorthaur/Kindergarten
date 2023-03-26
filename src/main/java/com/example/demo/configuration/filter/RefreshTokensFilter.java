@@ -29,7 +29,7 @@ public class RefreshTokensFilter extends OncePerRequestFilter {
     }
 
     private void regenerateToken(HttpServletRequest request, HttpServletResponse response, String authorizationHeader) throws IOException {
-        var token = tokenProvider.verifyRefreshAndRegenerateAccessToken(
+        var token = tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(
                 authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length()),
                 request.getRequestURL().toString());
         response.setContentType(APPLICATION_JSON_VALUE);

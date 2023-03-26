@@ -52,7 +52,7 @@ class TokenProviderTest {
         var userDetails = new TeacherUserDetails(teacher);
         var tokens = tokenProvider.generateTokens("/login", userDetails);
 
-        tokenProvider.verifyAccessToken(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
+        tokenProvider.AuthorizeIfAccessTokenIsValid(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         assertThat(authentication).isNotNull();
@@ -64,7 +64,7 @@ class TokenProviderTest {
     @Test
     void testVerifyAccessToken_shouldThrowBadTokenException_withInvalidToken() {
         var invalidToken = "invalid-token";
-        assertThrows(BadTokenException.class, () -> tokenProvider.verifyAccessToken(invalidToken));
+        assertThrows(BadTokenException.class, () -> tokenProvider.AuthorizeIfAccessTokenIsValid(invalidToken));
     }
 
     @Test
@@ -73,7 +73,7 @@ class TokenProviderTest {
                 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.
                 eyJzdWIiOiJ2YXN5YXB1cGtpbkBnbWFpbC5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG
                 9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjc4NDk1NTc5fQ.BOuGXju7RUGvP2qfoA6ZRNHk6kV7IuSlENm4qPkXQ8Q""";
-        assertThrows(BadTokenException.class, () -> tokenProvider.verifyAccessToken(expiredToken));
+        assertThrows(BadTokenException.class, () -> tokenProvider.AuthorizeIfAccessTokenIsValid(expiredToken));
     }
 
 
@@ -85,13 +85,13 @@ class TokenProviderTest {
         var userDetails = new TeacherUserDetails(teacher);
         var tokens = tokenProvider.generateTokens("/login", userDetails);
 
-        tokenProvider.verifyAccessToken(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
+        tokenProvider.AuthorizeIfAccessTokenIsValid(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
     }
 
     @Test
     void testVerifyRefreshAndRegenerateAccessToken_shouldThrowBadTokenException_withInvalidToken() {
         var invalidToken = "invalid-token";
-        assertThrows(BadTokenException.class, () -> tokenProvider.verifyRefreshAndRegenerateAccessToken(invalidToken, "/refresh"));
+        assertThrows(BadTokenException.class, () -> tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(invalidToken, "/refresh"));
     }
 
     @Test
@@ -100,7 +100,7 @@ class TokenProviderTest {
                 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
                 .eyJzdWIiOiJ2aWN0b3JAZ21haWwuY29tIiwiaXNzIjoiaHR0cDovL2xvY2FsaG
                 9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjc5NDIyNTQwfQ.2ddMsRQPlfPCurDi749DFIqcEIhuKqRvyhdXg8DW3Iw""";
-        assertThrows(BadTokenException.class, () -> tokenProvider.verifyRefreshAndRegenerateAccessToken(expiredToken, "/refresh"));
+        assertThrows(BadTokenException.class, () -> tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(expiredToken, "/refresh"));
     }
 
 }

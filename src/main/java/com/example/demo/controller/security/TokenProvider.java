@@ -10,7 +10,7 @@ public interface TokenProvider {
     /**
      * verifies access token, next creates a UsernamePasswordAuthenticationToken and adds it to a SecurityContextHolder
      */
-    void verifyAccessToken(String accessToken);
+    void AuthorizeIfAccessTokenIsValid(String accessToken);
 
-    Map<String, String> verifyRefreshAndRegenerateAccessToken(String refreshToken, String requestUrl);
+    Map<String, String> regenerateAccessTokenIfRefreshTokenIsValid(String refreshToken, String requestUrl);
 }

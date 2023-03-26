@@ -47,7 +47,7 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public void verifyAccessToken(String accessToken) {
+    public void AuthorizeIfAccessTokenIsValid(String accessToken) {
         try {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(accessToken);
@@ -63,7 +63,7 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public Map<String, String> verifyRefreshAndRegenerateAccessToken(String refreshToken, String requestUrl) {
+    public Map<String, String> regenerateAccessTokenIfRefreshTokenIsValid(String refreshToken, String requestUrl) {
         try {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
