@@ -19,23 +19,22 @@ For Authentication and Authorization teachers are using JWT-tokens. Access token
 Used Technologies:
 -------------------
 ### Back-end:
-- Spring Boot, 
-- Spring Web, 
-- Spring Data JPA,
-- MariaDB, 
-- Lombok, 
-- Spring 
-- Security, 
-- java-jwt, 
-- Hibernate Validator, 
-- AssertJ, 
-- Mockito.
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- MariaDB
+- Lombok
+- Spring Security
+- java-jwt
+- Hibernate Validator
+- AssertJ
+- Mockito
 ### Front-end: 
-- ReactJS.
+- ReactJS
 ### Server Build: 
-- Maven.
+- Maven
 ### Client Build: 
-- npm. 
+- npm
 
 Requirements:
 -------------
