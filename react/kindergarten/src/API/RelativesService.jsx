@@ -35,7 +35,8 @@ export default class RelativesService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}/${id}`, requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}/${id}`, requestOptions, tokens, setTokens);
+        if (data) alert(data.debugMessage)
     }
 
     static async update(tokens, setTokens, kidId, id, name, phone, address) {
