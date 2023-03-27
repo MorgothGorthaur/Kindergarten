@@ -16,13 +16,13 @@ function Siblings({id, tokens, setTokens}) {
     }, [id]);
 
     return (
-        <div>
+        <div style={{alignItems: 'center'}}>
             {loader ? (
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                     <Loader/>
                 </div>
             ) : (
-                <table>
+                <table style={{width: '100%', margin: 'auto'}}>
                     <thead>
                     <tr>
                         <th>Name</th>
