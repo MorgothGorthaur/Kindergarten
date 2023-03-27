@@ -25,9 +25,6 @@ const TeacherForm = ({teacher, tokens, setTokens}) => {
         event.preventDefault();
         TeacherService.save(name, phone, skype, email, password);
     };
-    const validation = (data) => {
-        if (data.debugMessage) alert(data.debugMessage);
-    }
     return (
         <Form className="form" onSubmit={teacher ? update : add}>
             <Input type="text" placeholder="name" value={name} onChange={e => setName(e.target.value)}/>
