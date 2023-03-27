@@ -4,7 +4,7 @@ import Input from "../UI/Input/Input";
 import RelativesService from "../API/RelativesService";
 
 const RelativeForm = ({tokens, setTokens, relatives, setRelatives, relative, setShowForm, kidId}) => {
-    const [id, setId] = useState();
+    const [id, setId] = useState(0);
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
@@ -29,12 +29,13 @@ const RelativeForm = ({tokens, setTokens, relatives, setRelatives, relative, set
         e.preventDefault();
         RelativesService.update(tokens, setTokens, kidId, id, name, phone, address).then(data => {
             if (data.ok !== false) {
-                setRelatives([...relatives.filter(k => k.id !== id), {
+                setRelatives([ ...relatives.filter(k => k.id !== id && k.id !== data.id), {
                     id: data.id,
                     name: name,
                     phone: phone,
                     address: address
                 }])
+                console.log(relatives)
                 setShowForm(false);
             }
         })
