@@ -16,15 +16,29 @@ For Authentication and Authorization teachers are using JWT-tokens. Access token
 
 Used Technologies:
 -------------------
-Back-end: Spring Boot, Spring Web, Spring Data JPA, MariaDB, Lombok, Spring Security, java-jwt, Hibernate Validator, AssertJ, Mockito.
-Front-end: ReactJS.
-Server Build: Maven.
-Client Build: npm. 
+### Back-end:
+- Spring Boot, 
+- Spring Web, 
+- Spring Data JPA,
+- MariaDB, 
+- Lombok, 
+- Spring 
+- Security, 
+- java-jwt, 
+- Hibernate Validator, 
+- AssertJ, 
+- Mockito.
+### Front-end: 
+- ReactJS.
+### Server Build: 
+- Maven.
+### Client Build: 
+- npm. 
 
 Requirements:
 -------------
-Java 17
-MariaDB
-Maven
+- Java 17
+- MariaDB
+- Maven
 
 You also must set your database url, password and username to *project directory*/src/main/resources/application.properties file and to *project directory*/src/test/resources/application-test.properties
