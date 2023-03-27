@@ -92,11 +92,16 @@ class RelativeControllerTest {
     @Test
     void testUpdateRelative() throws Exception {
         var relativeDto = new RelativeDto(2L, "Jane Doe", "123 Main St", "555-1234");
-        doNothing().when(relativeService).updateOrReplaceRelative(anyString(), anyLong(), anyLong(), anyString(), anyString(), anyString());
+        var relative = new Relative("Jane Doe", "123 Main St", "555-1234");
+        relative.setId(2L);
+        when(relativeService.updateOrReplaceRelative(anyString(), anyLong(), anyLong(), anyString(), anyString(), anyString())).thenReturn(relative);
         mockMvc.perform(patch("/kindergarten/relative/{childId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(relativeDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(relativeDto.name()))
+                .andExpect(jsonPath("$.address").value(relativeDto.address()))
+                .andExpect(jsonPath("$.phone").value(relativeDto.phone()));
 
     }
 }

@@ -83,6 +83,7 @@ class TokenProviderTest {
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
         var userDetails = new TeacherUserDetails(teacher);
+        when(teacherRepository.findTeacherByEmail(anyString())).thenReturn(Optional.of(teacher));
         var tokens = tokenProvider.generateTokens("/login", userDetails);
         var result = tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(tokens.get(Token.REFRESH_TOKEN.getTokenType()), "/refresh");
         assertThat(result).isNotNull();
