@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import KidsService from '../API/KidsService';
 import Loader from "../UI/Loader/Loader";
 
@@ -15,14 +15,14 @@ function KidsWithRelatives({tokens, setTokens}) {
     }, []);
 
     return (
-        <div>
+        <div style={{alignItems: 'center'}}>
             <h3>Kids with relatives</h3>
             {loader ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-                    <Loader />
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh'}}>
+                    <Loader/>
                 </div>
             ) : kids.length > 0 ? (
-                <table>
+                <table style={{width: '100%', margin: 'auto'}}>
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -37,7 +37,7 @@ function KidsWithRelatives({tokens, setTokens}) {
                             <td>{kid.birthYear}</td>
                             <td>
                                 {kid.relatives.length > 0 ? (
-                                    <table>
+                                    <table style={{width: '100%', margin: 'auto'}}>
                                         <thead>
                                         <tr>
                                             <th>Name</th>

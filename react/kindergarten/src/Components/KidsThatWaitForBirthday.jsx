@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import KidsService from '../API/KidsService';
 import Loader from "../UI/Loader/Loader";
 
@@ -16,14 +16,14 @@ function KidsThatWaitForBirthday({tokens, setTokens}) {
     }, [tokens, setTokens]);
 
     return (
-        <div>
+        <div style={{alignItems: 'center'}}>
             <h3>Kids that wait for birthday</h3>
             {loader ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-                    <Loader />
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh'}}>
+                    <Loader/>
                 </div>
             ) : (
-                <table>
+                <table style={{width: '100%', margin: 'auto'}}>
                     <thead>
                     <tr>
                         <th>Name</th>

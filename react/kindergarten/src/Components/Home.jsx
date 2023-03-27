@@ -35,7 +35,7 @@ function Home() {
     return (
         <div>
             {teacher ? (
-                <div>
+                <div className="tile">
                     <div className="elem-info">
                         <h3>Your Name: {teacher.name}</h3>
                         <h3>Your Phone: {teacher.phone}</h3>

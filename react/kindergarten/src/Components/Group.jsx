@@ -9,7 +9,6 @@ function Group({tokens, setTokens}) {
     const [group, setGroup] = useState()
     const [showAddForm, setShowAddForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
-    const [showKids, setShowKids] = useState(false);
     const [loader, setLoader] = useState(true);
     useEffect(() => {
         if (loader) {
@@ -45,15 +44,7 @@ function Group({tokens, setTokens}) {
                         </Modal>
                     </div>
                     <div>
-                        {
-                            showKids ?
-                                <div>
-                                    <Button variant="dark" onClick={() => setShowKids(false)}> close </Button>
-                                    <KidsMenu tokens={tokens} setTokens={setTokens} group={group} setGroup={setGroup}/>
-                                </div>
-                                :
-                                <Button variant="secondary" onClick={() => setShowKids(true)}> getKidsMenu </Button>
-                        }
+                        <KidsMenu tokens={tokens} setTokens={setTokens} group={group} setGroup={setGroup}/>
                     </div>
                 </div>
 
