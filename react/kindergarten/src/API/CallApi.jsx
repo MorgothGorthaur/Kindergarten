@@ -18,10 +18,12 @@ export default class CallApi {
                     requestOptions.headers.Authorization = `Bearer ${newTokens.access_token}`;
                     const secondResponse = await fetch(url, requestOptions);
                     const newData = await secondResponse.json();
-                    return newData;
+                    if (newData.debugMessage) alert(newData.debugMessage)
+                    else return newData;
                 }
             }
-            return data;
+            if (data.debugMessage) alert(data.debugMessage)
+            else return data;
         } catch (e) {
             console.log(e);
         }

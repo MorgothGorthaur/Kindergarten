@@ -34,26 +34,27 @@ public class RelativeServiceImpl implements RelativeService {
     }
 
     @Override
-    public void updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone) {
+    public Relative updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone) {
         var updatedRelative = repository.findRelativeWithChild(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
-        repository.findEqualRelativeWithKidsAndAnotherId(name, phone, address, relativeId).ifPresentOrElse(
-                equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative),
-                () -> updateRelative(name, address, phone, updatedRelative));
+        return repository.findEqualRelativeWithKidsAndAnotherId(name, phone, address, relativeId)
+                .map(equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative))
+                .orElseGet(() -> updateRelative(name, address, phone, updatedRelative));
     }
 
-    private void updateRelative(String name, String address, String phone, Relative updatedRelative) {
+    private Relative updateRelative(String name, String address, String phone, Relative updatedRelative) {
         updatedRelative.setName(name);
         updatedRelative.setAddress(address);
         updatedRelative.setPhone(phone);
-        repository.save(updatedRelative);
+        return repository.save(updatedRelative);
     }
 
-    private void replaceRelative(String email, long childId, Relative updatedRelative, Relative equalRelative) {
+    private Relative replaceRelative(String email, long childId, Relative updatedRelative, Relative equalRelative) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
         child.addRelative(equalRelative);
         child.removeRelative(updatedRelative);
         childRepository.save(child);
+        return equalRelative;
     }
 }

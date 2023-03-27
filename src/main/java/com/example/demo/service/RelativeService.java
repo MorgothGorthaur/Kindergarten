@@ -18,5 +18,5 @@ public interface RelativeService {
     /**
      * if relatives with the same fields isn`t found in db, updates relative by id. else replaces relative by id with relative with same fields
      */
-    void updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone);
+    Relative updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone);
 }
