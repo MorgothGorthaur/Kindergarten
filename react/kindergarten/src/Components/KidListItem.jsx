@@ -11,11 +11,10 @@ function KidListItem({kid, tokens, setTokens, kids, setKids, group, setGroup}) {
     const [relatives, setRelatives] = useState(false);
     const handleDelete = () => {
         KidsService.delete(kid.id, tokens, setTokens).then((data) => {
-            console.log(data);
-            if (!data) {
+            if (data.ok !== false) {
                 setKids([...kids.filter((k) => k.id !== kid.id)]);
                 setGroup({...group, currentSize: group.currentSize - 1});
-            } else alert(data.debugMessage);
+            }
         });
     };
     return (

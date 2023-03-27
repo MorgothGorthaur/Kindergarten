@@ -55,7 +55,12 @@ export default class KidsService {
             },
             body: JSON.stringify({name, birthYear})
         };
-        return await CallApi.callApi('http://localhost:8080/kindergarten/child', requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi('http://localhost:8080/kindergarten/child', requestOptions, tokens, setTokens);
+        if (data.debugMessage) {
+            alert(data.debugMessage);
+            return {ok: false}
+        }
+        return data;
     }
 
     static async update(id, name, birthYear, tokens, setTokens) {
@@ -67,7 +72,12 @@ export default class KidsService {
             },
             body: JSON.stringify({id, name, birthYear})
         };
-        return await CallApi.callApi(`http://localhost:8080/kindergarten/child`, requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi(`http://localhost:8080/kindergarten/child`, requestOptions, tokens, setTokens);
+        if (data) {
+            alert(data.debugMessage);
+            return {ok: false}
+        }
+        return {ok: true};
     }
 
     static async delete(id, tokens, setTokens) {
@@ -78,6 +88,11 @@ export default class KidsService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await CallApi.callApi(`http://localhost:8080/kindergarten/child/${id}`, requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi(`http://localhost:8080/kindergarten/child/${id}`, requestOptions, tokens, setTokens);
+        if (data) {
+            alert(data.debugMessage);
+            return {ok: false}
+        }
+        return {ok: true};
     }
 }

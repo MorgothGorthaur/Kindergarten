@@ -24,7 +24,12 @@ export default class RelativesService {
             },
             body: JSON.stringify({name, phone, address})
         };
-        return await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}`, requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}`, requestOptions, tokens, setTokens);
+        if (data.debugMessage) {
+            alert(data.debugMessage)
+            return {ok: false}
+        }
+        return data;
     }
 
     static async delete(tokens, setTokens, id, kidId) {
@@ -36,7 +41,11 @@ export default class RelativesService {
             }
         };
         const data = await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}/${id}`, requestOptions, tokens, setTokens);
-        if (data) alert(data.debugMessage)
+        if (data) {
+            alert(data.debugMessage)
+            return {ok: false}
+        }
+        return {ok: true}
     }
 
     static async update(tokens, setTokens, kidId, id, name, phone, address) {
@@ -49,6 +58,11 @@ export default class RelativesService {
             },
             body: JSON.stringify({id, name, phone, address})
         };
-        return await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}`, requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi(`http://localhost:8080/kindergarten/relative/${kidId}`, requestOptions, tokens, setTokens);
+        if (data.debugMessage) {
+            alert(data.debugMessage)
+            return {ok: false}
+        }
+        return data;
     }
 }

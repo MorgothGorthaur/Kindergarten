@@ -5,9 +5,9 @@ import RelativesService from "../API/RelativesService";
 
 const RelativeForm = ({tokens, setTokens, relatives, setRelatives, relative, setShowForm, kidId}) => {
     const [id, setId] = useState();
-    const [name, setName] = useState();
-    const [phone, setPhone] = useState();
-    const [address, setAddress] = useState();
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
     useEffect(() => {
         if (relative) {
             setId(relative.id);
@@ -19,9 +19,7 @@ const RelativeForm = ({tokens, setTokens, relatives, setRelatives, relative, set
     const add = (e) => {
         e.preventDefault();
         RelativesService.add(tokens, setTokens, kidId, name, phone, address).then(data => {
-            console.log(data);
-            if (data.debugMessage) alert(data.debugMessage)
-            else {
+            if (data.ok !== false) {
                 setRelatives([...relatives.filter(k => k.id !== data.id), data]);
                 setShowForm(false);
             }
@@ -30,11 +28,7 @@ const RelativeForm = ({tokens, setTokens, relatives, setRelatives, relative, set
     const update = (e) => {
         e.preventDefault();
         RelativesService.update(tokens, setTokens, kidId, id, name, phone, address).then(data => {
-            console.log(data);
-            if (data.debugMessage) {
-                alert(data.debugMessage);
-
-            } else {
+            if (data.ok !== false) {
                 setRelatives([...relatives.filter(k => k.id !== id), {
                     id: data.id,
                     name: name,

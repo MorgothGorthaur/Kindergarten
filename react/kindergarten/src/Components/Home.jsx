@@ -22,9 +22,7 @@ function Home() {
     useEffect(() => {
         if (isLogin) {
             TeacherService.getTeacher(tokens.access_token).then((data) => {
-                if (!data.hasError) {
-                    setTeacher(data);
-                }
+                setTeacher(data)
             });
         }
     }, [isLogin]);

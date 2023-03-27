@@ -1,10 +1,9 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import GroupService from "../API/GroupService";
 import {Button, Modal} from "react-bootstrap";
 import GroupForm from "./GroupForm";
 import KidsMenu from "./KidsMenu";
 import Loader from "../UI/Loader/Loader";
-import React from "react";
 
 function Group({tokens, setTokens}) {
     const [group, setGroup] = useState()
@@ -24,10 +23,7 @@ function Group({tokens, setTokens}) {
     }, [loader]);
     const handleDelete = () => {
         GroupService.delete(tokens, setTokens).then(data => {
-            console.log(data);
-            if (!data) {
-                setGroup()
-            } else alert(data.debugMessage);
+            if (data.ok) setGroup()
         });
     }
     return (
