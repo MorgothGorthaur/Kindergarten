@@ -11,7 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "relatives")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 public class Relative {
@@ -29,11 +30,19 @@ public class Relative {
     @Column(name = "address", nullable = false)
     private String address;
     @ManyToMany(mappedBy = "relatives", fetch = FetchType.LAZY)
-    private Set<Child> kids;
+    private Set<Child> kids = new HashSet<>();
 
     public Relative(String name, String phone, String address) {
         this.name = name;
         this.phone = phone;
         this.address = address;
+    }
+
+    public void addChild(Child child) {
+        kids.add(child);
+    }
+
+    public void removeChild(Child child) {
+        kids.remove(child);
     }
 }

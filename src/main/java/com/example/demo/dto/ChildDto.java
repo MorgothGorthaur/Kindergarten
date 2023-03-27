@@ -8,9 +8,13 @@ import java.time.LocalDate;
 
 @DateValidation
 public record ChildDto(long id,
-                       @Size(min = 1, max = 15, message = "name must be setted") String name,
+                       @Size(min = 1, max = 15, message = "name`s length must be between 1 and 15") String name,
                        LocalDate birthYear) {
-    public Child toChild() {
+    public Child createChild() {
         return new Child(name, birthYear);
+    }
+
+    public ChildDto(Child child) {
+        this(child.getId(), child.getName(), child.getBirthYear());
     }
 }

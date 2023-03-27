@@ -9,15 +9,24 @@ import java.util.Optional;
 
 public interface RelativeRepository extends JpaRepository<Relative, Long> {
 
-    @Query("SELECT r FROM Relative r JOIN Child c JOIN c.group.teacher t WHERE r.id = ?1 AND c.id = ?2 AND t.email = ?3")
-    Optional<Relative> findRelativeByIdAndChildIdAndTeacherEmail(long relativeId, long kidsId, String email);
+    /**
+     * finds a relative with a child by the relative`s id, the child`s id and the teacher`s email
+     */
+    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids k WHERE r.id = ?1 AND k.id = ?2 AND k.group.teacher.email = ?3")
+    Optional<Relative> findRelativeWithChild(long relativeId, long kidsId, String email);
 
-    @Query("SELECT r FROM Relative r JOIN r.kids k JOIN k.group.teacher t WHERE k.id = ?1 AND t.email = ?2")
+    @Query("SELECT r FROM Relative r JOIN r.kids k WHERE k.id = ?1 AND k.group.teacher.email = ?2")
     List<Relative> findRelativesByChildIdAndTeacherEmail(Long childId, String teacherEmail);
 
-    @Query("SELECT r FROM Relative r LEFT JOIN Child c WHERE r.name = ?1 AND r.address = ?2 AND r.phone = ?3")
-    Optional<Relative> findEqualRelative(String name, String address, String phone);
+    /**
+     * find`s a relative with the same name, address and phone
+     */
+    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids WHERE r.name = ?1 AND r.phone = ?2 AND r.address = ?3")
+    Optional<Relative> findEqualRelativeWithKids(String name, String phone, String address);
 
-    @Query("SELECT r FROM Relative r LEFT JOIN Child c WHERE r.name = ?1 AND r.address = ?2 AND r.phone = ?3 AND r.id <> ?4")
-    Optional<Relative> findEqualRelativeWithAnotherId(String name, String address, String phone, long id);
+    /**
+     * find`s a relative with the same name, address and phone but with another id
+     */
+    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids WHERE r.name = ?1 AND r.phone = ?2 AND r.address = ?3 AND r.id <> ?4")
+    Optional<Relative> findEqualRelativeWithKidsAndAnotherId(String name, String phone, String address, long id);
 }

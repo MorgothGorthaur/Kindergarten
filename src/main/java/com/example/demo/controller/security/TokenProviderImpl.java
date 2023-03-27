@@ -1,17 +1,15 @@
-package com.example.demo.service;
+package com.example.demo.controller.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.demo.enums.AuthorizationType;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.demo.enums.Claim;
 import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.model.UserDetailsImpl;
+import com.example.demo.model.TeacherUserDetails;
 import com.example.demo.repository.TeacherRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,14 +20,12 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Component
-public class TokensServiceImpl implements TokensService {
+public class TokenProviderImpl implements TokenProvider {
 
     private final Algorithm algorithm;
     private final TeacherRepository repository;
@@ -39,23 +35,20 @@ public class TokensServiceImpl implements TokensService {
     @Value("${jwt.refresh_token.time}")
     private long REFRESH_TOKEN_TIME;
 
-    public TokensServiceImpl(TeacherRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
+    public TokenProviderImpl(TeacherRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
         this.repository = repository;
         this.algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
     }
 
     @Override
-    public Map<String, String> generateTokens(HttpServletRequest request, UserDetailsImpl user) {
-        var tokens = new HashMap<String, String>();
-        tokens.put(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(request, user));
-        tokens.put(Token.REFRESH_TOKEN.getTokenType(), generateRefreshToken(request, user));
-        return tokens;
+    public Map<String, String> generateTokens(String requestUrl, TeacherUserDetails user) {
+        return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user),
+                Token.REFRESH_TOKEN.getTokenType(), generateRefreshToken(requestUrl, user));
     }
 
     @Override
-    public void verifyTokens(String authorizationHeader) {
+    public void authorizeIfAccessTokenIsValid(String accessToken) {
         try {
-            var accessToken = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(accessToken);
             var username = decoderJWT.getSubject();
@@ -64,40 +57,37 @@ public class TokensServiceImpl implements TokensService {
             stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
             var authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        } catch (Exception ex) {
+        } catch (TokenExpiredException | JWTDecodeException ex) {
             throw new BadTokenException();
         }
     }
 
     @Override
-    public Map<String, String> verifyAndRegenerateAccessToken(String authorizationHeader, HttpServletRequest request) {
+    public Map<String, String> regenerateAccessTokenIfRefreshTokenIsValid(String refreshToken, String requestUrl) {
         try {
-            var refreshToken = authorizationHeader.substring(AuthorizationType.BEARER.getPrefix().length());
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
             var username = decoderJWT.getSubject();
-            var user = new UserDetailsImpl(repository.findTeacherByEmail(username)
+            var user = new TeacherUserDetails(repository.findTeacherByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
-            var tokens = new HashMap<String, String>();
-            tokens.put(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(request, user));
-            return tokens;
-        } catch (Exception ex) {
+            return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user));
+        } catch (TokenExpiredException | JWTDecodeException | TeacherNotFoundException ex) {
             throw new BadTokenException();
         }
     }
 
-    private String generateRefreshToken(HttpServletRequest request, UserDetailsImpl user) {
+    private String generateRefreshToken(String requestUrl, TeacherUserDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(REFRESH_TOKEN_TIME, ChronoUnit.MINUTES))
-                .withIssuer(request.getRequestURL().toString()).sign(algorithm);
+                .withIssuer(requestUrl).sign(algorithm);
     }
 
-    private String generateAccessToken(HttpServletRequest request, UserDetailsImpl user) {
+    private String generateAccessToken(String requestUrl, TeacherUserDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(ACCESS_TOKEN_TIME, ChronoUnit.MINUTES))
-                .withIssuer(request.getRequestURL().toString())
+                .withIssuer(requestUrl)
                 .withClaim(Claim.ROLES.getClaim(), user.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority).toList()).sign(algorithm);
     }

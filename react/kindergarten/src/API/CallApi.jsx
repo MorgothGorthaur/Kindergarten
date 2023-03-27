@@ -17,8 +17,7 @@ export default class CallApi {
                     setTokens(newTokens);
                     requestOptions.headers.Authorization = `Bearer ${newTokens.access_token}`;
                     const secondResponse = await fetch(url, requestOptions);
-                    const newData = await secondResponse.json();
-                    return newData;
+                    return await secondResponse.json();
                 }
             }
             return data;

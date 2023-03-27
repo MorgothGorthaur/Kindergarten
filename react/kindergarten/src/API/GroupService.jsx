@@ -1,7 +1,6 @@
-import LoginService from "./LoginService";
 import CallApi from './CallApi'
-export default class GroupService {
 
+export default class GroupService {
 
 
     static async getGroup(tokens, setTokens) {
@@ -24,7 +23,12 @@ export default class GroupService {
             },
             body: JSON.stringify({name, maxSize})
         };
-        return await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        if (data) {
+            alert(data.debugMessage);
+            return {ok: false}
+        }
+        return {ok: true};
     }
 
     static async update(name, maxSize, tokens, setTokens) {
@@ -36,7 +40,12 @@ export default class GroupService {
             },
             body: JSON.stringify({name, maxSize})
         };
-        return await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        if (data) {
+            alert(data.debugMessage);
+            return {ok: false}
+        }
+        return {ok: true};
     }
 
     static async delete(tokens, setTokens) {
@@ -47,6 +56,11 @@ export default class GroupService {
                 'Authorization': 'Bearer ' + tokens.access_token
             }
         };
-        return await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        const data = await CallApi.callApi('http://localhost:8080/kindergarten/group', requestOptions, tokens, setTokens);
+        if (data) {
+            alert(data.debugMessage);
+            return {ok: false}
+        }
+        return {ok: true};
     }
 }

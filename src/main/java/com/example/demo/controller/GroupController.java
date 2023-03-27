@@ -2,12 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.GroupDto;
 import com.example.demo.dto.GroupWithCurrentSizeDto;
-import com.example.demo.dto.Mapper;
-import com.example.demo.exception.*;
+import com.example.demo.exception.GroupContainsKidsException;
+import com.example.demo.exception.TooManyChildrenInGroupException;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;
-import jakarta.transaction.Transactional;
+import com.example.demo.service.GroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,28 +22,29 @@ import java.security.Principal;
 public class GroupController {
     private final GroupRepository repository;
     private final TeacherRepository teacherRepository;
-    private final Mapper mapper;
+
+    private final GroupService service;
 
     @GetMapping
     public GroupWithCurrentSizeDto getGroup(Principal principal) {
-        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName()).map(Teacher::getGroup).map(mapper::toGroupWithCurrentSizeDto).orElse(null);
+        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
+                .map(Teacher::getGroup).map(GroupWithCurrentSizeDto::new).orElse(null);
     }
 
     @PostMapping
     public void add(Principal principal, @RequestBody @Valid GroupDto dto) {
-        var teacher = teacherRepository.findTeacherByEmail(principal.getName())
-                .orElseThrow(() -> new TeacherNotFoundException(principal.getName()));
-        teacher.addGroup(dto.toGroup());
-        repository.save(teacher.getGroup());
+        service.add(principal.getName(), dto.createGroup());
     }
 
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
-        if(repository.updateGroup(principal.getName(), dto.name(), dto.maxSize()) == 0) throw new ToBigChildrenInGroupException(dto.maxSize());
+        if (repository.updateGroupByTeacherEmail(principal.getName(), dto.name(), dto.maxSize()) == 0)
+            throw new TooManyChildrenInGroupException(dto.maxSize());
     }
 
     @DeleteMapping
     public void remove(Principal principal) {
-        if(repository.deleteGroupFromTeacher(principal.getName()) == 0) throw new GroupContainsKidsException();
+        if (repository.deleteGroupIfEmptyByTeacherEmail(principal.getName()) == 0)
+            throw new GroupContainsKidsException();
     }
 }

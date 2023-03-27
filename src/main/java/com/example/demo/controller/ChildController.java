@@ -1,13 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.*;
+import com.example.demo.dto.ChildDto;
+import com.example.demo.dto.ChildFullDto;
+import com.example.demo.dto.ChildWithGroupDto;
 import com.example.demo.exception.ChildNotFoundException;
-import com.example.demo.exception.GroupNotFoundException;
-import com.example.demo.model.Group;
-import com.example.demo.model.Teacher;
 import com.example.demo.repository.ChildRepository;
-import com.example.demo.repository.TeacherRepository;
-import jakarta.transaction.Transactional;
+import com.example.demo.service.ChildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,49 +20,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChildController {
     private final ChildRepository repository;
-    private final Mapper mapper;
-    private final TeacherRepository teacherRepository;
+    private final ChildService service;
 
     @GetMapping
     public List<ChildDto> getAll(Principal principal) {
-        return repository.findKidsByTeacherEmail(principal.getName()).stream().map(mapper::toChildDto).toList();
+        return repository.findKidsByTeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
     }
 
     @GetMapping("/full")
     public List<ChildFullDto> getFull(Principal principal) {
         return repository.findKidsWithRelativesByTeacherEmail(principal.getName())
-                .stream().map(mapper::toChildFullDto).toList();
+                .stream().map(ChildFullDto::new).toList();
     }
 
     @GetMapping("/birth")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.findKidsThatWaitBirthDay(principal.getName())
-                .stream().map(mapper::toChildDto).toList();
+        return repository.findKidsThatWaitBirthDayByTeacherEmail(principal.getName())
+                .stream().map(ChildDto::new).toList();
     }
 
     @GetMapping("/{id}")
-    public List<ChildWithGroupDto> getBrothersAndSisters(@PathVariable long id) {
-        return repository.findBrothersAndSisters(id).stream().map(mapper::toChildWithGroupDto).toList();
+    public List<ChildWithGroupDto> getSiblings(@PathVariable long id) {
+        return repository.findSiblingsWithTheirGroupsAndTeachers(id).stream().map(ChildWithGroupDto::new).toList();
     }
 
     @PostMapping
     public ChildDto add(Principal principal, @RequestBody @Valid ChildDto dto) {
-        var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
-                .map(Teacher::getGroup)
-                .orElseThrow(() -> new GroupNotFoundException(principal.getName()));
-        var child = dto.toChild();
-        group.addChild(child);
-        return mapper.toChildDto(repository.save(child));
+        return new ChildDto(service.add(principal.getName(), dto.createChild()));
     }
 
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid ChildDto dto) {
-        if(repository.updateChild(principal.getName(),dto.id(), dto.name(), dto.birthYear()) == 0) throw new ChildNotFoundException(principal.getName());
+        if (repository.updateChildByIdAndTeacherEmail(principal.getName(), dto.id(), dto.name(), dto.birthYear()) == 0)
+            throw new ChildNotFoundException(principal.getName());
     }
 
     @DeleteMapping("/{id}")
     public void delete(Principal principal, @PathVariable long id) {
-        if(repository.deleteChild(principal.getName(), id) == 0) throw new ChildNotFoundException(principal.getName());
+        if (repository.deleteChildByIdAndTeacherEmail(principal.getName(), id) == 0)
+            throw new ChildNotFoundException(principal.getName());
     }
 
 }

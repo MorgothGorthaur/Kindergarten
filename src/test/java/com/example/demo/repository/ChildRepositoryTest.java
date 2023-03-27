@@ -6,26 +6,20 @@ import com.example.demo.model.Group;
 import com.example.demo.model.Relative;
 import com.example.demo.model.Teacher;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig
+
 @DataJpaTest
-@TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(locations = "classpath:application-test.properties")
 class ChildRepositoryTest {
     @Autowired
     private TeacherRepository teacherRepository;
@@ -35,112 +29,116 @@ class ChildRepositoryTest {
     private ChildRepository childRepository;
     @Autowired
     private RelativeRepository relativeRepository;
-    @BeforeEach
-    public void setUp() {
-        var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
-        var teacher2 = new Teacher("Jane Doe", "+0987654321", "jane_skype", "jane@example.com", "password2");
-        var teacher3 = new Teacher("Bob Johnson", "+1111111111", "bob_skype", "bob@example.com", "password3");
-
-        var group1 = new Group("Group 1", 3);
-        var group2 = new Group("Group 2", 4);
-        var group3 = new Group("Group 3", 2);
-
-        var relative1 = relativeRepository.save( new Relative("John's relative", "+1234567890", "John's relative address"));
-        var relative2 =  relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
-        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1),
-                relative1));
-        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2),
-                relative1));
-        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3),
-                relative2));
-        var child4 = childRepository.save(new Child("Child 4", LocalDate.of(2018, 4, 4),
-                relative2));
-        var child5 = childRepository.save(new Child("Child 5", LocalDate.of(2019, 5, 5),
-                relative2));
-        child5.addRelative(relative1);
-
-        group1.addChild(child1);
-        group1.addChild(child2);
-        group1.addChild(child3);
-
-        group2.addChild(child4);
-        group2.addChild(child5);
-
-        teacher1.addGroup(group1);
-        teacher2.addGroup(group2);
-        teacher3.setGroup(group3);
-        teacherRepository.saveAll(List.of(teacher1, teacher2, teacher3));
-    }
 
     @AfterEach
     public void remove() {
-        teacherRepository.deleteAll();
-        groupRepository.deleteAll();
         childRepository.deleteAll();
         relativeRepository.deleteAll();
+        groupRepository.deleteAll();
+        teacherRepository.deleteAll();
     }
+
     @Test
     void testFindKidsByTeacherEmail() {
+        createTeacherWithGroupAndKids();
         var email = "john@example.com";
         assertThat(childRepository.findKidsByTeacherEmail(email).size()).isEqualTo(3);
     }
 
     @Test
     void testFindKidsWithRelativesByTeacherEmail() {
-        var email = "jane@example.com";
-        var result = childRepository.findKidsByTeacherEmail(email);
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.get(1).getRelatives().size()).isEqualTo(2);
+        createTeacherWithGroupAndKidsAndRelatives();
+        var email = "john@example.com";
+        var result = childRepository.findKidsWithRelativesByTeacherEmail(email);
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.get(0).getRelatives().size()).isEqualTo(1);
     }
 
 
     @Test
-    void testFindBrothersAndSisters() {
-        var email = "john@example.com";
+    void testFindSiblingsWithTheirGroupsAndTeachers() {
+        createTeacherWithGroupAndKidsAndRelatives();
         var kids = childRepository.findAll();
-        var result = childRepository.findBrothersAndSisters(kids.get(0).getId());
-        assertThat(result.size()).isEqualTo(2);
+        var result = childRepository.findSiblingsWithTheirGroupsAndTeachers(kids.get(0).getId());
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getGroup()).isNotNull();
+        assertThat(result.get(0).getGroup().getTeacher()).isNotNull();
     }
 
     @Test
     void testFindChildWithRelativesByIdAndTeacherEmail() {
+        createTeacherWithGroupAndKidsAndRelatives();
         var email = "john@example.com";
         var kids = childRepository.findAll();
         var result = childRepository.findChildWithRelativesByIdAndTeacherEmail(kids.get(0).getId(), email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
         assertThat(result.getName()).isEqualTo(kids.get(0).getName());
+        assertThat(result.getRelatives().size()).isEqualTo(1);
     }
 
     @Test
-    void testUpdateChild_shouldReturnOne() {
+    void testUpdateChildByIdAndTeacherEmail_shouldReturnOne() {
+        createTeacherWithGroupAndKids();
         var email = "john@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.updateChild(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(1);
-
+        assertThat(childRepository.updateChildByIdAndTeacherEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(1);
     }
 
     @Test
-    void testUpdateChild_shouldReturnZero() {
+    void testUpdateChildByIdAndTeacherEmail_shouldReturnZero() {
+        createTeacherWithGroupAndKids();
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.updateChild(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(0);
-
+        assertThat(childRepository.updateChildByIdAndTeacherEmail(email, kids.get(0).getId(), "name", LocalDate.now())).isEqualTo(0);
     }
 
     @Test
-    @Disabled
-    void testDeleteChild_shouldReturnOne() {
+    public void testDeleteChildByIdAndTeacherEmail_shouldReturnOne() {
+        createTeacherWithGroupAndKids();
         var email = "john@example.com";
-        var id = childRepository.findAll().get(0).getId();
-        assertThat(childRepository.deleteChild(email, id)).isEqualTo(1);
+        var kids = childRepository.findAll();
+        var id = kids.get(0).getId();
+        var res = childRepository.deleteChildByIdAndTeacherEmail(email, id);
+        assertThat(res).isEqualTo(1);
     }
 
-
-
     @Test
-    void testDeleteChild_shouldReturnZero() {
+    void testDeleteChildByIdAndTeacherEmail_shouldReturnZero() {
+        createTeacherWithGroupAndKids();
         var email = "johfffffffffffn@example.com";
         var kids = childRepository.findAll();
-        assertThat(childRepository.deleteChild(email, kids.get(0).getId())).isEqualTo(0);
+        assertThat(childRepository.deleteChildByIdAndTeacherEmail(email, kids.get(0).getId())).isEqualTo(0);
+    }
+
+    public void createTeacherWithGroupAndKids() {
+        var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
+        var group1 = new Group("Group 1", 3);
+        teacher1.addGroup(group1);
+        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1)));
+        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2)));
+        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3)));
+        group1.addChild(child1);
+        group1.addChild(child2);
+        group1.addChild(child3);
+        teacherRepository.save(teacher1);
+    }
+
+    public void createTeacherWithGroupAndKidsAndRelatives() {
+        var relative1 = relativeRepository.save(new Relative("John's relative", "+1234567890", "John's relative address"));
+        var relative2 = relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
+        var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
+        var group1 = new Group("Group 1", 3);
+        teacher1.addGroup(group1);
+        var child1 = childRepository.save(new Child("Child 1", LocalDate.of(2015, 1, 1)));
+        child1.addRelative(relative1);
+        var child2 = childRepository.save(new Child("Child 2", LocalDate.of(2016, 2, 2)));
+        child2.addRelative(relative1);
+        var child3 = childRepository.save(new Child("Child 3", LocalDate.of(2017, 3, 3)));
+        child3.addRelative(relative2);
+        group1.addChild(child1);
+        group1.addChild(child2);
+        group1.addChild(child3);
+        teacherRepository.save(teacher1);
+
     }
 }

@@ -5,9 +5,12 @@ import RelativeForm from "./RelativeForm";
 
 function RelativeListItem({relative, tokens, setTokens, relatives, setRelatives, kidId}) {
     const [showForm, setShowForm] = useState(false);
+
     function handleDelete() {
-        RelativesService.delete(tokens, setTokens, relative.id, kidId).then(() => {
-            setRelatives(relatives.filter((r) => r.id !== relative.id));
+        RelativesService.delete(tokens, setTokens, relative.id, kidId).then((data) => {
+            if (data.ok) {
+                setRelatives(relatives.filter((r) => r.id !== relative.id));
+            }
         });
     }
 
@@ -19,8 +22,9 @@ function RelativeListItem({relative, tokens, setTokens, relatives, setRelatives,
             <div>
                 <Button variant="primary" onClick={() => setShowForm(true)}>update</Button>
                 <Button variant="danger" onClick={handleDelete}>Delete</Button>
-                <Modal show={showForm} onHide={setShowForm} >
-                    <RelativeForm tokens={tokens} setTokens={setTokens} relative={relative} relatives={relatives} setRelatives={setRelatives} kidId={kidId} setShowForm={setShowForm}/>
+                <Modal show={showForm} onHide={setShowForm}>
+                    <RelativeForm tokens={tokens} setTokens={setTokens} relative={relative} relatives={relatives}
+                                  setRelatives={setRelatives} kidId={kidId} setShowForm={setShowForm}/>
                 </Modal>
             </div>
         </li>

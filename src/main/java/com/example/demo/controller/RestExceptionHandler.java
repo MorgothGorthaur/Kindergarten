@@ -9,11 +9,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.management.relation.RelationNotFoundException;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +25,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({ChildMustHaveRelativeException.class, GroupContainsKidsException.class,
-            TeacherAlreadyContainsGroup.class, TeacherAlreadyExist.class, ToBigChildrenInGroupException.class})
+            TeacherAlreadyContainsGroup.class, TeacherAlreadyExist.class, TooManyChildrenInGroupException.class})
     protected ResponseEntity<Object> handleDataNotAcceptableEx(RuntimeException ex) {
         ApiError apiError = new ApiError("This data is not acceptable!", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);

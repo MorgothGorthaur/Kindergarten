@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import com.example.demo.exception.ToBigChildrenInGroupException;
+import com.example.demo.exception.TooManyChildrenInGroupException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +11,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "groups")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class Group {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -26,7 +28,7 @@ public class Group {
     private int maxSize;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Child> kids;
+    private Set<Child> kids = new HashSet<>();
 
     @OneToOne(mappedBy = "group")
     private Teacher teacher;
@@ -37,13 +39,12 @@ public class Group {
     }
 
     public void addChild(Child child) {
-        if(this.kids == null) kids = new HashSet<>();
-        if(kids.size() == maxSize) throw new ToBigChildrenInGroupException(maxSize);
+        if (kids.size() >= maxSize) throw new TooManyChildrenInGroupException(maxSize);
         kids.add(child);
         child.setGroup(this);
     }
 
     public int getCurrentSize() {
-        return kids != null ? kids.size() : 0;
+        return kids.size();
     }
 }

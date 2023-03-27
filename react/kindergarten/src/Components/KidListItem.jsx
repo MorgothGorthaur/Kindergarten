@@ -1,6 +1,6 @@
 import {Button, Modal} from "react-bootstrap";
 import KidsService from "../API/KidsService";
-import KidBrothersAndSisters from "./KidBrothersAndSisters";
+import Siblings from "./Siblings";
 import ChildForm from "./ChildForm";
 import {useState} from "react";
 import Relatives from "./Relatives";
@@ -11,31 +11,31 @@ function KidListItem({kid, tokens, setTokens, kids, setKids, group, setGroup}) {
     const [relatives, setRelatives] = useState(false);
     const handleDelete = () => {
         KidsService.delete(kid.id, tokens, setTokens).then((data) => {
-            console.log(data);
-            if (!data) {
+            if (data.ok !== false) {
                 setKids([...kids.filter((k) => k.id !== kid.id)]);
-                setGroup({ ...group, currentSize: group.currentSize - 1 });
-            } else alert(data.debugMessage);
+                setGroup({...group, currentSize: group.currentSize - 1});
+            }
         });
     };
     return (
         <div>
             <div>
                 <li className="kids-list-item" key={kid.id}>
-                    <span className="kid-name">{kid.name}</span>
-                    <span className="birth-year">({kid.birthYear})</span>
+                    <span>{kid.name}</span>
+                    <span>({kid.birthYear})</span>
                     <div className="button-container">
                         <Button variant="primary" onClick={() => setUpdateChildForm(true)}>update</Button>
                         <Button variant="danger" onClick={() => handleDelete()}>delete</Button>
-                        <Button variant="primary" onClick={() => setBrothersAndSisters(true)}>brothers and sisters</Button>
+                        <Button variant="primary" onClick={() => setBrothersAndSisters(true)}>siblings</Button>
                         {
-                            !relatives ? <Button variant="secondary" onClick={() => setRelatives(true)}> relatives </Button>
+                            !relatives ?
+                                <Button variant="secondary" onClick={() => setRelatives(true)}> relatives </Button>
                                 : <Button variant="dark" onClick={() => setRelatives(false)}> close</Button>
                         }
                     </div>
                 </li>
                 <Modal show={brothersAndSisters} onHide={setBrothersAndSisters}>
-                    <KidBrothersAndSisters id={kid.id} tokens={tokens} setTokens={setTokens}/>
+                    <Siblings id={kid.id} tokens={tokens} setTokens={setTokens}/>
                 </Modal>
                 <Modal show={updateChildForm} onHide={setUpdateChildForm}>
                     <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens}
@@ -44,7 +44,7 @@ function KidListItem({kid, tokens, setTokens, kids, setKids, group, setGroup}) {
             </div>
             <div>
                 {
-                    relatives ? <Relatives tokens={tokens} setTokens={setTokens} kidId={kid.id} /> : <br/>
+                    relatives ? <Relatives tokens={tokens} setTokens={setTokens} kidId={kid.id}/> : <br/>
                 }
             </div>
         </div>

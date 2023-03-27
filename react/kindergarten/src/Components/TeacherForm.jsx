@@ -1,8 +1,7 @@
 import {Button, Form} from "react-bootstrap";
 import Input from "../UI/Input/Input";
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import TeacherService from "../API/TeacherService";
-import LoginService from "../API/LoginService";
 
 const TeacherForm = ({teacher, tokens, setTokens}) => {
     const [name, setName] = useState('');
@@ -20,17 +19,11 @@ const TeacherForm = ({teacher, tokens, setTokens}) => {
     }, [teacher]);
     const update = (e) => {
         e.preventDefault();
-        TeacherService.change(name, phone, skype, email, password, tokens, setTokens).then(data => {
-            console.log(data);
-            validation(data);
-        });
+        TeacherService.change(name, phone, skype, email, password, tokens, setTokens);
     };
     const add = (event) => {
         event.preventDefault();
-        TeacherService.save(name, phone, skype, email, password).then(data => {
-            console.log(data);
-            validation(data);
-        })
+        TeacherService.save(name, phone, skype, email, password);
     };
     const validation = (data) => {
         if (data.debugMessage) alert(data.debugMessage);

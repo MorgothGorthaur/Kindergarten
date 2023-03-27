@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Button, Form} from "react-bootstrap";
 import Input from "../UI/Input/Input";
 import GroupService from "../API/GroupService";
@@ -15,26 +15,22 @@ const GroupForm = ({group, setGroup, tokens, setTokens, setShowForm}) => {
     const add = (e) => {
         e.preventDefault();
         GroupService.add(name, maxSize, tokens, setTokens).then(data => {
-            console.log(data);
-            validation(data);
+            if (data.ok) {
+                setGroup({name: name, maxSize: maxSize, currentSize: group ? group.currentSize : 0});
+                setShowForm(false);
+            }
         })
     }
     const update = (e) => {
         e.preventDefault();
         GroupService.update(name, maxSize, tokens, setTokens).then(data => {
-            console.log(data);
-            validation(data);
+            if (data.ok) {
+                setGroup({name: name, maxSize: maxSize, currentSize: group ? group.currentSize : 0});
+                setShowForm(false);
+            }
         })
     }
-    const validation = (data) => {
-        if(!data) {
-            setGroup({ name: name, maxSize: maxSize, currentSize: group ? group.currentSize : 0});
-            setShowForm(false);
-        }
-        else {
-            alert(data.debugMessage);
-        }
-    }
+
     return (
         <Form className="form" onSubmit={group ? update : add}>
             <Input type="text" placeholder="name" value={name} onChange={e => setName(e.target.value)}/>

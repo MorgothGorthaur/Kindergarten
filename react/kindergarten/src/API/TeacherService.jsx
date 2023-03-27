@@ -1,4 +1,3 @@
-import LoginService from "./LoginService";
 import CallApi from "./CallApi";
 
 export default class TeacherService {
@@ -19,7 +18,8 @@ export default class TeacherService {
                 body: JSON.stringify({name, phone, skype, email, password})
             };
             const response = await fetch('http://localhost:8080/kindergarten/teacher', requestOptions);
-            return await response.json();
+            const data = await response.json();
+            if (data.debugMessage) alert(data.debugMessage);
         } catch (e) {
             console.log(e);
         }
@@ -35,11 +35,9 @@ export default class TeacherService {
                     'Authorization': 'Bearer ' + access_token
                 }
             });
-            if (response.ok) {
-                return await response.json();
-            }
-            alert("you must authorize at first!")
-            return {hasError: true}
+            const data = await response.json();
+            if (data.debugMessage) alert(data.debugMessage)
+            else return data;
         } catch (e) {
             alert(e);
         }
@@ -55,7 +53,7 @@ export default class TeacherService {
                 }
             };
             const data = await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
-            if(data) alert(data.debugMessage)
+            if (data) alert(data.debugMessage)
             else window.location.reload(false);
         } catch (e) {
             console.log(e);
@@ -72,10 +70,11 @@ export default class TeacherService {
                 },
                 body: JSON.stringify({name, phone, skype, email, password})
             };
-          await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
+            const data = await CallApi.callApi('http://localhost:8080/kindergarten/teacher', requestOptions, tokens, setTokens);
+            if (data) alert(data.debugMessage);
+            else window.location.reload(false);
         } catch (e) {
             console.log(e);
         }
-        window.location.reload(false);
     };
 }
