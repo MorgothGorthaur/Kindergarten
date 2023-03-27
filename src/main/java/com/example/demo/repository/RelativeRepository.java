@@ -21,12 +21,12 @@ public interface RelativeRepository extends JpaRepository<Relative, Long> {
     /**
      * find`s a relative with the same name, address and phone
      */
-    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids WHERE r.name = ?1 AND r.address = ?2 AND r.phone = ?3")
-    Optional<Relative> findEqualRelativeWithKids(String name, String address, String phone);
+    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids WHERE r.name = ?1 AND r.phone = ?2 AND r.address = ?3")
+    Optional<Relative> findEqualRelativeWithKids(String name, String phone, String address);
 
     /**
      * find`s a relative with the same name, address and phone but with another id
      */
-    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids WHERE r.name = ?1 AND r.address = ?2 AND r.phone = ?3 AND r.id <> ?4")
-    Optional<Relative> findEqualRelativeWithKidsAndAnotherId(String name, String address, String phone, long id);
+    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids WHERE r.name = ?1 AND r.phone = ?2 AND r.address = ?3 AND r.id <> ?4")
+    Optional<Relative> findEqualRelativeWithKidsAndAnotherId(String name, String phone, String address, long id);
 }

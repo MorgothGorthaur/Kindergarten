@@ -60,7 +60,7 @@ class RelativeRepositoryTest {
     void testFindEqualRelativeWithKids() {
         createTeacherWithGroupAndKidsAndRelatives();
         assertThat(relativeRepository
-                .findEqualRelativeWithKids("John's relative", "John's relative address", "+1234567890"))
+                .findEqualRelativeWithKids("John's relative", "+1234567890", "John's relative address"))
                 .isPresent();
     }
 
@@ -68,7 +68,7 @@ class RelativeRepositoryTest {
     void testFindEqualRelativeWithKidsAndAnotherId() {
         createTeacherWithGroupAndKidsAndRelatives();
         assertThat(relativeRepository
-                .findEqualRelativeWithKidsAndAnotherId("John's relative", "John's relative address", "+1234567890", 3L))
+                .findEqualRelativeWithKidsAndAnotherId("John's relative", "+1234567890", "John's relative address", 3L))
                 .isPresent();
     }
 
