@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface RelativeRepository extends JpaRepository<Relative, Long> {
 
     /**
-     * finds a relative with a child by the relative`s id, the child`s id and the teacher`s email
+     * finds a relative with a child and all of its relatives by the relative`s id, the child`s id and the teacher`s email
      */
-    @Query("SELECT r FROM Relative r LEFT JOIN FETCH r.kids k WHERE r.id = ?1 AND k.id = ?2 AND k.group.teacher.email = ?3")
+    @Query("SELECT r FROM Relative r JOIN FETCH r.kids k JOIN FETCH k.relatives WHERE r.id = ?1 AND k.id = ?2 AND k.group.teacher.email = ?3")
     Optional<Relative> findRelativeWithChild(long relativeId, long kidsId, String email);
 
     @Query("SELECT r FROM Relative r JOIN r.kids k WHERE k.id = ?1 AND k.group.teacher.email = ?2")
