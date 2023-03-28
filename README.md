@@ -69,4 +69,4 @@ You also must set your database url, password and username to *project directory
 Examples:
 ---------
 
-! [adding teacher] (screens/adding_teacher.png)
+! [adding teacher](screens/adding_teacher.png)
