@@ -26,7 +26,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     /**
      * finds related kids (having at least one common relative) with their groups and teachers.
      */
-    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t JOIN FETCH c.relatives r JOIN FETCH r.kids k WHERE k.id = ?1 AND c.id <> k.id")
+    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t JOIN c.relatives r JOIN r.kids k WHERE k.id = ?1 AND c.id <> k.id")
     List<Child> findRelatedKidsWithTheirGroupsAndTeachers(long id);
 
     @Query("SELECT c FROM Child c LEFT JOIN FETCH c.relatives r WHERE c.id = ?1 AND c.group.teacher.email = ?2")
