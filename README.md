@@ -69,4 +69,55 @@ You also must set your database url, password and username to *project directory
 Examples:
 ---------
 
-![Adding teacher](screens/adding_teacher.png "Screenshot of adding a teacher")
+<div align="center">
+  <img src="screens/adding_teacher.png" alt="Adding a teacher">
+  <p>Adding a teacher</p>
+</div>
+
+<div align="center">
+  <img src="screens/teachers_home_page.png" alt="The teachers home page">
+  <p>The teachers home page</p>
+</div>
+
+
+<div align="center">
+  <img src="screens/adding_group.png" alt="Adding a group">
+  <p>Adding a group</p>
+</div>
+
+<div align="center">
+  <img src="screens/adding_child.png" alt="Adding a child">
+  <p>Adding a child</p>
+</div>
+
+<div align="center">
+  <img src="screens/adding_relative.png" alt="Adding a relative">
+  <p>Adding a relative</p>
+</div>
+
+<div align="center">
+  <img src="screens/kids_with_relatives.png" alt="Kids with relatives">
+  <p>Kids with relatives</p>
+</div>
+
+<div align="center">
+  <img src="screens/kids_that_wait_for_birthday.png" alt="Kids that wait for birthday">
+  <p>Kids that wait for birthday</p>
+</div>
+
+<div align="center">
+  <img src="screens/full_group.png" alt="Full group">
+  <<img src="screens/siblings.png" alt="Siblings">
+  <p>Bill`s siblings</p>
+</div>
+
+<div align="center">
+  <img src="screens/teachers_with_groups.png" alt="All teachers with their groups names">
+  <p>All teachers with their groups names</p>
+</div>
+
+<div align="center">
+  <img src="screens/updating_group.png" alt="updating group">
+  <img src="screens/error_message_example.png" alt="error message">
+  <p>Validation error</p>
+</div>
