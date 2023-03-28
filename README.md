@@ -2,7 +2,7 @@
 
 Description:
 --------------
-This is a simple kindergarten management system. It allows adding new teachers and viewing a table with teachers and their groups. Teachers can also modify or delete their own information, modify or delete information about their groups, view a table with children from their group and their relatives. They also can modify or delete information about children and their relatives, and view a table with children's siblings and their groups. The system also provides a table with upcoming birthdays of the children.
+This is a simple kindergarten management system. It allows adding new teachers and viewing a table with teachers and their groups. Teachers can also modify or delete their own information, modify or delete information about their groups, view a table with children from their group and their relatives. They also can modify or delete information about children and children`s relatives, and view a table with children's siblings and their groups. The system also provides a table with upcoming birthdays of the children.
 
 This is a RESTful Java Spring Boot application that implements the entities Teacher, Group, Child, and Relative. There is a one-to-one relationship between Teacher and Group, a one-to-many relationship between Group and Child, and a many-to-many relationship between Child and Relative.
 
