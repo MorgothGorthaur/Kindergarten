@@ -46,6 +46,7 @@ class RelativeRepositoryTest {
         var result = relativeRepository.findRelativeWithChild(relativeId, childId, email);
         assertThat(result).isPresent();
         assertThat(result.get().getId()).isEqualTo(relativeId);
+        assertThat(result.get().getKids().stream().toList().get(0)).isNotNull();
     }
 
     @Test

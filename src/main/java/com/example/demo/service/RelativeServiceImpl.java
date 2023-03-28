@@ -25,10 +25,9 @@ public class RelativeServiceImpl implements RelativeService {
 
     @Override
     public void delete(String email, long childId, long relativeId) {
-        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
-                .orElseThrow(() -> new ChildNotFoundException(email));
-        var relative = repository.findRelativeWithChild(relativeId, childId, email)
+         var relative = repository.findRelativeWithChild(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
+        var child = relative.getKids().stream().toList().get(0);
         child.removeRelative(relative);
         childRepository.save(child);
     }
@@ -38,7 +37,7 @@ public class RelativeServiceImpl implements RelativeService {
         var updatedRelative = repository.findRelativeWithChild(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
         return repository.findEqualRelativeWithKidsAndAnotherId(name, phone, address, relativeId)
-                .map(equalRelative -> replaceRelative(email, childId, updatedRelative, equalRelative))
+                .map(equalRelative -> replaceRelative(updatedRelative, equalRelative))
                 .orElseGet(() -> updateRelative(name, address, phone, updatedRelative));
     }
 
@@ -49,9 +48,8 @@ public class RelativeServiceImpl implements RelativeService {
         return repository.save(updatedRelative);
     }
 
-    private Relative replaceRelative(String email, long childId, Relative updatedRelative, Relative equalRelative) {
-        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
-                .orElseThrow(() -> new ChildNotFoundException(email));
+    private Relative replaceRelative(Relative updatedRelative, Relative equalRelative) {
+        var child = updatedRelative.getKids().stream().toList().get(0);
         child.addRelative(equalRelative);
         child.removeRelative(updatedRelative);
         childRepository.save(child);

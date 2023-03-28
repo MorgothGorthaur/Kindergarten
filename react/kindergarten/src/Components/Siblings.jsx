@@ -24,7 +24,7 @@ function Siblings({id, tokens, setTokens}) {
             ) : (
                 <table style={{width: '100%', margin: 'auto'}}>
                     <thead>
-                    <tr>
+                    <tr style={{textAlign: "center"}}>
                         <th>Name</th>
                         <th>Birth Year</th>
                         <th>Group name</th>
