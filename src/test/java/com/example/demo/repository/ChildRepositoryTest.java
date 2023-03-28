@@ -56,10 +56,10 @@ class ChildRepositoryTest {
 
 
     @Test
-    void testFindSiblingsWithTheirGroupsAndTeachers() {
+    void testRelatedKidsWithTheirGroupsAndTeachers() {
         createTeacherWithGroupAndKidsAndRelatives();
         var kids = childRepository.findAll();
-        var result = childRepository.findSiblingsWithTheirGroupsAndTeachers(kids.get(0).getId());
+        var result = childRepository.findRelatedKidsWithTheirGroupsAndTeachers(kids.get(0).getId());
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getGroup()).isNotNull();
         assertThat(result.get(0).getGroup().getTeacher()).isNotNull();

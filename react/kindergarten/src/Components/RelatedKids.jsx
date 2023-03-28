@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import KidsService from "../API/KidsService";
 import Loader from "../UI/Loader/Loader";
 
-function Siblings({id, tokens, setTokens}) {
+function RelatedKids({id, tokens, setTokens}) {
     const [kids, setKids] = useState([]);
     const [loader, setLoader] = useState(true);
     useEffect(() => {
@@ -45,4 +45,4 @@ function Siblings({id, tokens, setTokens}) {
     );
 };
 
-export default Siblings;
+export default RelatedKids;

@@ -111,7 +111,7 @@ class ChildControllerTest {
     }
 
     @Test
-    void testGetBrothersAndSisters() throws Exception {
+    void testGetRelatedKids() throws Exception {
         var group = new Group("A", 10);
         var child1 = new Child("Alice", LocalDate.of(2018, 1, 1));
         var child2 = new Child("Bob", LocalDate.of(2020, 1, 1));
@@ -119,7 +119,7 @@ class ChildControllerTest {
         child1.setGroup(group);
         child2.setGroup(group);
         child3.setGroup(group);
-        when(repository.findSiblingsWithTheirGroupsAndTeachers(anyLong())).thenReturn(List.of(child2, child3));
+        when(repository.findRelatedKidsWithTheirGroupsAndTeachers(anyLong())).thenReturn(List.of(child2, child3));
 
         mockMvc.perform(get("/kindergarten/child/{id}", 1))
                 .andExpect(status().isOk())

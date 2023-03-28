@@ -1,6 +1,6 @@
 import {Button, Modal} from "react-bootstrap";
 import KidsService from "../API/KidsService";
-import Siblings from "./Siblings";
+import RelatedKids from "./RelatedKids";
 import ChildForm from "./ChildForm";
 import {useState} from "react";
 import Relatives from "./Relatives";
@@ -26,7 +26,7 @@ function KidListItem({kid, tokens, setTokens, kids, setKids, group, setGroup}) {
                     <div className="button-container">
                         <Button variant="primary" onClick={() => setUpdateChildForm(true)}>update</Button>
                         <Button variant="danger" onClick={() => handleDelete()}>delete</Button>
-                        <Button variant="primary" onClick={() => setBrothersAndSisters(true)}>siblings</Button>
+                        <Button variant="primary" onClick={() => setBrothersAndSisters(true)}>related kids</Button>
                         {
                             !relatives ?
                                 <Button variant="secondary" onClick={() => setRelatives(true)}> relatives </Button>
@@ -35,7 +35,7 @@ function KidListItem({kid, tokens, setTokens, kids, setKids, group, setGroup}) {
                     </div>
                 </li>
                 <Modal show={brothersAndSisters} onHide={setBrothersAndSisters}>
-                    <Siblings id={kid.id} tokens={tokens} setTokens={setTokens}/>
+                    <RelatedKids id={kid.id} tokens={tokens} setTokens={setTokens}/>
                 </Modal>
                 <Modal show={updateChildForm} onHide={setUpdateChildForm}>
                     <ChildForm kids={kids} setKids={setKids} tokens={tokens} setTokens={setTokens}
