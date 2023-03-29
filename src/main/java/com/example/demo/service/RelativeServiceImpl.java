@@ -27,7 +27,8 @@ public class RelativeServiceImpl implements RelativeService {
     public void delete(String email, long childId, long relativeId) {
          var relative = repository.findRelativeWithChild(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
-        var child = relative.getKids().stream().toList().get(0);
+        var child = relative.getKids().stream().findFirst()
+                        .orElseThrow(() -> new ChildNotFoundException(email));
         child.removeRelative(relative);
         childRepository.save(child);
     }
@@ -37,7 +38,7 @@ public class RelativeServiceImpl implements RelativeService {
         var updatedRelative = repository.findRelativeWithChild(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
         return repository.findEqualRelativeWithKidsAndAnotherId(name, phone, address, relativeId)
-                .map(equalRelative -> replaceRelative(updatedRelative, equalRelative))
+                .map(equalRelative -> replaceRelative(updatedRelative, equalRelative, email))
                 .orElseGet(() -> updateRelative(name, address, phone, updatedRelative));
     }
 
@@ -48,8 +49,9 @@ public class RelativeServiceImpl implements RelativeService {
         return repository.save(updatedRelative);
     }
 
-    private Relative replaceRelative(Relative updatedRelative, Relative equalRelative) {
-        var child = updatedRelative.getKids().stream().toList().get(0);
+    private Relative replaceRelative(Relative updatedRelative, Relative equalRelative, String email) {
+        var child = updatedRelative.getKids().stream().findFirst()
+                .orElseThrow(() -> new ChildNotFoundException(email));
         child.addRelative(equalRelative);
         child.removeRelative(updatedRelative);
         childRepository.save(child);
