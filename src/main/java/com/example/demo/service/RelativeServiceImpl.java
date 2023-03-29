@@ -18,17 +18,18 @@ public class RelativeServiceImpl implements RelativeService {
     public Relative add(String email, long childId, String name, String address, String phone) {
         var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
-        var addedRelative = repository.findEqualRelativeWithKids(name, phone, address).orElse(new Relative(name, phone, address));
+        var addedRelative = repository.findEqualRelativeWithKids(name, phone, address)
+                .orElseGet(() -> new Relative(name, phone, address));
         child.addRelative(addedRelative);
         return repository.save(addedRelative);
     }
 
     @Override
     public void delete(String email, long childId, long relativeId) {
-         var relative = repository.findRelativeWithChild(relativeId, childId, email)
+        var relative = repository.findRelativeWithChild(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
         var child = relative.getKids().stream().findFirst()
-                        .orElseThrow(() -> new ChildNotFoundException(email));
+                .orElseThrow(() -> new ChildNotFoundException(email));
         child.removeRelative(relative);
         childRepository.save(child);
     }
