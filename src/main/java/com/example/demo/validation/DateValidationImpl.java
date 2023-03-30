@@ -9,6 +9,6 @@ import java.time.LocalDate;
 public class DateValidationImpl implements ConstraintValidator<DateValidation, ChildDto> {
     @Override
     public boolean isValid(ChildDto dto, ConstraintValidatorContext constraintValidatorContext) {
-        return dto.birthYear() != null && dto.birthYear().isBefore(LocalDate.now());
+        return dto.birthYear() != null && (dto.birthYear().isBefore(LocalDate.now()) || dto.birthYear().isEqual(LocalDate.now()));
     }
 }

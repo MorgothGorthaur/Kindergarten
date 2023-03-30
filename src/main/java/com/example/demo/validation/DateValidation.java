@@ -8,11 +8,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * checks, if birth year is before or equal today`s date
+ */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = DateValidationImpl.class)
 public @interface DateValidation {
-    String message() default "Birth year must be before today`s date!";
+    String message() default "Birth year must be before or equal today`s date!";
 
     Class<?>[] groups() default {};
 
