@@ -33,7 +33,7 @@ public class GroupController {
 
     @PostMapping
     public void add(Principal principal, @RequestBody @Valid GroupDto dto) {
-        service.add(principal.getName(), dto.createGroup());
+        service.save(principal.getName(), dto.createGroup());
     }
 
     @PatchMapping

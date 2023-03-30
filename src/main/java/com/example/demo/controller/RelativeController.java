@@ -27,7 +27,7 @@ public class RelativeController {
 
     @PostMapping("/{childId}")
     public RelativeDto add(Principal principal, @PathVariable long childId, @RequestBody @Valid RelativeDto dto) {
-        return new RelativeDto(service.add(principal.getName(), childId, dto.name(), dto.address(), dto.phone()));
+        return new RelativeDto(service.save(principal.getName(), childId, dto.name(), dto.address(), dto.phone()));
     }
 
     @DeleteMapping("/{childId}/{relativeId}")

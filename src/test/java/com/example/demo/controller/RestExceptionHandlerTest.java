@@ -56,7 +56,7 @@ class RestExceptionHandlerTest {
     @Test
     void testHandleDataNotAcceptableEx() throws Exception {
         var group = new GroupDto("group", 1);
-        doThrow(new TeacherAlreadyContainsGroupException("test@example.com")).when(groupService).add(anyString(), any(Group.class));
+        doThrow(new TeacherAlreadyContainsGroupException("test@example.com")).when(groupService).save(anyString(), any(Group.class));
         mockMvc.perform(post("/kindergarten/group")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(group)))

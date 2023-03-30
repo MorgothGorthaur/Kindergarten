@@ -137,7 +137,7 @@ class ChildControllerTest {
         var child = new ChildDto(0L, "Alice", LocalDate.of(2019, 5, 1));
         var addedChild = new Child("Alice", LocalDate.of(2019, 5, 1));
         addedChild.setId(0L);
-        when(service.add(anyString(), any(Child.class))).thenReturn(addedChild);
+        when(service.save(anyString(), any(Child.class))).thenReturn(addedChild);
 
         mockMvc.perform(post("/kindergarten/child")
                         .contentType(MediaType.APPLICATION_JSON)

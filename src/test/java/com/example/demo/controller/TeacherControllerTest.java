@@ -45,7 +45,7 @@ public class TeacherControllerTest {
     @Test
     void testAdd() throws Exception {
         var teacherDto = new TeacherFullDto("John", "1234567", "john_skype", "john@example.com", "password");
-        doNothing().when(teacherService).add(any(Teacher.class));
+        doNothing().when(teacherService).save(any(Teacher.class));
 
         mockMvc.perform(post("/kindergarten/teacher")
                         .contentType(MediaType.APPLICATION_JSON)

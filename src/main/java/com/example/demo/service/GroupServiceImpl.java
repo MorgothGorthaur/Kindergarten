@@ -14,7 +14,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository repository;
 
     @Override
-    public void add(String email, Group group) {
+    public void save(String email, Group group) {
         var teacher = teacherRepository.findTeacherByEmail(email)
                 .orElseThrow(() -> new TeacherNotFoundException(email));
         teacher.addGroup(group);

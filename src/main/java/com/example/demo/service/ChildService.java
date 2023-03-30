@@ -7,5 +7,5 @@ public interface ChildService {
     /**
      * adds child to group and saves it to db.
      */
-    Child add(String email, Child child);
+    Child save(String email, Child child);
 }

@@ -7,7 +7,7 @@ public interface RelativeService {
     /**
      * if relative with the same fields isn`t found in db, adds it to child. else adds to child relative from db.
      */
-    Relative add(String email, long childId, String name, String address, String phone);
+    Relative save(String email, long childId, String name, String address, String phone);
 
     /**
      * removes relative from child and saves changes to db.

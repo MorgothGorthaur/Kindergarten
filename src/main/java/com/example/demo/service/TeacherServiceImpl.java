@@ -15,7 +15,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final BCryptPasswordEncoder encoder;
 
     @Override
-    public void add(Teacher teacher) {
+    public void save(Teacher teacher) {
         try {
             teacher.setPassword(encoder.encode(teacher.getPassword()));
             repository.save(teacher);

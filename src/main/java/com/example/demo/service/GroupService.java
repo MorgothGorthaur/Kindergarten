@@ -7,5 +7,5 @@ public interface GroupService {
     /**
      * adds group to teacher and saves it to db.
      */
-    void add(String email, Group group);
+    void save(String email, Group group);
 }

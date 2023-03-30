@@ -28,7 +28,7 @@ public class TeacherController {
 
     @PostMapping
     public void add(@RequestBody @Valid TeacherFullDto dto) {
-        teacherService.add(dto.createTeacher());
+        teacherService.save(dto.createTeacher());
     }
 
     @GetMapping("/all")

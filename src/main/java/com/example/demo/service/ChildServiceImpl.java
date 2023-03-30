@@ -15,7 +15,7 @@ public class ChildServiceImpl implements ChildService {
     private final ChildRepository repository;
 
     @Override
-    public Child add(String email, Child child) {
+    public Child save(String email, Child child) {
         var group = teacherRepository.findTeacherWithGroupAndKidsByEmail(email)
                 .map(Teacher::getGroup)
                 .orElseThrow(() -> new GroupNotFoundException(email));

@@ -66,7 +66,7 @@ class GroupControllerTest {
     void testAdd() throws Exception {
         var dto = new GroupDto("Test Group", 5);
 
-        doNothing().when(groupService).add(anyString(), any(Group.class));
+        doNothing().when(groupService).save(anyString(), any(Group.class));
         mockMvc.perform(post("/kindergarten/group")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))

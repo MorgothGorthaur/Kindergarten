@@ -71,7 +71,7 @@ class RelativeControllerTest {
         var relative = new Relative("John Doe", "123 Main St", "555-1234");
         relative.setId(0L);
 
-        when(relativeService.add(anyString(), anyLong(), anyString(), anyString(), anyString())).thenReturn(relative);
+        when(relativeService.save(anyString(), anyLong(), anyString(), anyString(), anyString())).thenReturn(relative);
         mockMvc.perform(post("/kindergarten/relative/{childId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(relativeDto)))
