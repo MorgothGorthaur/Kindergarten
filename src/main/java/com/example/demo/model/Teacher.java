@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.Role;
-import com.example.demo.exception.TeacherAlreadyContainsGroup;
+import com.example.demo.exception.TeacherAlreadyContainsGroupException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,7 +43,7 @@ public class Teacher {
     }
 
     public void addGroup(Group group) {
-        if (this.group != null) throw new TeacherAlreadyContainsGroup(email);
+        if (this.group != null) throw new TeacherAlreadyContainsGroupException(email);
         this.group = group;
         group.setTeacher(this);
     }

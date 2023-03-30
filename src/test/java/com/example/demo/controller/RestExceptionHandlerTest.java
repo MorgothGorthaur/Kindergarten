@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ChildDto;
 import com.example.demo.dto.GroupDto;
-import com.example.demo.exception.TeacherAlreadyContainsGroup;
+import com.example.demo.exception.TeacherAlreadyContainsGroupException;
 import com.example.demo.model.Group;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.GroupService;
@@ -56,7 +56,7 @@ class RestExceptionHandlerTest {
     @Test
     void testHandleDataNotAcceptableEx() throws Exception {
         var group = new GroupDto("group", 1);
-        doThrow(new TeacherAlreadyContainsGroup("test@example.com")).when(groupService).add(anyString(), any(Group.class));
+        doThrow(new TeacherAlreadyContainsGroupException("test@example.com")).when(groupService).add(anyString(), any(Group.class));
         mockMvc.perform(post("/kindergarten/group")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(group)))

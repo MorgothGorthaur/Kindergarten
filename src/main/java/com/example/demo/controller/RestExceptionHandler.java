@@ -24,7 +24,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({ChildMustHaveRelativeException.class, GroupContainsKidsException.class,
-            TeacherAlreadyContainsGroup.class, TeacherAlreadyExist.class, TooManyChildrenInGroupException.class, GroupCantBeUpdatedException.class})
+            TeacherAlreadyContainsGroupException.class, TeacherAlreadyExistException.class, TooManyChildrenInGroupException.class, GroupCantBeUpdatedException.class})
     protected ResponseEntity<Object> handleDataNotAcceptableEx(RuntimeException ex) {
         var apiError = new ApiError("This data is not acceptable!", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);

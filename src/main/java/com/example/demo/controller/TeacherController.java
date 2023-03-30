@@ -4,7 +4,7 @@ import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
 import com.example.demo.exception.GroupContainsKidsException;
-import com.example.demo.exception.TeacherAlreadyExist;
+import com.example.demo.exception.TeacherAlreadyExistException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.TeacherService;
@@ -47,7 +47,7 @@ public class TeacherController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public void update(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
         if (repository.updateTeacherByEmail(principal.getName(), dto.email(), dto.name(), dto.skype(), dto.phone(), encoder.encode(dto.password())) == 0)
-            throw new TeacherAlreadyExist(dto.email());
+            throw new TeacherAlreadyExistException(dto.email());
     }
 
     @DeleteMapping

@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.TeacherAlreadyExist;
+import com.example.demo.exception.TeacherAlreadyExistException;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class TeacherServiceImpl implements TeacherService {
             teacher.setPassword(encoder.encode(teacher.getPassword()));
             repository.save(teacher);
         } catch (DataIntegrityViolationException ex) {
-            throw new TeacherAlreadyExist(teacher.getEmail());
+            throw new TeacherAlreadyExistException(teacher.getEmail());
         }
     }
 }
