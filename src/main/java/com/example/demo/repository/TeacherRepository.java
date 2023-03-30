@@ -24,7 +24,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
      */
     @Modifying
     @Transactional
-    @Query("UPDATE Teacher t SET t.email = ?2, t.name = ?3, t.skype = ?4, t.phone = ?5, t.password = ?6  WHERE t.email = ?1 AND NOT EXISTS (SELECT t2 FROM Teacher t2 WHERE t2.email = ?2 AND t2.id <> t.id)")
+    @Query("""
+            UPDATE Teacher t SET t.email = ?2, t.name = ?3, t.skype = ?4, t.phone = ?5, t.password = ?6
+            WHERE t.email = ?1 AND NOT EXISTS (SELECT t2 FROM Teacher t2 WHERE t2.email = ?2 AND t2.id <> t.id)""")
     int updateTeacherByEmail(String oldEmail, String newEmail, String newName, String newSkype, String newPhone, String newPassword);
 
     /**
