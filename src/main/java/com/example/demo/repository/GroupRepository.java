@@ -9,6 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 public interface GroupRepository extends JpaRepository<Group, Long> {
     /**
      * deletes the group of the teacher if it doesn`t contain any child
+     *
+     * @param email the teacher`s email
+     * @return 1 if the group was deleted or 0 if the teacher has children in the group
+     * or if the teacher with this email is not found.
      */
     @Modifying
     @Transactional
@@ -17,6 +21,13 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     /**
      * updates the group by the teacher`s email, if quantity of kids in this group is lower than the new maxSize
+     *
+     * @param email   the teacher`s email
+     * @param name    the new name for the group
+     * @param maxSize the new maximum size for the group
+     * @return 1 if the group was updated or 0 if the current
+     * number of kids in the group is greater than the new maxSize
+     * or if the teacher with this email is not found.
      */
     @Modifying
     @Transactional

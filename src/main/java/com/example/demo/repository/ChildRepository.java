@@ -19,7 +19,9 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     List<Child> findKidsWithRelativesByTeacherEmail(String email);
 
     /**
-     * finds kids whose birthday is today or in the future, and sort the result by month and day.
+     * @param email the teacher`s email
+     * @return a list of kids whose birthday is today or in the future,
+     * sorted by month and day
      */
     @Query("""
             SELECT c FROM Child c WHERE c.group.teacher.email = ?1
@@ -29,7 +31,8 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     List<Child> findKidsThatWaitBirthDayByTeacherEmail(String email);
 
     /**
-     * finds related kids (having at least one common relative) with their groups and teachers.
+     * @param id the child`s ID
+     * @return a list of related kids (having at least one common relative) with their groups and teachers.
      */
     @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t JOIN c.relatives r JOIN r.kids k WHERE k.id = ?1 AND c.id <> k.id")
     List<Child> findRelatedKidsWithTheirGroupsAndTeachers(long id);
