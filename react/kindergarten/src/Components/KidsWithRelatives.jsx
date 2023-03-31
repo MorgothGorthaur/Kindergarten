@@ -13,51 +13,76 @@ function KidsWithRelatives({tokens, setTokens}) {
         };
         fetchData();
     }, []);
-
     return (
-        <div style={{alignItems: 'center'}}>
+        <div style={{alignItems: "center"}}>
             <h3>Kids with relatives</h3>
             {loader ? (
-                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh'}}>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "50vh",
+                    }}
+                >
                     <Loader/>
                 </div>
             ) : kids.length > 0 ? (
-                <table style={{width: '100%', margin: 'auto'}}>
+                <table
+                    style={{
+                        width: "100%",
+                        margin: "auto",
+                        textAlign: "center",
+                        tableLayout: "fixed",
+                    }}
+                >
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Birth year</th>
-                        <th>Relatives</th>
+                        <th style={{width: "20%"}}>Name</th>
+                        <th style={{width: "20%"}}>Birth year</th>
+                        <th style={{width: "60%"}}>Relatives</th>
                     </tr>
                     </thead>
                     <tbody>
                     {kids.map((kid) => (
                         <tr key={kid.id}>
-                            <td>{kid.name}</td>
-                            <td>{kid.birthYear}</td>
-                            <td>
+                            <td style={{verticalAlign: "middle"}}>{kid.name}</td>
+                            <td style={{verticalAlign: "middle"}}>{kid.birthYear}</td>
+                            <td style={{verticalAlign: "middle"}}>
                                 {kid.relatives.length > 0 ? (
-                                    <table style={{width: '100%', margin: 'auto'}}>
+                                    <table
+                                        style={{
+                                            width: "100%",
+                                            margin: "0 auto", // обновленный стиль
+                                            textAlign: "center",
+                                            tableLayout: "fixed",
+                                        }}
+                                    >
                                         <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Address</th>
-                                            <th>Phone</th>
+                                            <th style={{width: "33%"}}>Name</th>
+                                            <th style={{width: "33%"}}>Address</th>
+                                            <th style={{width: "33%"}}>Phone</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         {kid.relatives.map((relative) => (
                                             <tr key={relative.id}>
-                                                <td>{relative.name}</td>
-                                                <td>{relative.address}</td>
-                                                <td>{relative.phone}</td>
+                                                <td style={{verticalAlign: "middle"}}>
+                                                    {relative.name}
+                                                </td>
+                                                <td style={{verticalAlign: "middle"}}>
+                                                    {relative.address}
+                                                </td>
+                                                <td style={{verticalAlign: "middle"}}>
+                                                    {relative.phone}
+                                                </td>
                                             </tr>
                                         ))}
                                         </tbody>
                                     </table>
                                 ) : (
-                                    <h3 style={{textAlign: 'center'}}>No relatives found</h3>
-
+                                    <h3 style={{textAlign: "center"}}>No relatives found</h3>
                                 )}
                             </td>
                         </tr>
@@ -65,7 +90,7 @@ function KidsWithRelatives({tokens, setTokens}) {
                     </tbody>
                 </table>
             ) : (
-                <h3 style={{textAlign: 'center'}}>No kids found</h3>
+                <h3 style={{textAlign: "center"}}>No kids found</h3>
             )}
         </div>
     );
