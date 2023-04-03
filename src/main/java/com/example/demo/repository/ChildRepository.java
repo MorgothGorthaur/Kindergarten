@@ -50,4 +50,24 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Transactional
     @Query("DELETE FROM Child c WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
     int deleteChildByIdAndTeacherEmail(String email, long id);
+
+    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher")
+    List<Child> findAllWithGroupsAndTeachers();
+
+    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher ORDER BY (c.group.name)")
+    List<Child> findAllWithGroupsAndTeachersSortedByGroupName();
+
+    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t ORDER BY (t.email)")
+    List<Child> findAllWithGroupsAndTeachersSortedByTeacherEmail();
+
+
+    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher  ORDER BY (c.name)")
+    List<Child> findAllWithGroupsAndTeachersSortedByName();
+
+    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher  ORDER BY (c.birthYear)")
+    List<Child> findAllWithGroupsAndTeachersSortedByBirth();
+    @Modifying
+    @Transactional
+    @Query("UPDATE Child c SET c.name = ?2, c.birthYear = ?3 WHERE c.id = ?1")
+    int updateChild(long id, String name, LocalDate birthYear);
 }
