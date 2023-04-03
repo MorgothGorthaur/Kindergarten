@@ -1,11 +1,11 @@
 package com.example.demo.controller.security;
 
-import com.example.demo.model.TeacherUserDetails;
+import com.example.demo.model.UserDetails;
 
 import java.util.Map;
 
 public interface TokenProvider {
-    Map<String, String> generateTokens(String requestUrl, TeacherUserDetails user);
+    Map<String, String> generateTokens(String requestUrl, UserDetails user);
 
     /**
      * verifies access token, next creates a UsernamePasswordAuthenticationToken and adds it to a SecurityContextHolder

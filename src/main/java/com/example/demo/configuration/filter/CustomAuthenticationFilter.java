@@ -4,7 +4,7 @@ package com.example.demo.configuration.filter;
 import com.example.demo.controller.security.TokenProvider;
 import com.example.demo.enums.AuthenticationRequestParameter;
 import com.example.demo.exception.BadPasswordOrEmailException;
-import com.example.demo.model.TeacherUserDetails;
+import com.example.demo.model.UserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +45,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException {
-        var user = (TeacherUserDetails) authResult.getPrincipal();
+        var user = (UserDetails) authResult.getPrincipal();
         var tokens = tokenProvider.generateTokens(request.getRequestURL().toString(), user);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);

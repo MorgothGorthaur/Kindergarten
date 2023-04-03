@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Teacher {
+public class Teacher extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -23,13 +23,6 @@ public class Teacher {
     private String phone;
     @Column(name = "skype")
     private String skype;
-
-    @Column(name = "role", nullable = false)
-    private Role role;
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
-    @Column(name = "password", nullable = false)
-    private String password;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Group group;
 
@@ -37,13 +30,13 @@ public class Teacher {
         this.name = name;
         this.phone = phone;
         this.skype = skype;
-        this.email = email;
-        this.password = password;
-        this.role = Role.ROLE_USER;
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setRole(Role.ROLE_USER);
     }
 
     public void addGroup(Group group) {
-        if (this.group != null) throw new TeacherAlreadyContainsGroupException(email);
+        if (this.group != null) throw new TeacherAlreadyContainsGroupException(getEmail());
         this.group = group;
         group.setTeacher(this);
     }
