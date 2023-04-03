@@ -27,12 +27,10 @@ public class Teacher extends User {
     private Group group;
 
     public Teacher(String name, String phone, String skype, String email, String password) {
+        super(email, password, Role.ROLE_USER);
         this.name = name;
         this.phone = phone;
         this.skype = skype;
-        this.setEmail(email);
-        this.setPassword(password);
-        this.setRole(Role.ROLE_USER);
     }
 
     public void addGroup(Group group) {

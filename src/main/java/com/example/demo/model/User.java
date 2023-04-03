@@ -4,11 +4,14 @@ import com.example.demo.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @Entity
 @EqualsAndHashCode(of = {"id"})
+@Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
 public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +23,10 @@ public abstract class User {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
+
+    public User(String email, String password, Role role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }
