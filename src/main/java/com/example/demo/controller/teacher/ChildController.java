@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.teacher;
 
 import com.example.demo.dto.ChildDto;
 import com.example.demo.dto.ChildFullDto;
