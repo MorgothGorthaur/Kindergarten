@@ -23,12 +23,22 @@ public class AllRelativesController {
     }
 
     @GetMapping("/by_name")
-    public List<RelativeWithKidsAndGroups> getAllStortedByName() {
+    public List<RelativeWithKidsAndGroups> getAllSortedByName() {
         return repository.findAllRelativesSortedByName().stream().map(RelativeWithKidsAndGroups::new).toList();
     }
 
     @GetMapping("/by_kids")
-    public List<RelativeWithKidsAndGroups> getAllStoredByKidsCount() {
+    public List<RelativeWithKidsAndGroups> getAllSortedByKidsCount() {
         return repository.findAllRelativesSortedByKidCount().stream().map(RelativeWithKidsAndGroups::new).toList();
+    }
+
+    @GetMapping("/by_address")
+    public List<RelativeWithKidsAndGroups> getAllSortedByAddress() {
+        return repository.findAllRelativesSortedByAddress().stream().map(RelativeWithKidsAndGroups::new).toList();
+    }
+
+    @GetMapping("/by_teacher_email")
+    public List<RelativeWithKidsAndGroups> getAllSortedByTeacherEmail() {
+        return repository.findAllRelativesSortedByTeacherEmail().stream().map(RelativeWithKidsAndGroups::new).toList();
     }
 }

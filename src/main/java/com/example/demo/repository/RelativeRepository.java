@@ -53,7 +53,13 @@ public interface RelativeRepository extends JpaRepository<Relative, Long> {
     @Query("SELECT r FROM Relative r JOIN FETCH r.kids k JOIN FETCH k.group.teacher ORDER BY (r.name)")
     List<Relative> findAllRelativesSortedByName();
 
+    @Query("SELECT r FROM Relative r JOIN FETCH r.kids k JOIN FETCH k.group.teacher ORDER BY (r.address)")
+    List<Relative> findAllRelativesSortedByAddress();
+
     @Query("SELECT r FROM Relative r JOIN FETCH r.kids k JOIN FETCH k.group.teacher ORDER BY SIZE(r.kids) DESC ")
     List<Relative> findAllRelativesSortedByKidCount();
+
+    @Query("SELECT r FROM Relative r JOIN FETCH r.kids k JOIN FETCH k.group.teacher t ORDER BY (t.email)")
+    List<Relative> findAllRelativesSortedByTeacherEmail();
 
 }

@@ -22,6 +22,12 @@ function AllRelatives({tokens, setTokens}) {
                 case "kidCount":
                     data = await AllRelativesService.getAllSortedByKidCount(tokens, setTokens);
                     break;
+                case "address":
+                    data = await AllRelativesService.getAllSortedByAddress(tokens, setTokens);
+                    break;
+                case "teacher email":
+                    data = await AllRelativesService.getAllSortedByTeacherEmail(tokens, setTokens);
+                    break;
                 case "default":
                 default:
                     data = await AllRelativesService.getAll(tokens, setTokens);
@@ -46,6 +52,8 @@ function AllRelatives({tokens, setTokens}) {
                         <Dropdown.Item eventKey="default">Default</Dropdown.Item>
                         <Dropdown.Item eventKey="name">Name</Dropdown.Item>
                         <Dropdown.Item eventKey="kidCount">Number of Kids</Dropdown.Item>
+                        <Dropdown.Item eventKey="address">Address</Dropdown.Item>
+                        <Dropdown.Item eventKey="teacher email">Teacher`s email</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
@@ -99,6 +107,7 @@ function AllRelatives({tokens, setTokens}) {
                                             <th style={{width: "33%"}}>Name</th>
                                             <th style={{width: "33%"}}>Birth year</th>
                                             <th style={{width: "33%"}}>Group name</th>
+                                            <th style={{width: "33%"}}>Teacher`s email</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -107,6 +116,7 @@ function AllRelatives({tokens, setTokens}) {
                                                 <td style={{verticalAlign: "middle"}}>{child.name}</td>
                                                 <td style={{verticalAlign: "middle"}}>{child.birthYear}</td>
                                                 <td style={{verticalAlign: "middle"}}>{child.groupName}</td>
+                                                <td style={{verticalAlign: "middle"}}>{child.teacherEmail}</td>
                                             </tr>
                                         ))}
                                         </tbody>
