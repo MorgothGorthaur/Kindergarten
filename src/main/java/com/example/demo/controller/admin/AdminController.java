@@ -35,6 +35,20 @@ public class AdminController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PatchMapping
+    public void updateAdmin(Principal principal, @RequestBody AdminFullDto dto) {
+        if (repository.updateAdminByEmail(principal.getName(), dto.email(), encoder.encode(dto.password()), dto.phone()) == 0)
+            throw new AdminAlreadyExistException(dto.email());
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping
+    public void deleteAdmin(Principal principal) {
+        if (repository.deleteAdminByEmail(principal.getName()) == 0)
+            throw new AdminNotFoundException(principal.getName());
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public AdminDto get(Principal principal) {
         return repository.findAdminByEmail(principal.getName())
