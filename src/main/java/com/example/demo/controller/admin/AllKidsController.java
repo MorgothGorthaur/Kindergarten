@@ -1,13 +1,12 @@
 package com.example.demo.controller.admin;
 
-import com.example.demo.dto.ChildDto;
 import com.example.demo.dto.ChildWithGroupAndTeacherDto;
-import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.repository.ChildRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -15,38 +14,25 @@ import java.util.List;
 @RequestMapping("/kindergarten/admin/kids")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-public class KidsController {
+public class AllKidsController {
     private final ChildRepository repository;
 
-    @PatchMapping
-    public void updateChild(@RequestBody @Valid ChildDto dto) {
-        if (repository.updateChild(dto.id(), dto.name(), dto.birthYear()) == 0)
-            throw new ChildNotFoundException(dto.id());
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteChild(@PathVariable long id) {
-        if (repository.deleteById(id) == 0)
-            throw new ChildNotFoundException(id);
-
-    }
-
-    @GetMapping("/kids")
+    @GetMapping
     public List<ChildWithGroupAndTeacherDto> get() {
         return repository.findAllWithGroupsAndTeachers().stream().map(ChildWithGroupAndTeacherDto::new).toList();
     }
 
-    @GetMapping("/kids/group_name")
+    @GetMapping("/group_name")
     public List<ChildWithGroupAndTeacherDto> getByGroupName() {
         return repository.findAllWithGroupsAndTeachersSortedByGroupName().stream().map(ChildWithGroupAndTeacherDto::new).toList();
     }
 
-    @GetMapping("/kids/teacher_email")
+    @GetMapping("/teacher_email")
     public List<ChildWithGroupAndTeacherDto> getByTeacherName() {
         return repository.findAllWithGroupsAndTeachersSortedByTeacherEmail().stream().map(ChildWithGroupAndTeacherDto::new).toList();
     }
 
-    @GetMapping("/kids/name")
+    @GetMapping("/name")
     public List<ChildWithGroupAndTeacherDto> getByName() {
         return repository.findAllWithGroupsAndTeachersSortedByName().stream().map(ChildWithGroupAndTeacherDto::new).toList();
     }
@@ -56,4 +42,5 @@ public class KidsController {
     public List<ChildWithGroupAndTeacherDto> getByBirth() {
         return repository.findAllWithGroupsAndTeachersSortedByBirth().stream().map(ChildWithGroupAndTeacherDto::new).toList();
     }
+
 }

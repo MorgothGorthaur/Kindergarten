@@ -66,13 +66,4 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher  ORDER BY (c.birthYear)")
     List<Child> findAllWithGroupsAndTeachersSortedByBirth();
-    @Modifying
-    @Transactional
-    @Query("UPDATE Child c SET c.name = ?2, c.birthYear = ?3 WHERE c.id = ?1")
-    int updateChild(long id, String name, LocalDate birthYear);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Child c WHERE c.id = ?1")
-    int deleteById(long id);
 }
