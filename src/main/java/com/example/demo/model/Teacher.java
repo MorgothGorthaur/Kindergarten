@@ -12,11 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@PrimaryKeyJoinColumn(name = "account_id", referencedColumnName = "id")
 public class Teacher extends Account {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "phone_number", nullable = false)
