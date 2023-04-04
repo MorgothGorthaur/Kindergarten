@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"id"})
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
-public abstract class User {
+public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -24,7 +24,7 @@ public abstract class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    public User(String email, String password, Role role) {
+    public Account(String email, String password, Role role) {
         this.email = email;
         this.password = password;
         this.role = role;

@@ -7,22 +7,22 @@ import java.util.Collection;
 import java.util.Set;
 
 @AllArgsConstructor
-public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
-    private User user;
+public class AccountDetails implements org.springframework.security.core.userdetails.UserDetails {
+    private Account account;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(user.getRole());
+        return Set.of(account.getRole());
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return account.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return account.getEmail();
     }
 
     @Override
