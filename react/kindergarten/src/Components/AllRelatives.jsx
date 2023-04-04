@@ -25,9 +25,6 @@ function AllRelatives({tokens, setTokens}) {
                 case "address":
                     data = await AllRelativesService.getAllSortedByAddress(tokens, setTokens);
                     break;
-                case "teacher email":
-                    data = await AllRelativesService.getAllSortedByTeacherEmail(tokens, setTokens);
-                    break;
                 case "default":
                 default:
                     data = await AllRelativesService.getAll(tokens, setTokens);
@@ -53,7 +50,6 @@ function AllRelatives({tokens, setTokens}) {
                         <Dropdown.Item eventKey="name">Name</Dropdown.Item>
                         <Dropdown.Item eventKey="kidCount">Number of Kids</Dropdown.Item>
                         <Dropdown.Item eventKey="address">Address</Dropdown.Item>
-                        <Dropdown.Item eventKey="teacher email">Teacher`s email</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
@@ -80,10 +76,10 @@ function AllRelatives({tokens, setTokens}) {
                 >
                     <thead>
                     <tr>
-                        <th style={{width: "33%"}}>Name</th>
-                        <th style={{width: "33%"}}>Phone</th>
-                        <th style={{width: "33%"}}>Address</th>
-                        <th style={{width: "33%"}}>Children</th>
+                        <th style={{width: "16%"}}>Name</th>
+                        <th style={{width: "16%"}}>Phone</th>
+                        <th style={{width: "16%"}}>Address</th>
+                        <th style={{width: "50%"}}>Children</th>
                     </tr>
                     </thead>
                     <tbody>

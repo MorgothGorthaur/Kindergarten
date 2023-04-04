@@ -37,8 +37,4 @@ public class AllRelativesController {
         return repository.findAllRelativesSortedByAddress().stream().map(RelativeWithKidsAndGroups::new).toList();
     }
 
-    @GetMapping("/by_teacher_email")
-    public List<RelativeWithKidsAndGroups> getAllSortedByTeacherEmail() {
-        return repository.findAllRelativesSortedByTeacherEmail().stream().map(RelativeWithKidsAndGroups::new).toList();
-    }
 }

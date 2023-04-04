@@ -46,15 +46,5 @@ export default class AllRelativesService {
         };
         return await CallApi.callApi('http://localhost:8080/kindergarten/admin/relatives/by_address', requestOptions, tokens, setTokens);
     }
-
-    static async getAllSortedByTeacherEmail(tokens, setTokens) {
-        const requestOptions = {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Authorization': 'Bearer ' + tokens.access_token
-            }
-        };
-        return await CallApi.callApi('http://localhost:8080/kindergarten/admin/relatives/by_teacher_email', requestOptions, tokens, setTokens);
-    }
+    
 }
