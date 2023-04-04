@@ -38,7 +38,7 @@ public class AllKidsController {
     }
 
 
-    @GetMapping("/kids/birth")
+    @GetMapping("/birth")
     public List<ChildWithGroupAndTeacherDto> getByBirth() {
         return repository.findAllWithGroupsAndTeachersSortedByBirth().stream().map(ChildWithGroupAndTeacherDto::new).toList();
     }

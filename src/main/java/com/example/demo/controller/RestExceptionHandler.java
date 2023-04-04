@@ -1,4 +1,4 @@
-package com.example.demo.controller.teacher;
+package com.example.demo.controller;
 
 import com.example.demo.dto.ApiError;
 import com.example.demo.exception.*;
@@ -17,14 +17,16 @@ import java.util.Objects;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler({TeacherNotFoundException.class, RelativeNotFoundException.class, GroupNotFoundException.class, ChildNotFoundException.class})
+    @ExceptionHandler({TeacherNotFoundException.class, RelativeNotFoundException.class,
+            GroupNotFoundException.class, ChildNotFoundException.class, AdminNotFoundException.class})
     protected ResponseEntity<Object> handleEntityNotFoundEx(RuntimeException ex) {
         var apiError = new ApiError("entity not found exception", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({ChildMustHaveRelativeException.class, GroupContainsKidsException.class,
-            TeacherAlreadyContainsGroupException.class, TeacherAlreadyExistException.class, TooManyChildrenInGroupException.class, GroupCantBeUpdatedException.class})
+            TeacherAlreadyContainsGroupException.class, TeacherAlreadyExistException.class,
+            TooManyChildrenInGroupException.class, GroupCantBeUpdatedException.class, AdminAlreadyExistException.class})
     protected ResponseEntity<Object> handleDataNotAcceptableEx(RuntimeException ex) {
         var apiError = new ApiError("This data is not acceptable!", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);
