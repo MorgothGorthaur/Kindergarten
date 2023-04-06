@@ -11,4 +11,7 @@ public interface TeacherService {
      * @throws com.example.demo.exception.TeacherAlreadyExistException if a teacher with the same email already exists in the database
      */
     void save(Teacher teacher);
+
+
+    void update(String oldEmail, String newEmail, String newPassword, String newName, String newSkype, String newPhone);
 }

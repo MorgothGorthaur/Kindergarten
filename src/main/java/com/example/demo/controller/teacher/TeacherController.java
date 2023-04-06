@@ -4,16 +4,12 @@ import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
 import com.example.demo.exception.GroupContainsKidsException;
-import com.example.demo.exception.TeacherAlreadyExistException;
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.TeacherService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -23,10 +19,7 @@ import java.util.List;
 @RequestMapping("/kindergarten/teacher")
 @RequiredArgsConstructor
 public class TeacherController {
-    private final PasswordEncoder encoder;
     private final TeacherRepository repository;
-
-    private final AccountRepository accountRepository;
 
     private final TeacherService teacherService;
 
@@ -49,11 +42,8 @@ public class TeacherController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Transactional
     public void update(Principal principal, @RequestBody @Valid TeacherFullDto dto) {
-        if (repository.updateTeacherByEmail(principal.getName(), dto.name(), dto.skype(), dto.phone()) != 1
-                || accountRepository.updateAccountByEmail(principal.getName(), dto.email(), encoder.encode(dto.password())) != 1)
-            throw new TeacherAlreadyExistException(dto.email());
+        teacherService.update(principal.getName(), dto.email(), dto.password(), dto.name(), dto.skype(), dto.phone());
     }
 
     @DeleteMapping
