@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"id"})
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
+@Table(name = "accounts")
 public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
