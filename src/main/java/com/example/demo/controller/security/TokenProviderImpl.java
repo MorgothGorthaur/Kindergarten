@@ -9,7 +9,7 @@ import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.AccountDetails;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,14 +28,14 @@ import static java.util.Arrays.stream;
 public class TokenProviderImpl implements TokenProvider {
 
     private final Algorithm algorithm;
-    private final UserRepository repository;
+    private final AccountRepository repository;
     @Value("${jwt.access_token.time}")
     private long ACCESS_TOKEN_TIME;
 
     @Value("${jwt.refresh_token.time}")
     private long REFRESH_TOKEN_TIME;
 
-    public TokenProviderImpl(UserRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
+    public TokenProviderImpl(AccountRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
         this.repository = repository;
         this.algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
     }
