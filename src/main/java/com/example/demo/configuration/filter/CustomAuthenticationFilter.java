@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,7 +37,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private Authentication authenticate(UsernamePasswordAuthenticationToken token) {
         try {
             return authenticationManager.authenticate(token);
-        } catch (InternalAuthenticationServiceException ex) {
+        } catch (InternalAuthenticationServiceException | BadCredentialsException ex) {
             throw new BadPasswordOrEmailException(token.getName());
         }
     }
