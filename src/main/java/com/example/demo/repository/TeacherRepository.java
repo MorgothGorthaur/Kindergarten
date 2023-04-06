@@ -51,9 +51,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     @Transactional
     @Query(value = """
             DELETE teachers FROM teachers
-            JOIN account ON teachers.account_id = account.id
+            JOIN accounts ON teachers.account_id = accounts.id
             LEFT JOIN children ON teachers.group_id = children.group_id
-            WHERE account.email = ?1 AND children.group_id IS NULL
+            WHERE accounts.email = ?1 AND children.group_id IS NULL
             """, nativeQuery = true)
     int deleteTeacherByEmail(String email);
 
