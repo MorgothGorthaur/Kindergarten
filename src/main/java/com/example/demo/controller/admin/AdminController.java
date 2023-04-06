@@ -3,12 +3,10 @@ package com.example.demo.controller.admin;
 import com.example.demo.dto.AdminDto;
 import com.example.demo.dto.AdminFullDto;
 import com.example.demo.exception.AdminNotFoundException;
-import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.AdminRepository;
 import com.example.demo.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -17,13 +15,7 @@ import java.security.Principal;
 @RequestMapping("/kindergarten/admin")
 @RequiredArgsConstructor
 public class AdminController {
-
-    private final PasswordEncoder encoder;
-
     private final AdminRepository repository;
-
-    private final AccountRepository accountRepository;
-
     private final AdminService service;
 
 
