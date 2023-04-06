@@ -2,14 +2,11 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.dto.AdminDto;
 import com.example.demo.dto.AdminFullDto;
-import com.example.demo.exception.AdminAlreadyExistException;
 import com.example.demo.exception.AdminNotFoundException;
-import com.example.demo.exception.TeacherAlreadyExistException;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.AdminRepository;
-import jakarta.transaction.Transactional;
+import com.example.demo.service.AdminService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,25 +24,18 @@ public class AdminController {
 
     private final AccountRepository accountRepository;
 
+    private final AdminService service;
+
 
     @PostMapping
     public void addAdmin(@RequestBody AdminFullDto dto) {
-        try {
-            var admin = dto.createAdmin();
-            admin.setPassword(encoder.encode(admin.getPassword()));
-            repository.save(admin);
-        } catch (DataIntegrityViolationException ex) {
-            throw new AdminAlreadyExistException(dto.email());
-        }
+        service.save(dto.createAdmin());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping
-    @Transactional
     public void updateAdmin(Principal principal, @RequestBody AdminFullDto dto) {
-        if (repository.updateAdminByEmail(principal.getName(), dto.phone()) != 1
-                || accountRepository.updateAccountByEmail(principal.getName(), dto.email(), encoder.encode(dto.password())) != 1)
-            throw new TeacherAlreadyExistException(dto.email());
+        service.update(principal.getName(), dto.email(), dto.password(), dto.phone());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
