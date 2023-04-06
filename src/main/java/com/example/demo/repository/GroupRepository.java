@@ -16,7 +16,13 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
      */
     @Modifying
     @Transactional
-    @Query("UPDATE Teacher t SET t.group = NULL  WHERE t.email = ?1 AND NOT EXISTS (SELECT c FROM Child c WHERE c.group.teacher.email = ?1)")
+    @Query(value = """
+            UPDATE teachers
+            JOIN account ON teachers.account_id = account.id
+            LEFT JOIN children ON teachers.group_id = children.group_id
+            SET teachers.group_id = NULL
+            WHERE account.email = ?1 AND children.group_id IS NULL;
+            """, nativeQuery = true)
     int deleteGroupIfEmptyByTeacherEmail(String email);
 
     /**

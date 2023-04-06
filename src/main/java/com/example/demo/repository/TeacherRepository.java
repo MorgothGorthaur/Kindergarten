@@ -32,11 +32,13 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
      * or if a teacher with the newEmail already exists in the database.
      */
     @Modifying
-    @Transactional
-    @Query("""
-            UPDATE Teacher t SET t.email = ?2, t.name = ?3, t.skype = ?4, t.phone = ?5, t.password = ?6
-            WHERE t.email = ?1 AND NOT EXISTS (SELECT t2 FROM Teacher t2 WHERE t2.email = ?2 AND t2.id <> t.id)""")
-    int updateTeacherByEmail(String oldEmail, String newEmail, String newName, String newSkype, String newPhone, String newPassword);
+    @Query(value = """
+            UPDATE teachers t
+            JOIN accounts a ON t.account_id = a.id
+            SET t.name = ?2, t.skype = ?3, t.phone_number = ?4
+            WHERE a.email = ?1
+            """, nativeQuery = true)
+    int updateTeacherByEmail(String oldEmail, String newName, String newSkype, String newPhone);
 
     /**
      * deletes the teacher by email if the teacher`s group doesn`t contain any child
@@ -47,7 +49,12 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Teacher t WHERE t.email = ?1 AND NOT EXISTS (SELECT c FROM Child c WHERE c.group.teacher.email = ?1)")
+    @Query(value = """
+            DELETE teachers FROM teachers
+            JOIN account ON teachers.account_id = account.id
+            LEFT JOIN children ON teachers.group_id = children.group_id
+            WHERE account.email = ?1 AND children.group_id IS NULL
+            """, nativeQuery = true)
     int deleteTeacherByEmail(String email);
 
 }

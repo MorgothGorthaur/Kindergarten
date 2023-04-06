@@ -13,11 +13,13 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     Optional<Admin> findAdminByEmail(String email);
 
     @Modifying
-    @Transactional
-    @Query("""
-            UPDATE Admin a SET a.email = ?2, a.password = ?3, a.phone = ?4
-            WHERE a.email = ?1 AND NOT EXISTS (SELECT a2 FROM Admin a2 WHERE a2.email = ?2 AND a2.id <> a.id)""")
-    int updateAdminByEmail(String oldEmail, String newEmail, String newPassword, String newPhone);
+    @Query(value = """
+              UPDATE admins ad
+              JOIN accounts a ON ad.account_id = a.id
+              SET ad.phone_number = ?2
+              WHERE a.email = ?1
+            """, nativeQuery = true)
+    int updateAdminByEmail(String oldEmail, String newPhone);
 
     @Modifying
     @Transactional
