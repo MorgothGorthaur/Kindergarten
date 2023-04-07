@@ -68,7 +68,7 @@ public class TokenProviderImpl implements TokenProvider {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
             var username = decoderJWT.getSubject();
-            var user = new AccountDetails(repository.findUserByEmail(username)
+            var user = new AccountDetails(repository.findAccountByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
             return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user));
         } catch (TokenExpiredException | JWTDecodeException | TeacherNotFoundException ex) {

@@ -30,7 +30,7 @@ public class TeacherController {
 
     @GetMapping("/all")
     public List<TeacherWithGroupDto> getAll() {
-        return repository.findAllTeachersWithGroups().stream().map(TeacherWithGroupDto::new).toList();
+        return repository.findAll().stream().map(TeacherWithGroupDto::new).toList();
     }
 
     @GetMapping

@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Teacher;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,23 +12,18 @@ import java.util.Optional;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
-    @Query(value = "SELECT t FROM Teacher t LEFT JOIN FETCH t.group.kids WHERE t.email = ?1")
-    Optional<Teacher> findTeacherWithGroupAndKidsByEmail(String email);
-
     Optional<Teacher> findTeacherByEmail(String username);
 
-    @Query(value = "SELECT t FROM Teacher t LEFT JOIN FETCH t.group")
-    List<Teacher> findAllTeachersWithGroups();
+    @EntityGraph(attributePaths = {"group"}, type = EntityGraph.EntityGraphType.LOAD)
+    List<Teacher> findAll();
 
     /**
      * updates the teacher if the table doesn't contain a teacher with the same email
      *
-     * @param oldEmail    the teacher`s email
-     * @param newEmail    the new email for the teacher
-     * @param newName     the new name for the teacher
-     * @param newSkype    the new Skype for the teacher
-     * @param newPhone    the new phone number for the teacher
-     * @param newPassword the new password for the teacher
+     * @param oldEmail the teacher`s email
+     * @param newName  the new name for the teacher
+     * @param newSkype the new Skype for the teacher
+     * @param newPhone the new phone number for the teacher
      * @return 1 if the teacher was updated, or 0 if the teacher with the given oldEmail is not found
      * or if a teacher with the newEmail already exists in the database.
      */

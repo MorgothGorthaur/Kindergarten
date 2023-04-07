@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Child;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,11 +13,9 @@ import java.util.Optional;
 
 public interface ChildRepository extends JpaRepository<Child, Long> {
 
-    @Query("SELECT c FROM Child c WHERE c.group.teacher.email = ?1")
-    List<Child> findKidsByTeacherEmail(String email);
+    @EntityGraph(attributePaths = {"group", "relatives"}, type = EntityGraph.EntityGraphType.LOAD)
+    List<Child> findChildByGroup_TeacherEmail(String email);
 
-    @Query("SELECT c FROM Child c LEFT JOIN FETCH c.relatives WHERE c.group.teacher.email = ?1")
-    List<Child> findKidsWithRelativesByTeacherEmail(String email);
 
     /**
      * @param email the teacher`s email
@@ -37,9 +36,9 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t JOIN c.relatives r JOIN r.kids k WHERE k.id = ?1 AND c.id <> k.id")
     List<Child> findRelatedKidsWithTheirGroupsAndTeachers(long id);
 
-    @Query("SELECT c FROM Child c LEFT JOIN FETCH c.relatives r WHERE c.id = ?1 AND c.group.teacher.email = ?2")
-    Optional<Child> findChildWithRelativesByIdAndTeacherEmail(long childId, String teacherEmail);
 
+    @EntityGraph(attributePaths = "relatives", type = EntityGraph.EntityGraphType.LOAD)
+    Optional<Child> findChildByIdAndGroup_TeacherEmail(long id, String email);
 
     @Modifying
     @Transactional
@@ -51,19 +50,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
     @Query("DELETE FROM Child c WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
     int deleteChildByIdAndTeacherEmail(String email, long id);
 
-    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher")
-    List<Child> findAllWithGroupsAndTeachers();
 
-    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher ORDER BY (c.group.name)")
-    List<Child> findAllWithGroupsAndTeachersSortedByGroupName();
-
-    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher t ORDER BY (t.email)")
-    List<Child> findAllWithGroupsAndTeachersSortedByTeacherEmail();
-
-
-    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher  ORDER BY (c.name)")
-    List<Child> findAllWithGroupsAndTeachersSortedByName();
-
-    @Query("SELECT c FROM Child c JOIN FETCH c.group.teacher  ORDER BY (c.birthYear)")
-    List<Child> findAllWithGroupsAndTeachersSortedByBirth();
+    @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
+    List<Child> findAll();
 }

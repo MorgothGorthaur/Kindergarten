@@ -4,9 +4,7 @@ import com.example.demo.dto.GroupDto;
 import com.example.demo.dto.GroupWithCurrentSizeDto;
 import com.example.demo.exception.GroupCantBeUpdatedException;
 import com.example.demo.exception.GroupContainsKidsException;
-import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
-import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.GroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +19,12 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupRepository repository;
-    private final TeacherRepository teacherRepository;
-
     private final GroupService service;
 
     @GetMapping
     public GroupWithCurrentSizeDto getGroup(Principal principal) {
-        return teacherRepository.findTeacherWithGroupAndKidsByEmail(principal.getName())
-                .map(Teacher::getGroup).map(GroupWithCurrentSizeDto::new).orElse(null);
+        return repository.findGroupByTeacherEmail(principal.getName())
+                .map(GroupWithCurrentSizeDto::new).orElse(null);
     }
 
     @PostMapping
