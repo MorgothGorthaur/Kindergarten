@@ -1,20 +1,17 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Child;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface ChildRepository extends JpaRepository<Child, Long> {
 
     @EntityGraph(attributePaths = {"group", "relatives"}, type = EntityGraph.EntityGraphType.LOAD)
-    List<Child> findChildByGroup_TeacherEmail(String email);
+    List<Child> findChildrenByGroup_TeacherEmail(String email);
 
 
     /**
@@ -39,17 +36,6 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     @EntityGraph(attributePaths = "relatives", type = EntityGraph.EntityGraphType.LOAD)
     Optional<Child> findChildByIdAndGroup_TeacherEmail(long id, String email);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Child c SET c.name = ?3, c.birthYear = ?4 WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
-    int updateChildByIdAndTeacherEmail(String email, long id, String name, LocalDate birthYear);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Child c WHERE c.id = ?2 AND EXISTS (SELECT t FROM Teacher t WHERE t.email = ?1 AND t.group.id = c.group.id)")
-    int deleteChildByIdAndTeacherEmail(String email, long id);
-
 
     @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
     List<Child> findAll();
