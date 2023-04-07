@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.Role;
+import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherAlreadyContainsGroupException;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,5 +35,10 @@ public class Teacher extends Account {
         if (this.group != null) throw new TeacherAlreadyContainsGroupException(getEmail());
         this.group = group;
         group.setTeacher(this);
+    }
+
+    public void deleteGroup() {
+        if(group.isAbleToBeDeleted()) setGroup(null);
+        else throw new GroupContainsKidsException();
     }
 }

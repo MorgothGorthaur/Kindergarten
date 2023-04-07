@@ -21,6 +21,7 @@ public class RelativeController {
 
     @GetMapping("/{childId}")
     public List<RelativeDto> getAll(Principal principal, @PathVariable long childId) {
+        System.out.println(repository.findAllByKidsId(childId).size());
         return repository.findRelativesByChildIdAndTeacherEmail(childId, principal.getName())
                 .stream().map(RelativeDto::new).toList();
     }

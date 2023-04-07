@@ -47,4 +47,12 @@ public class Group {
     public int getCurrentSize() {
         return kids.size();
     }
+
+    public boolean isAbleToBeUpdated(int maxSize) {
+        return maxSize >= kids.size();
+    }
+
+    public boolean isAbleToBeDeleted() {
+        return kids.size() == 0;
+    }
 }

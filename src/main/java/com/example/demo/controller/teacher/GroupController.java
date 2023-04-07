@@ -2,8 +2,6 @@ package com.example.demo.controller.teacher;
 
 import com.example.demo.dto.GroupDto;
 import com.example.demo.dto.GroupWithCurrentSizeDto;
-import com.example.demo.exception.GroupCantBeUpdatedException;
-import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.service.GroupService;
 import jakarta.validation.Valid;
@@ -34,13 +32,11 @@ public class GroupController {
 
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid GroupDto dto) {
-        if (repository.updateGroupByTeacherEmail(principal.getName(), dto.name(), dto.maxSize()) == 0)
-            throw new GroupCantBeUpdatedException(dto.maxSize());
+        service.update(principal.getName(), dto.name(), dto.maxSize());
     }
 
     @DeleteMapping
     public void remove(Principal principal) {
-        if (repository.deleteGroupIfEmptyByTeacherEmail(principal.getName()) == 0)
-            throw new GroupContainsKidsException();
+        service.delete(principal.getName());
     }
 }

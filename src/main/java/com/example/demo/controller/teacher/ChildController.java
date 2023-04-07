@@ -26,12 +26,12 @@ public class ChildController {
 
     @GetMapping
     public List<ChildDto> getAll(Principal principal) {
-        return repository.findChildByGroup_TeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
+        return repository.findChildrenByGroup_TeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
     }
 
     @GetMapping("/full")
     public List<ChildFullDto> getFull(Principal principal) {
-        return repository.findChildByGroup_TeacherEmail(principal.getName())
+        return repository.findChildrenByGroup_TeacherEmail(principal.getName())
                 .stream().map(ChildFullDto::new).toList();
     }
 
@@ -53,14 +53,14 @@ public class ChildController {
 
     @PatchMapping
     public void update(Principal principal, @RequestBody @Valid ChildDto dto) {
-        if (repository.updateChildByIdAndTeacherEmail(principal.getName(), dto.id(), dto.name(), dto.birthYear()) == 0)
-            throw new ChildNotFoundException(principal.getName());
+        service.update(principal.getName(), dto.id(), dto.name(), dto.birthYear());
     }
 
     @DeleteMapping("/{id}")
     public void delete(Principal principal, @PathVariable long id) {
-        if (repository.deleteChildByIdAndTeacherEmail(principal.getName(), id) == 0)
-            throw new ChildNotFoundException(principal.getName());
+        var child = repository.findChildByIdAndGroup_TeacherEmail(id, principal.getName())
+                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
+        repository.delete(child);
     }
 
 }
