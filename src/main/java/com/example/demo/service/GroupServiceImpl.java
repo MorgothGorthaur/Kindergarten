@@ -25,7 +25,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void update(String email, String name, int maxSize) {
-        var group = repository.findGroupByTeacherEmail(email)
+        var group = repository.findGroupAndKidsByTeacherEmail(email)
                 .orElseThrow(() -> new GroupNotFoundException(email));
         if (group.isAbleToBeUpdated(maxSize)) {
             group.setName(name);
@@ -36,7 +36,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void delete(String email) {
-        var teacher = repository.findGroupByTeacherEmail(email)
+        var teacher = repository.findGroupAndKidsByTeacherEmail(email)
                 .map(Group::getTeacher)
                 .orElseThrow(() -> new GroupNotFoundException(email));
         teacher.deleteGroup();

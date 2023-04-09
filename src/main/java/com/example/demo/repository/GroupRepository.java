@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @EntityGraph(attributePaths = {"kids"}, type = EntityGraph.EntityGraphType.LOAD)
-    Optional<Group> findGroupByTeacherEmail(String email);
+    Optional<Group> findGroupAndKidsByTeacherEmail(String email);
 }

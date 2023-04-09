@@ -18,7 +18,7 @@ public class ChildServiceImpl implements ChildService {
 
     @Override
     public Child save(String email, Child child) {
-        var group = groupRepository.findGroupByTeacherEmail(email)
+        var group = groupRepository.findGroupAndKidsByTeacherEmail(email)
                 .orElseThrow(() -> new GroupNotFoundException(email));
         group.addChild(child);
         return repository.save(child);
