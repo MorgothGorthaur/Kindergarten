@@ -38,7 +38,7 @@ public class Teacher extends Account {
     }
 
     public void deleteGroup() {
-        if (group != null && group.isAbleToBeDeleted()) setGroup(null);
+        if (group == null || group.isAbleToBeDeleted()) setGroup(null);
         else throw new GroupContainsKidsException();
     }
 }
