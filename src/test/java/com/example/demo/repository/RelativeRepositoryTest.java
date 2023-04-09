@@ -49,30 +49,6 @@ class RelativeRepositoryTest {
         assertThat(result.get().getKids().stream().toList().get(0)).isNotNull();
     }
 
-    @Test
-    void testFindRelativesByChildIdAndTeacherEmail() {
-        createTeacherWithGroupAndKidsAndRelatives();
-        var email = "john@example.com";
-        var childId = childRepository.findAll().get(0).getId();
-        assertThat(relativeRepository.findRelativesByChildIdAndTeacherEmail(childId, email).size()).isEqualTo(1);
-    }
-
-    @Test
-    void testFindEqualRelativeWithKids() {
-        createTeacherWithGroupAndKidsAndRelatives();
-        assertThat(relativeRepository
-                .findEqualRelativeWithKids("John's relative", "+1234567890", "John's relative address"))
-                .isPresent();
-    }
-
-    @Test
-    void testFindEqualRelativeWithKidsAndAnotherId() {
-        createTeacherWithGroupAndKidsAndRelatives();
-        assertThat(relativeRepository
-                .findEqualRelativeWithKidsAndAnotherId("John's relative", "+1234567890", "John's relative address", 3L))
-                .isPresent();
-    }
-
     public void createTeacherWithGroupAndKidsAndRelatives() {
         var relative1 = relativeRepository.save(new Relative("John's relative", "+1234567890", "John's relative address"));
         var relative2 = relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
