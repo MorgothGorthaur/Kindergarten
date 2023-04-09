@@ -7,4 +7,6 @@ public interface AdminService {
 
 
     void update(String oldEmail, String newEmail, String newPassword, String newPhone);
+
+    void delete(String email);
 }

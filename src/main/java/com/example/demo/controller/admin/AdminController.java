@@ -33,8 +33,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping
     public void deleteAdmin(Principal principal) {
-        if (repository.deleteAdminByEmail(principal.getName()) == 0)
-            throw new AdminNotFoundException(principal.getName());
+        service.delete(principal.getName());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
