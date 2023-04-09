@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ChildRepository extends JpaRepository<Child, Long> {
 
-    List<Child> findChildByGroup_TeacherEmail(String email);
+    List<Child> findChildrenByGroup_TeacherEmail(String email);
 
     @EntityGraph(attributePaths = {"relatives"}, type = EntityGraph.EntityGraphType.LOAD)
     List<Child> findChildrenAndRelativesByGroup_TeacherEmail(String email);
