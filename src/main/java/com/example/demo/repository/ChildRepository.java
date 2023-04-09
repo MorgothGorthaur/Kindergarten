@@ -12,20 +12,7 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     @EntityGraph(attributePaths = {"group", "relatives"}, type = EntityGraph.EntityGraphType.LOAD)
     List<Child> findChildrenByGroup_TeacherEmail(String email);
-
-
-    /**
-     * @param email the teacher`s email
-     * @return a list of kids whose birthday is today or in the future,
-     * sorted by month and day
-     */
-    @Query("""
-            SELECT c FROM Child c WHERE c.group.teacher.email = ?1
-            AND (MONTH(c.birthYear) > MONTH(CURRENT_DATE())
-            OR (MONTH(c.birthYear) = MONTH(CURRENT_DATE()) AND DAY(c.birthYear) >= DAY(CURRENT_DATE())))
-            ORDER BY MONTH(c.birthYear), DAY(c.birthYear)""")
-    List<Child> findKidsThatWaitBirthDayByTeacherEmail(String email);
-
+    
     /**
      * @param id the child`s ID
      * @return a list of related kids (having at least one common relative) with their groups and teachers.
@@ -39,4 +26,18 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
     List<Child> findAll();
+
+    @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
+    List<Child> findAllByOrderByGroupNameAsc();
+
+    @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
+    List<Child> findAllByOrderByGroup_TeacherEmail();
+
+
+    @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
+    List<Child> findAllByOrderByName();
+
+    @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
+    List<Child> findAllByOrderByBirthYear();
+
 }
