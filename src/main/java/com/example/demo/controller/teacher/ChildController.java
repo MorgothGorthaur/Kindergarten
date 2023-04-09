@@ -6,7 +6,6 @@ import com.example.demo.dto.ChildWithGroupDto;
 import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.model.Child;
 import com.example.demo.repository.ChildRepository;
-import com.example.demo.repository.GroupRepository;
 import com.example.demo.service.ChildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,23 +22,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChildController {
     private final ChildRepository repository;
-    private final GroupRepository groupRepository;
     private final ChildService service;
 
     @GetMapping
     public List<ChildDto> getAll(Principal principal) {
-        return repository.findChildrenByGroup_TeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
+        return repository.findChildByGroup_TeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
     }
 
     @GetMapping("/full")
     public List<ChildFullDto> getFull(Principal principal) {
-        return repository.findChildrenByGroup_TeacherEmail(principal.getName())
+        return repository.findChildrenAndRelativesByGroup_TeacherEmail(principal.getName())
                 .stream().map(ChildFullDto::new).toList();
     }
 
     @GetMapping("/birth")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.findChildrenByGroup_TeacherEmail(principal.getName())
+        return repository.findChildByGroup_TeacherEmail(principal.getName())
                 .stream().filter(Child::isBirthDayTodayOrUpcoming)
                 .sorted(Comparator.comparing(Child::getBirthYear).reversed()).map(ChildDto::new).toList();
     }
