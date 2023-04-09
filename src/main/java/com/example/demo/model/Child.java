@@ -25,7 +25,7 @@ public class Child {
     private String name;
     @Column(name = "birth_year", nullable = false)
     private LocalDate birthYear;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private Set<Relative> relatives = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
