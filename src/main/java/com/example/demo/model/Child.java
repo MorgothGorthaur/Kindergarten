@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.exception.RelativeNotFoundException;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,7 +45,7 @@ public class Child {
     }
 
     public void removeRelative(Relative relative) {
-        relatives.remove(relative);
+        if (!relatives.remove(relative)) throw new RelativeNotFoundException();
         relative.removeChild(this);
     }
 
