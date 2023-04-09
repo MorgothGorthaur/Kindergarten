@@ -38,6 +38,10 @@ public class Relative {
         this.address = address;
     }
 
+    public Relative(long id) {
+        this.id = id;
+    }
+
     public void addChild(Child child) {
         kids.add(child);
     }
