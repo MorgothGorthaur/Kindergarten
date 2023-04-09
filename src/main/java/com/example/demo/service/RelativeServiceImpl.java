@@ -26,11 +26,9 @@ public class RelativeServiceImpl implements RelativeService {
 
     @Override
     public void delete(String email, long childId, long relativeId) {
-        var relative = repository.findRelativeWithChild(relativeId, childId, email)
-                .orElseThrow(RelativeNotFoundException::new);
-        var child = relative.getKids().stream().findFirst()
+        var child = childRepository.findChildAndRelativesByIdAndGroup_TeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
-        child.removeRelative(relative);
+        child.removeRelative(new Relative(relativeId));
         childRepository.save(child);
     }
 
