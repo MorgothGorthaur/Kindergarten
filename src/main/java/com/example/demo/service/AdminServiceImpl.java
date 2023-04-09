@@ -1,8 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.AdminAlreadyExistException;
+import com.example.demo.exception.AccountAlreadyExistException;
 import com.example.demo.exception.AdminNotFoundException;
-import com.example.demo.exception.TeacherAlreadyExistException;
 import com.example.demo.model.Admin;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.AdminRepository;
@@ -24,14 +23,14 @@ public class AdminServiceImpl implements AdminService {
             admin.setPassword(encoder.encode(admin.getPassword()));
             repository.save(admin);
         } catch (DataIntegrityViolationException ex) {
-            throw new AdminAlreadyExistException(admin.getEmail());
+            throw new AccountAlreadyExistException(admin.getEmail());
         }
     }
 
     @Override
     public void update(String oldEmail, String newEmail, String newPassword, String newPhone) {
         if (!oldEmail.equals(newEmail) && accountRepository.findAccountByEmail(newEmail).isPresent())
-            throw new TeacherAlreadyExistException(newEmail);
+            throw new AccountAlreadyExistException(newEmail);
         var admin = repository.findAdminByEmail(oldEmail).orElseThrow(() -> new AdminNotFoundException(newEmail));
         admin.setEmail(newEmail);
         admin.setPassword(encoder.encode(newPassword));

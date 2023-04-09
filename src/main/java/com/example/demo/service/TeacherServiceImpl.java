@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.TeacherAlreadyExistException;
+import com.example.demo.exception.AccountAlreadyExistException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.AccountRepository;
@@ -23,14 +23,14 @@ public class TeacherServiceImpl implements TeacherService {
             teacher.setPassword(encoder.encode(teacher.getPassword()));
             repository.save(teacher);
         } catch (DataIntegrityViolationException ex) {
-            throw new TeacherAlreadyExistException(teacher.getEmail());
+            throw new AccountAlreadyExistException(teacher.getEmail());
         }
     }
 
     @Override
     public void update(String oldEmail, String newEmail, String newPassword, String newName, String newSkype, String newPhone) {
         if (!oldEmail.equals(newEmail) && accountRepository.findAccountByEmail(newEmail).isPresent())
-            throw new TeacherAlreadyExistException(newEmail);
+            throw new AccountAlreadyExistException(newEmail);
         var teacher = repository.findTeacherByEmail(oldEmail).orElseThrow(() -> new TeacherNotFoundException(oldEmail));
         teacher.setEmail(newEmail);
         teacher.setPassword(encoder.encode(newPassword));
