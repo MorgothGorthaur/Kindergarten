@@ -4,6 +4,7 @@ import com.example.demo.dto.ChildDto;
 import com.example.demo.dto.ChildFullDto;
 import com.example.demo.dto.ChildWithGroupDto;
 import com.example.demo.exception.ChildNotFoundException;
+import com.example.demo.model.Child;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.service.ChildService;
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -37,8 +39,9 @@ public class ChildController {
 
     @GetMapping("/birth")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.findKidsThatWaitBirthDayByTeacherEmail(principal.getName())
-                .stream().map(ChildDto::new).toList();
+        return repository.findChildrenByGroup_TeacherEmail(principal.getName())
+                .stream().filter(Child::isBirthDayTodayOrUpcoming)
+                .sorted(Comparator.comparing(Child::getBirthYear).reversed()).map(ChildDto::new).toList();
     }
 
     @GetMapping("/{id}")

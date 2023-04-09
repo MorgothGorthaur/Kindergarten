@@ -14,4 +14,6 @@ public interface TeacherService {
 
 
     void update(String oldEmail, String newEmail, String newPassword, String newName, String newSkype, String newPhone);
+
+    void delete(String email);
 }

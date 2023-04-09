@@ -31,7 +31,7 @@ public class Child {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
-    
+
 
     public Child(String name, LocalDate birthYear) {
         this.name = name;
@@ -46,6 +46,10 @@ public class Child {
     public void removeRelative(Relative relative) {
         relatives.remove(relative);
         relative.removeChild(this);
+    }
+
+    public boolean isBirthDayTodayOrUpcoming() {
+        return birthYear.getDayOfYear() >= LocalDate.now().getDayOfYear();
     }
 
 

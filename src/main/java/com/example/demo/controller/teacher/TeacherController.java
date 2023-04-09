@@ -3,7 +3,6 @@ package com.example.demo.controller.teacher;
 import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
-import com.example.demo.exception.GroupContainsKidsException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.TeacherService;
@@ -49,7 +48,6 @@ public class TeacherController {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public void remove(Principal principal) {
-        if (repository.deleteTeacherByEmail(principal.getName()) == 0)
-            throw new GroupContainsKidsException();
+        teacherService.delete(principal.getName());
     }
 }
