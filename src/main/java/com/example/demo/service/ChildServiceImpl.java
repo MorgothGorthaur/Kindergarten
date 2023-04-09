@@ -33,4 +33,11 @@ public class ChildServiceImpl implements ChildService {
         repository.save(child);
     }
 
+    @Override
+    public void delete(long id, String email) {
+        var child = repository.findChildByIdAndGroup_TeacherEmail(id, email)
+                .orElseThrow(() -> new ChildNotFoundException(email));
+        repository.delete(child);
+    }
+
 }

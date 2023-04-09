@@ -3,7 +3,6 @@ package com.example.demo.controller.teacher;
 import com.example.demo.dto.ChildDto;
 import com.example.demo.dto.ChildFullDto;
 import com.example.demo.dto.ChildWithGroupDto;
-import com.example.demo.exception.ChildNotFoundException;
 import com.example.demo.model.Child;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.service.ChildService;
@@ -26,7 +25,7 @@ public class ChildController {
 
     @GetMapping
     public List<ChildDto> getAll(Principal principal) {
-        return repository.findChildByGroup_TeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
+        return repository.findChildrenByGroup_TeacherEmail(principal.getName()).stream().map(ChildDto::new).toList();
     }
 
     @GetMapping("/full")
@@ -37,7 +36,7 @@ public class ChildController {
 
     @GetMapping("/birth")
     public List<ChildDto> getChildThatWaitsBirth(Principal principal) {
-        return repository.findChildByGroup_TeacherEmail(principal.getName())
+        return repository.findChildrenByGroup_TeacherEmail(principal.getName())
                 .stream().filter(Child::isBirthDayTodayOrUpcoming)
                 .sorted(Comparator.comparing(Child::getBirthYear).reversed()).map(ChildDto::new).toList();
     }
@@ -59,9 +58,7 @@ public class ChildController {
 
     @DeleteMapping("/{id}")
     public void delete(Principal principal, @PathVariable long id) {
-        var child = repository.findChildByIdAndGroup_TeacherEmail(id, principal.getName())
-                .orElseThrow(() -> new ChildNotFoundException(principal.getName()));
-        repository.delete(child);
+        service.delete(id, principal.getName());
     }
 
 }

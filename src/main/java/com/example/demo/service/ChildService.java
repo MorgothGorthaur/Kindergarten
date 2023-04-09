@@ -18,4 +18,5 @@ public interface ChildService {
 
     void update(String email, long id, String name, LocalDate birthYear);
 
+    void delete(long id, String email);
 }
