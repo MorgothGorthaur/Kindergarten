@@ -9,12 +9,12 @@ import java.util.Optional;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
-    Optional<Teacher> findTeacherByEmail(String username);
+    Optional<Teacher> findTeacherByEmail(String email);
 
     @EntityGraph(attributePaths = "group.kids", type = EntityGraph.EntityGraphType.LOAD)
     Optional<Teacher> findTeacherAndGroupAndKidsByEmail(String email);
 
-    @EntityGraph(attributePaths = {"group"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = "group", type = EntityGraph.EntityGraphType.LOAD)
     List<Teacher> findAll();
 
 }
