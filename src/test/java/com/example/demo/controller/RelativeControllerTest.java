@@ -4,7 +4,6 @@ import com.example.demo.dto.RelativeDto;
 import com.example.demo.model.Child;
 import com.example.demo.model.Relative;
 import com.example.demo.repository.ChildRepository;
-import com.example.demo.repository.RelativeRepository;
 import com.example.demo.service.RelativeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -36,9 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RelativeControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private RelativeRepository repository;
 
     @MockBean
     private RelativeService relativeService;
