@@ -40,7 +40,7 @@ class RelativeRepositoryTest {
     @Test
     void testFindRelativeWithChild() {
         createTeacherWithGroupAndKidsAndRelatives();
-        var email = "john@example.com";
+        var email = teacherRepository.findAll().get(0).getEmail();
         var childId = childRepository.findAll().get(0).getId();
         var relativeId = relativeRepository.findAll().get(0).getId();
         var result = relativeRepository.findRelativeWithChild(relativeId, childId, email);
@@ -51,19 +51,12 @@ class RelativeRepositoryTest {
 
     public void createTeacherWithGroupAndKidsAndRelatives() {
         var relative1 = relativeRepository.save(new Relative("John's relative", "+1234567890", "John's relative address"));
-        var relative2 = relativeRepository.save(new Relative("Jane's relative", "+0987654321", "Jane's relative address"));
         var teacher1 = new Teacher("John Smith", "+1234567890", "john_skype", "john@example.com", "password1");
         var group1 = new Group("Group 1", 3);
         teacher1.addGroup(group1);
         var child1 = childRepository.save(new Child("Child 1", LocalDate.now().minusYears(1)));
         child1.addRelative(relative1);
-        var child2 = childRepository.save(new Child("Child 2", LocalDate.now().minusYears(1).plusMonths(5)));
-        child2.addRelative(relative1);
-        var child3 = childRepository.save(new Child("Child 3", LocalDate.now().minusYears(3)));
-        child3.addRelative(relative2);
         group1.addChild(child1);
-        group1.addChild(child2);
-        group1.addChild(child3);
         teacherRepository.save(teacher1);
     }
 }

@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.RelativeDto;
+import com.example.demo.model.Child;
 import com.example.demo.model.Relative;
+import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.RelativeRepository;
 import com.example.demo.service.RelativeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +18,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,22 +43,26 @@ class RelativeControllerTest {
     @MockBean
     private RelativeService relativeService;
 
+    @MockBean
+    private ChildRepository childRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
     void testGetAll() throws Exception {
-        long childId = 1L;
-        String email = "test@example.com";
+        var child = new Child("Alice", LocalDate.of(2018, 1, 1));
+        child.setId(0L);
         var relative1 = new Relative("John", "123 Main St", "555-1234");
         relative1.setId(0L);
         Relative relative2 = new Relative("Jane", "456 Elm St", "555-5678");
         relative2.setId(1L);
-        var relativeList = List.of(relative1, relative2);
+        child.addRelative(relative1);
+        child.addRelative(relative2);
 
-        when(repository.findRelativesByChildIdAndTeacherEmail(childId, email)).thenReturn(relativeList);
+        when(childRepository.findChildAndRelativesByIdAndGroup_TeacherEmail(anyLong(), anyString())).thenReturn(Optional.of(child));
 
-        mockMvc.perform(get("/kindergarten/relative/{childId}", childId))
+        mockMvc.perform(get("/kindergarten/relative/{childId}", child.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value(relative1.getName()))
                 .andExpect(jsonPath("$[0].address").value(relative1.getAddress()))
