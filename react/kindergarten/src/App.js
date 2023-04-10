@@ -19,7 +19,7 @@ function App() {
                     <a href="/">main</a>
                     <a href="/teachers">teachers</a>
                     <a href="/home">home</a>
-                    <a href="/admin">admin</a>
+                    <a href="/admin" style={{marginLeft: "auto", position: "absolute", top: 0, right: 0}}>admin</a>
                 </div>
             </header>
             <Routes>
