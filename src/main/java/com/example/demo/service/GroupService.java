@@ -12,4 +12,9 @@ public interface GroupService {
      * @throws com.example.demo.exception.TeacherNotFoundException if the teacher with the given email is not found
      */
     void save(String email, Group group);
+
+
+    void update(String email, String name, int maxSize);
+
+    void delete(String email);
 }

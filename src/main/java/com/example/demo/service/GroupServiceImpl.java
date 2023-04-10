@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.GroupCantBeUpdatedException;
+import com.example.demo.exception.GroupNotFoundException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.Group;
 import com.example.demo.repository.GroupRepository;
@@ -19,5 +21,25 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new TeacherNotFoundException(email));
         teacher.addGroup(group);
         repository.save(group);
+    }
+
+    @Override
+    public void update(String email, String name, int maxSize) {
+        var group = repository.findGroupAndKidsByTeacherEmail(email)
+                .orElseThrow(() -> new GroupNotFoundException(email));
+        if (group.isAbleToBeUpdated(maxSize)) {
+            group.setName(name);
+            group.setMaxSize(maxSize);
+            repository.save(group);
+        } else throw new GroupCantBeUpdatedException(maxSize);
+    }
+
+    @Override
+    public void delete(String email) {
+        var teacher = repository.findGroupAndKidsByTeacherEmail(email)
+                .map(Group::getTeacher)
+                .orElseThrow(() -> new GroupNotFoundException(email));
+        teacher.deleteGroup();
+        teacherRepository.save(teacher);
     }
 }

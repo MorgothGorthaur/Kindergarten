@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "relatives")
+@Table(name = "relatives", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "phone", "address"})})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,6 +36,10 @@ public class Relative {
         this.name = name;
         this.phone = phone;
         this.address = address;
+    }
+
+    public Relative(long id) {
+        this.id = id;
     }
 
     public void addChild(Child child) {

@@ -1,10 +1,9 @@
 package com.example.demo.controller.security;
 
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.model.TeacherUserDetails;
-import com.example.demo.repository.TeacherRepository;
+import com.example.demo.model.AccountDetails;
+import com.example.demo.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -12,11 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final TeacherRepository repository;
+    private final AccountRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new TeacherUserDetails(repository.findTeacherByEmail(username)
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return new AccountDetails(repository.findAccountByEmail(username)
                 .orElseThrow(() -> new TeacherNotFoundException(username)));
     }
 }

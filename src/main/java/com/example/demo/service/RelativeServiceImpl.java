@@ -16,9 +16,9 @@ public class RelativeServiceImpl implements RelativeService {
 
     @Override
     public Relative save(String email, long childId, String name, String address, String phone) {
-        var child = childRepository.findChildWithRelativesByIdAndTeacherEmail(childId, email)
+        var child = childRepository.findChildAndRelativesByIdAndGroup_TeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
-        var addedRelative = repository.findEqualRelativeWithKids(name, phone, address)
+        var addedRelative = repository.findRelativeByNameAndPhoneAndAddress(name, phone, address)
                 .orElseGet(() -> new Relative(name, phone, address));
         child.addRelative(addedRelative);
         return repository.save(addedRelative);
@@ -38,7 +38,7 @@ public class RelativeServiceImpl implements RelativeService {
     public Relative updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone) {
         var updatedRelative = repository.findRelativeWithChild(relativeId, childId, email)
                 .orElseThrow(RelativeNotFoundException::new);
-        return repository.findEqualRelativeWithKidsAndAnotherId(name, phone, address, relativeId)
+        return repository.findRelativeAndKidsByNameAndPhoneAndAddressAndIdNot(name, phone, address, relativeId)
                 .map(equalRelative -> replaceRelative(updatedRelative, equalRelative, email))
                 .orElseGet(() -> updateRelative(name, address, phone, updatedRelative));
     }

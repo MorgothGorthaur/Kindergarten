@@ -8,8 +8,8 @@ import com.example.demo.enums.Claim;
 import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
-import com.example.demo.model.TeacherUserDetails;
-import com.example.demo.repository.TeacherRepository;
+import com.example.demo.model.AccountDetails;
+import com.example.demo.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,20 +28,20 @@ import static java.util.Arrays.stream;
 public class TokenProviderImpl implements TokenProvider {
 
     private final Algorithm algorithm;
-    private final TeacherRepository repository;
+    private final AccountRepository repository;
     @Value("${jwt.access_token.time}")
     private long ACCESS_TOKEN_TIME;
 
     @Value("${jwt.refresh_token.time}")
     private long REFRESH_TOKEN_TIME;
 
-    public TokenProviderImpl(TeacherRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
+    public TokenProviderImpl(AccountRepository repository, @Value("${jwt.secret.key}") String SECRET_KEY) {
         this.repository = repository;
         this.algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
     }
 
     @Override
-    public Map<String, String> generateTokens(String requestUrl, TeacherUserDetails user) {
+    public Map<String, String> generateTokens(String requestUrl, AccountDetails user) {
         return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user),
                 Token.REFRESH_TOKEN.getTokenType(), generateRefreshToken(requestUrl, user));
     }
@@ -68,7 +68,7 @@ public class TokenProviderImpl implements TokenProvider {
             var verifier = JWT.require(algorithm).build();
             var decoderJWT = verifier.verify(refreshToken);
             var username = decoderJWT.getSubject();
-            var user = new TeacherUserDetails(repository.findTeacherByEmail(username)
+            var user = new AccountDetails(repository.findAccountByEmail(username)
                     .orElseThrow(() -> new TeacherNotFoundException(username)));
             return Map.of(Token.ACCESS_TOKEN.getTokenType(), generateAccessToken(requestUrl, user));
         } catch (TokenExpiredException | JWTDecodeException | TeacherNotFoundException ex) {
@@ -76,14 +76,14 @@ public class TokenProviderImpl implements TokenProvider {
         }
     }
 
-    private String generateRefreshToken(String requestUrl, TeacherUserDetails user) {
+    private String generateRefreshToken(String requestUrl, AccountDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(REFRESH_TOKEN_TIME, ChronoUnit.MINUTES))
                 .withIssuer(requestUrl).sign(algorithm);
     }
 
-    private String generateAccessToken(String requestUrl, TeacherUserDetails user) {
+    private String generateAccessToken(String requestUrl, AccountDetails user) {
         var instant = Instant.now();
         return JWT.create().withSubject(user.getUsername())
                 .withExpiresAt(instant.plus(ACCESS_TOKEN_TIME, ChronoUnit.MINUTES))

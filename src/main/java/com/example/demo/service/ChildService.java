@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.model.Child;
 
+import java.time.LocalDate;
+
 public interface ChildService {
 
     /**
@@ -12,4 +14,9 @@ public interface ChildService {
      * @throws com.example.demo.exception.GroupNotFoundException if no group is found for the teacher with the given email
      */
     Child save(String email, Child child);
+
+
+    void update(String email, long id, String name, LocalDate birthYear);
+
+    void delete(long id, String email);
 }

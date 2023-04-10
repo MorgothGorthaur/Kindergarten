@@ -4,13 +4,14 @@ package com.example.demo.configuration.filter;
 import com.example.demo.controller.security.TokenProvider;
 import com.example.demo.enums.AuthenticationRequestParameter;
 import com.example.demo.exception.BadPasswordOrEmailException;
-import com.example.demo.model.TeacherUserDetails;
+import com.example.demo.model.AccountDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,7 +37,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private Authentication authenticate(UsernamePasswordAuthenticationToken token) {
         try {
             return authenticationManager.authenticate(token);
-        } catch (InternalAuthenticationServiceException ex) {
+        } catch (InternalAuthenticationServiceException | BadCredentialsException ex) {
             throw new BadPasswordOrEmailException(token.getName());
         }
     }
@@ -45,7 +46,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException {
-        var user = (TeacherUserDetails) authResult.getPrincipal();
+        var user = (AccountDetails) authResult.getPrincipal();
         var tokens = tokenProvider.generateTokens(request.getRequestURL().toString(), user);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);

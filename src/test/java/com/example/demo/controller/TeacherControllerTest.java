@@ -68,7 +68,7 @@ public class TeacherControllerTest {
         var teacherList = Arrays.asList(teacher1, teacher2);
         var teacherWithGroupDtoList = Arrays.asList(teacherWithGroupDto1, teacherWithGroupDto2);
 
-        when(teacherRepository.findAllTeachersWithGroups()).thenReturn(teacherList);
+        when(teacherRepository.findAll()).thenReturn(teacherList);
 
         mockMvc.perform(get("/kindergarten/teacher/all"))
                 .andExpect(status().isOk())
@@ -95,8 +95,8 @@ public class TeacherControllerTest {
     void testUpdate() throws Exception {
         var dto = new TeacherFullDto("John", "1234567", "john_skype", "john@example.com", "new_password");
 
-        when(teacherRepository.updateTeacherByEmail(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(1);
+        when(teacherRepository.findTeacherAndGroupAndKidsByEmail(dto.email())).thenReturn(Optional.of(dto.createTeacher()));
+        when(teacherRepository.save(any(Teacher.class))).thenReturn(dto.createTeacher());
 
         mockMvc.perform(patch("/kindergarten/teacher")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +108,10 @@ public class TeacherControllerTest {
     @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
     void testRemove() throws Exception {
-        when(teacherRepository.deleteTeacherByEmail(anyString())).thenReturn(1);
+        var dto = new TeacherFullDto("John", "1234567", "john_skype", "john@example.com", "new_password");
+
+        when(teacherRepository.findTeacherAndGroupAndKidsByEmail(dto.email())).thenReturn(Optional.of(dto.createTeacher()));
+        //when(teacherRepository.save(any(Teacher.class))).thenReturn(dto.createTeacher());
 
         mockMvc.perform(delete("/kindergarten/teacher")
                         .contentType(MediaType.APPLICATION_JSON))

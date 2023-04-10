@@ -2,28 +2,27 @@ package com.example.demo.model;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
 
 @AllArgsConstructor
-public class TeacherUserDetails implements UserDetails {
-    private Teacher teacher;
+public class AccountDetails implements org.springframework.security.core.userdetails.UserDetails {
+    private Account account;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(teacher.getRole());
+        return Set.of(account.getRole());
     }
 
     @Override
     public String getPassword() {
-        return teacher.getPassword();
+        return account.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return teacher.getEmail();
+        return account.getEmail();
     }
 
     @Override

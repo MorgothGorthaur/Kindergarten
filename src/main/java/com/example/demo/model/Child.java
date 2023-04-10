@@ -25,13 +25,13 @@ public class Child {
     private String name;
     @Column(name = "birth_year", nullable = false)
     private LocalDate birthYear;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private Set<Relative> relatives = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
-    
+
 
     public Child(String name, LocalDate birthYear) {
         this.name = name;
@@ -46,6 +46,10 @@ public class Child {
     public void removeRelative(Relative relative) {
         relatives.remove(relative);
         relative.removeChild(this);
+    }
+
+    public boolean isBirthDayTodayOrUpcoming() {
+        return birthYear.getDayOfYear() >= LocalDate.now().getDayOfYear();
     }
 
 

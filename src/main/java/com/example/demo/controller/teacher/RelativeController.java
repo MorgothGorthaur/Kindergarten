@@ -1,7 +1,9 @@
-package com.example.demo.controller;
+package com.example.demo.controller.teacher;
 
 import com.example.demo.dto.RelativeDto;
-import com.example.demo.repository.RelativeRepository;
+import com.example.demo.exception.ChildNotFoundException;
+import com.example.demo.model.Child;
+import com.example.demo.repository.ChildRepository;
 import com.example.demo.service.RelativeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +18,14 @@ import java.util.List;
 @PreAuthorize("hasRole('ROLE_USER')")
 @RequiredArgsConstructor
 public class RelativeController {
-    private final RelativeRepository repository;
+    private final ChildRepository childRepository;
     private final RelativeService service;
 
     @GetMapping("/{childId}")
     public List<RelativeDto> getAll(Principal principal, @PathVariable long childId) {
-        return repository.findRelativesByChildIdAndTeacherEmail(childId, principal.getName())
+        return childRepository.findChildAndRelativesByIdAndGroup_TeacherEmail(childId, principal.getName())
+                .map(Child::getRelatives)
+                .orElseThrow(() -> new ChildNotFoundException(principal.getName()))
                 .stream().map(RelativeDto::new).toList();
     }
 

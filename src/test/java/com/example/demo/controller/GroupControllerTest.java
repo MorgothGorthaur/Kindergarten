@@ -4,7 +4,6 @@ import com.example.demo.dto.GroupDto;
 import com.example.demo.model.Group;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.GroupRepository;
-import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.GroupService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,9 +36,6 @@ class GroupControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TeacherRepository teacherRepository;
-
-    @MockBean
     private GroupRepository groupRepository;
 
     @MockBean
@@ -52,7 +49,7 @@ class GroupControllerTest {
         var group = new Group("A", 10);
         var teacher = new Teacher("John", "1234567", "john_skype", "john@example.com", "password");
         teacher.setGroup(group);
-        when(teacherRepository.findTeacherWithGroupAndKidsByEmail(anyString())).thenReturn(Optional.of(teacher));
+        when(groupRepository.findGroupAndKidsByTeacherEmail(anyString())).thenReturn(Optional.of(group));
 
         mockMvc.perform(get("/kindergarten/group"))
                 .andExpect(status().isOk())
@@ -78,8 +75,7 @@ class GroupControllerTest {
     void testUpdate() throws Exception {
         GroupDto dto = new GroupDto("New Group Name", 20);
 
-        when(groupRepository.updateGroupByTeacherEmail(anyString(), anyString(), anyInt())).thenReturn(1);
-
+        when(groupRepository.findGroupAndKidsByTeacherEmail(anyString())).thenReturn(Optional.of(dto.createGroup()));
         mockMvc.perform(patch("/kindergarten/group")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
@@ -88,7 +84,9 @@ class GroupControllerTest {
 
     @Test
     void testRemove() throws Exception {
-        when(groupRepository.deleteGroupIfEmptyByTeacherEmail(anyString())).thenReturn(1);
+        GroupDto dto = new GroupDto("New Group Name", 20);
+
+        when(groupRepository.findGroupAndKidsByTeacherEmail(anyString())).thenReturn(Optional.of(dto.createGroup()));
 
         mockMvc.perform(delete("/kindergarten/group"))
                 .andExpect(status().isOk());

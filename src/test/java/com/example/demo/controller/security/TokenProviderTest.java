@@ -3,8 +3,8 @@ package com.example.demo.controller.security;
 import com.example.demo.enums.Role;
 import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
+import com.example.demo.model.AccountDetails;
 import com.example.demo.model.Teacher;
-import com.example.demo.model.TeacherUserDetails;
 import com.example.demo.repository.TeacherRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ class TokenProviderTest {
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
         when(teacherRepository.findTeacherByEmail(anyString())).thenReturn(Optional.of(teacher));
-        var userDetails = new TeacherUserDetails(teacher);
+        var userDetails = new AccountDetails(teacher);
         var tokens = tokenProvider.generateTokens("/login", userDetails);
         assertThat(tokens).isNotNull();
         assertThat(tokens.get(Token.ACCESS_TOKEN.getTokenType())).isNotNull();
@@ -49,7 +49,7 @@ class TokenProviderTest {
         var teacher = new Teacher("John", "1234567", "john_skype", "john@example.com", "password");
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
-        var userDetails = new TeacherUserDetails(teacher);
+        var userDetails = new AccountDetails(teacher);
         var tokens = tokenProvider.generateTokens("/login", userDetails);
 
         tokenProvider.authorizeIfAccessTokenIsValid(tokens.get(Token.ACCESS_TOKEN.getTokenType()));
@@ -82,7 +82,7 @@ class TokenProviderTest {
         var teacher = new Teacher("John", "1234567", "john_skype", "john@example.com", "password");
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
-        var userDetails = new TeacherUserDetails(teacher);
+        var userDetails = new AccountDetails(teacher);
         when(teacherRepository.findTeacherByEmail(anyString())).thenReturn(Optional.of(teacher));
         var tokens = tokenProvider.generateTokens("/login", userDetails);
         var result = tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(tokens.get(Token.REFRESH_TOKEN.getTokenType()), "/refresh");

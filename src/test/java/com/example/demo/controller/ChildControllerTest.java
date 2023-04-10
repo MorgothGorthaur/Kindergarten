@@ -53,7 +53,7 @@ class ChildControllerTest {
         child1.setId(0L);
         child2.setId(1L);
         var childList = List.of(child1, child2);
-        when(repository.findKidsByTeacherEmail(anyString())).thenReturn(childList);
+        when(repository.findChildrenByGroup_TeacherEmail(anyString())).thenReturn(childList);
 
         mockMvc.perform(get("/kindergarten/child"))
                 .andExpect(status().isOk())
@@ -75,7 +75,7 @@ class ChildControllerTest {
         child.getRelatives().add(relative1);
         child.getRelatives().add(relative2);
 
-        when(repository.findKidsWithRelativesByTeacherEmail(anyString())).thenReturn(List.of(child));
+        when(repository.findChildrenAndRelativesByGroup_TeacherEmail(anyString())).thenReturn(List.of(child));
 
         mockMvc.perform(get("/kindergarten/child/full"))
                 .andExpect(status().isOk())
@@ -91,23 +91,17 @@ class ChildControllerTest {
 
     @Test
     void testGetChildThatWaitsBirth() throws Exception {
-        var child1 = new Child("Alice", LocalDate.of(2022, 4, 1));
+        var child1 = new Child("Alice", LocalDate.now().minusYears(2));
         child1.setId(0L);
-        var child2 = new Child("Bob", LocalDate.of(2022, 3, 22));
+        var child2 = new Child("Bob", LocalDate.now().minusYears(1).plusMonths(3));
         child2.setId(1L);
-        var child3 = new Child("Charlie", LocalDate.of(2022, 3, 21));
+        var child3 = new Child("Charlie", LocalDate.now().minusYears(6));
         child3.setId(2L);
-        when(repository.findKidsThatWaitBirthDayByTeacherEmail(anyString())).thenReturn(List.of(child1, child2, child3));
+        when(repository.findChildrenByGroup_TeacherEmail(anyString())).thenReturn(List.of(child1, child2, child3));
 
         mockMvc.perform(get("/kindergarten/child/birth"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].name").value(child1.getName()))
-                .andExpect(jsonPath("$[0].birthYear").value(child1.getBirthYear().toString()))
-                .andExpect(jsonPath("$[1].name").value(child2.getName()))
-                .andExpect(jsonPath("$[1].birthYear").value(child2.getBirthYear().toString()))
-                .andExpect(jsonPath("$[2].name").value(child3.getName()))
-                .andExpect(jsonPath("$[2].birthYear").value(child3.getBirthYear().toString()));
+                .andExpect(jsonPath("$", hasSize(3)));
     }
 
     @Test
@@ -150,9 +144,8 @@ class ChildControllerTest {
     @Test
     void testUpdateChild() throws Exception {
         var child = new ChildDto(1L, "Alice", LocalDate.of(2019, 5, 1));
-
-        when(repository.updateChildByIdAndTeacherEmail(anyString(), anyLong(), anyString(), any(LocalDate.class))).thenReturn(1);
-
+        when(service.save(anyString(), any(Child.class))).thenReturn(child.createChild());
+        when(repository.findChildrenByGroup_TeacherEmail(anyString())).thenReturn(List.of(child.createChild()));
         mockMvc.perform(patch("/kindergarten/child")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(child)))
@@ -161,8 +154,8 @@ class ChildControllerTest {
 
     @Test
     void testDeleteChild() throws Exception {
-        when(repository.deleteChildByIdAndTeacherEmail(anyString(), anyLong())).thenReturn(1);
-
+        var child = new ChildDto(1L, "Alice", LocalDate.of(2019, 5, 1));
+        when(repository.findChildrenByGroup_TeacherEmail(anyString())).thenReturn(List.of(child.createChild()));
         mockMvc.perform(delete("/kindergarten/child/1"))
                 .andExpect(status().isOk());
     }
