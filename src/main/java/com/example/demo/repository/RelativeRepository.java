@@ -21,7 +21,8 @@ public interface RelativeRepository extends JpaRepository<Relative, Long> {
     @Query("SELECT r FROM Relative r JOIN FETCH r.kids k JOIN FETCH k.relatives WHERE r.id = ?1 AND k.id = ?2 AND k.group.teacher.email = ?3")
     Optional<Relative> findRelativeWithChild(long relativeId, long kidsId, String email);
 
-    Optional<Relative> findRelativeByNameAndPhoneAndAddress(String name, String phone, String address);
+    @EntityGraph(attributePaths = "kids", type = EntityGraph.EntityGraphType.LOAD)
+    Optional<Relative> findRelativeAndKidsByNameAndPhoneAndAddress(String name, String phone, String address);
 
     @EntityGraph(attributePaths = "kids", type = EntityGraph.EntityGraphType.LOAD)
     Optional<Relative> findRelativeAndKidsByNameAndPhoneAndAddressAndIdNot(String name, String phone, String address, long id);

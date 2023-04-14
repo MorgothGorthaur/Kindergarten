@@ -18,7 +18,7 @@ public class RelativeServiceImpl implements RelativeService {
     public Relative save(String email, long childId, String name, String address, String phone) {
         var child = childRepository.findChildAndRelativesByIdAndGroup_TeacherEmail(childId, email)
                 .orElseThrow(() -> new ChildNotFoundException(email));
-        var addedRelative = repository.findRelativeByNameAndPhoneAndAddress(name, phone, address)
+        var addedRelative = repository.findRelativeAndKidsByNameAndPhoneAndAddress(name, phone, address)
                 .orElseGet(() -> new Relative(name, phone, address));
         child.addRelative(addedRelative);
         return repository.save(addedRelative);
