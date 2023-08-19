@@ -7,7 +7,7 @@ import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository repository;
     private final AccountRepository accountRepository;
-    private final BCryptPasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
     @Override
     public void save(Teacher teacher) {
