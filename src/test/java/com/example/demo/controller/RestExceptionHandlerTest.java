@@ -73,7 +73,7 @@ class RestExceptionHandlerTest {
                         .content(objectMapper.writeValueAsString(child)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("validation error"))
-                .andExpect(jsonPath("$.debugMessage").value("Birth year must be before today`s date!"));
+                .andExpect(jsonPath("$.debugMessage").value("Birth year must be before or equal today`s date!"));
     }
 
     @Test

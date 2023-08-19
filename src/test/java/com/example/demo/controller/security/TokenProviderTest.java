@@ -5,7 +5,7 @@ import com.example.demo.enums.Token;
 import com.example.demo.exception.BadTokenException;
 import com.example.demo.model.AccountDetails;
 import com.example.demo.model.Teacher;
-import com.example.demo.repository.TeacherRepository;
+import com.example.demo.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +27,7 @@ class TokenProviderTest {
     private TokenProviderImpl tokenProvider;
 
     @MockBean
-    private TeacherRepository teacherRepository;
+    private AccountRepository accountRepository;
 
 
     @Test
@@ -35,7 +35,7 @@ class TokenProviderTest {
         var teacher = new Teacher("John", "1234567", "john_skype", "john@example.com", "password");
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
-        when(teacherRepository.findTeacherByEmail(anyString())).thenReturn(Optional.of(teacher));
+        when(accountRepository.findAccountByEmail(anyString())).thenReturn(Optional.of(teacher));
         var userDetails = new AccountDetails(teacher);
         var tokens = tokenProvider.generateTokens("/login", userDetails);
         assertThat(tokens).isNotNull();
@@ -83,7 +83,7 @@ class TokenProviderTest {
         teacher.setId(0L);
         teacher.setRole(Role.ROLE_USER);
         var userDetails = new AccountDetails(teacher);
-        when(teacherRepository.findTeacherByEmail(anyString())).thenReturn(Optional.of(teacher));
+        when(accountRepository.findAccountByEmail(anyString())).thenReturn(Optional.of(teacher));
         var tokens = tokenProvider.generateTokens("/login", userDetails);
         var result = tokenProvider.regenerateAccessTokenIfRefreshTokenIsValid(tokens.get(Token.REFRESH_TOKEN.getTokenType()), "/refresh");
         assertThat(result).isNotNull();
