@@ -3,7 +3,7 @@ package com.example.demo.controller.teacher;
 import com.example.demo.dto.TeacherDto;
 import com.example.demo.dto.TeacherFullDto;
 import com.example.demo.dto.TeacherWithGroupDto;
-import com.example.demo.exception.TeacherNotFoundException;
+import com.example.demo.exception.kindergarten.notfound.TeacherNotFoundException;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.TeacherService;
 import jakarta.validation.Valid;

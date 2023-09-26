@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.AccountAlreadyExistException;
-import com.example.demo.exception.TeacherNotFoundException;
+import com.example.demo.exception.kindergarten.notacceptable.AccountAlreadyExistException;
+import com.example.demo.exception.kindergarten.notfound.TeacherNotFoundException;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.TeacherRepository;

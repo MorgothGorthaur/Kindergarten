@@ -1,8 +1,8 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.Role;
-import com.example.demo.exception.GroupContainsKidsException;
-import com.example.demo.exception.TeacherAlreadyContainsGroupException;
+import com.example.demo.exception.kindergarten.notacceptable.GroupContainsKidsException;
+import com.example.demo.exception.kindergarten.notacceptable.TeacherAlreadyContainsGroupException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

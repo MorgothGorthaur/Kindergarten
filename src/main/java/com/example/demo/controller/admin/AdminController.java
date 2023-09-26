@@ -2,7 +2,7 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.dto.AdminDto;
 import com.example.demo.dto.AdminFullDto;
-import com.example.demo.exception.AdminNotFoundException;
+import com.example.demo.exception.kindergarten.notfound.AdminNotFoundException;
 import com.example.demo.repository.AdminRepository;
 import com.example.demo.service.AdminService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
-package com.example.demo.exception;
+package com.example.demo.exception.kindergarten.notfound;
 
-public class ChildNotFoundException extends RuntimeException {
+public class ChildNotFoundException extends EntityNotFoundException {
     public ChildNotFoundException(String email) {
         super("teacher with email " + email + " does`t contains this child");
     }

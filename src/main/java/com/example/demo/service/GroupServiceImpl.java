@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.GroupCantBeUpdatedException;
-import com.example.demo.exception.GroupNotFoundException;
-import com.example.demo.exception.TeacherNotFoundException;
+import com.example.demo.exception.kindergarten.notacceptable.GroupCantBeUpdatedException;
+import com.example.demo.exception.kindergarten.notfound.GroupNotFoundException;
+import com.example.demo.exception.kindergarten.notfound.TeacherNotFoundException;
 import com.example.demo.model.Group;
 import com.example.demo.repository.GroupRepository;
 import com.example.demo.repository.TeacherRepository;

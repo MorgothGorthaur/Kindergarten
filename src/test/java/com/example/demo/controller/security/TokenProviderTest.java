@@ -2,7 +2,7 @@ package com.example.demo.controller.security;
 
 import com.example.demo.enums.Role;
 import com.example.demo.enums.Token;
-import com.example.demo.exception.BadTokenException;
+import com.example.demo.exception.security.BadTokenException;
 import com.example.demo.model.AccountDetails;
 import com.example.demo.model.Teacher;
 import com.example.demo.repository.AccountRepository;

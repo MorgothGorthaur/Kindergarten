@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.ChildNotFoundException;
-import com.example.demo.exception.RelativeNotFoundException;
+import com.example.demo.exception.kindergarten.notfound.ChildNotFoundException;
+import com.example.demo.exception.kindergarten.notfound.RelativeNotFoundException;
 import com.example.demo.model.Relative;
 import com.example.demo.repository.ChildRepository;
 import com.example.demo.repository.RelativeRepository;

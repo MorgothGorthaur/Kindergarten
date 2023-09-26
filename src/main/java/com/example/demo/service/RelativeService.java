@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.kindergarten.notfound.ChildNotFoundException;
+import com.example.demo.exception.kindergarten.notfound.RelativeNotFoundException;
 import com.example.demo.model.Relative;
 
 public interface RelativeService {
@@ -13,7 +15,7 @@ public interface RelativeService {
      * @param name    the relative`s name
      * @param address the relative`s address
      * @param phone   the relative`s phone number
-     * @throws com.example.demo.exception.ChildNotFoundException if the child with the given ID and teacher`s email is not found
+     * @throws ChildNotFoundException if the child with the given ID and teacher`s email is not found
      */
     Relative save(String email, long childId, String name, String address, String phone);
 
@@ -23,8 +25,8 @@ public interface RelativeService {
      * @param email      the ID of the teacher related with the relative
      * @param childId    the ID of the relative`s child
      * @param relativeId the relative`s ID
-     * @throws com.example.demo.exception.RelativeNotFoundException if the relative with the given email, relativeId and childId is not found
-     * @throws com.example.demo.exception.ChildNotFoundException    if the child related to the relative is not found
+     * @throws RelativeNotFoundException if the relative with the given email, relativeId and childId is not found
+     * @throws ChildNotFoundException    if the child related to the relative is not found
      */
 
     void delete(String email, long childId, long relativeId);
@@ -38,8 +40,8 @@ public interface RelativeService {
      * @param name    the new name for the relative
      * @param address the new address for the relative
      * @param phone   the new phone number for the relative
-     * @throws com.example.demo.exception.RelativeNotFoundException if the relative with the given email, relativeId and childId is not found
-     * @throws com.example.demo.exception.ChildNotFoundException    if the child with the given ID and teacher`s email is not found
+     * @throws RelativeNotFoundException if the relative with the given email, relativeId and childId is not found
+     * @throws ChildNotFoundException    if the child with the given ID and teacher`s email is not found
      */
     Relative updateOrReplaceRelative(String email, long childId, long relativeId, String name, String address, String phone);
 }

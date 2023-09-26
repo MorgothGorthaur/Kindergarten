@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ApiError;
-import com.example.demo.exception.*;
+import com.example.demo.exception.kindergarten.notacceptable.*;
+import com.example.demo.exception.kindergarten.notfound.*;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +18,13 @@ import java.util.Objects;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler({TeacherNotFoundException.class, RelativeNotFoundException.class,
-            GroupNotFoundException.class, ChildNotFoundException.class, AdminNotFoundException.class})
+    @ExceptionHandler({EntityNotFoundException.class})
     protected ResponseEntity<Object> handleEntityNotFoundEx(RuntimeException ex) {
         var apiError = new ApiError("entity not found exception", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ChildMustHaveRelativeException.class, GroupContainsKidsException.class,
-            TeacherAlreadyContainsGroupException.class, AccountAlreadyExistException.class,
-            TooManyChildrenInGroupException.class, GroupCantBeUpdatedException.class})
+    @ExceptionHandler({NotAcceptableDataException.class})
     protected ResponseEntity<Object> handleDataNotAcceptableEx(RuntimeException ex) {
         var apiError = new ApiError("This data is not acceptable!", List.of(ex.getMessage()));
         return new ResponseEntity<>(apiError, HttpStatus.NOT_ACCEPTABLE);

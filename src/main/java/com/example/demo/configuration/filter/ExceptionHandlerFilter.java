@@ -1,8 +1,7 @@
 package com.example.demo.configuration.filter;
 
 import com.example.demo.dto.ApiError;
-import com.example.demo.exception.BadPasswordOrEmailException;
-import com.example.demo.exception.BadTokenException;
+import com.example.demo.exception.security.SecurityAuthException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,7 +29,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (BadPasswordOrEmailException | BadTokenException ex) {
+        } catch (SecurityAuthException ex) {
             response.setHeader(HttpHeaders.WWW_AUTHENTICATE, ex.getMessage());
             response.setStatus(FORBIDDEN.value());
             List<String> debugMessages = Optional.ofNullable(ex.getCause()).map(Throwable::getMessage).stream().toList();

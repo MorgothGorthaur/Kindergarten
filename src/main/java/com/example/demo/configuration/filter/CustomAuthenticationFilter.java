@@ -3,7 +3,7 @@ package com.example.demo.configuration.filter;
 
 import com.example.demo.controller.security.TokenProvider;
 import com.example.demo.enums.AuthenticationRequestParameter;
-import com.example.demo.exception.BadPasswordOrEmailException;
+import com.example.demo.exception.security.BadPasswordOrEmailException;
 import com.example.demo.model.AccountDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;

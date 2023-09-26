@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import com.example.demo.exception.TooManyChildrenInGroupException;
+import com.example.demo.exception.kindergarten.notacceptable.TooManyChildrenInGroupException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
