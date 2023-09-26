@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.demo.enums.Claim;
 import com.example.demo.enums.Token;
-import com.example.demo.exception.BadTokenException;
+import com.example.demo.exception.security.BadTokenException;
 import com.example.demo.exception.TeacherNotFoundException;
 import com.example.demo.model.AccountDetails;
 import com.example.demo.repository.AccountRepository;
