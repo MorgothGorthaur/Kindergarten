@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.AccountAlreadyExistException;
-import com.example.demo.exception.AdminNotFoundException;
+import com.example.demo.exception.kindergarten.notacceptable.AccountAlreadyExistException;
+import com.example.demo.exception.kindergarten.notfound.AdminNotFoundException;
 import com.example.demo.model.Admin;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.AdminRepository;

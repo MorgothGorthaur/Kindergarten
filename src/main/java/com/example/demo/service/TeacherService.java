@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.AccountAlreadyExistException;
+import com.example.demo.exception.kindergarten.notacceptable.AccountAlreadyExistException;
 import com.example.demo.model.Teacher;
 
 public interface TeacherService {

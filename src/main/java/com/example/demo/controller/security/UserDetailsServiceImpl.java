@@ -1,6 +1,6 @@
 package com.example.demo.controller.security;
 
-import com.example.demo.exception.TeacherNotFoundException;
+import com.example.demo.exception.kindergarten.notfound.TeacherNotFoundException;
 import com.example.demo.model.AccountDetails;
 import com.example.demo.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;

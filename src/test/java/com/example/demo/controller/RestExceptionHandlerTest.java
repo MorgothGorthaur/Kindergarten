@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ChildDto;
 import com.example.demo.dto.GroupDto;
-import com.example.demo.exception.TeacherAlreadyContainsGroupException;
+import com.example.demo.exception.kindergarten.notacceptable.TeacherAlreadyContainsGroupException;
 import com.example.demo.model.Group;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.GroupService;
